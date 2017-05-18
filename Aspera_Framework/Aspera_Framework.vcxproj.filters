@@ -1,0 +1,383 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\APP">
+      <UniqueIdentifier>{eadd9737-12fe-41aa-bbfa-4f5ec2dc5ad7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\APP">
+      <UniqueIdentifier>{d00dc4d6-9391-45e5-9ea7-a4f3a2bbf1df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MISC">
+      <UniqueIdentifier>{dabe6d42-12cb-4029-b923-23306038d2e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MISC">
+      <UniqueIdentifier>{e44dab49-867c-4887-aa47-46061c001924}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\D3D">
+      <UniqueIdentifier>{a8ffae0d-be1e-4747-846a-99befc4594f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\D3D">
+      <UniqueIdentifier>{7189cb93-fbb6-49b1-9627-960fe3fd8f84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BASE">
+      <UniqueIdentifier>{1449122e-d874-49f0-b4d6-35c96f55924a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BASE">
+      <UniqueIdentifier>{89d54cb0-799b-4f5c-b475-1b34da49c6ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MANAGER">
+      <UniqueIdentifier>{d9d34c87-dc14-4a09-a02b-ad0d8dfde522}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GAMEOBJECT">
+      <UniqueIdentifier>{fcc30eed-f705-488f-aa59-d88686f13b45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GAMEOBJECT">
+      <UniqueIdentifier>{f412415a-a31f-44d8-8683-461ad37d7820}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SYSTEM">
+      <UniqueIdentifier>{255fb75b-5576-4d1a-ba67-91b685169017}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SYSTEM">
+      <UniqueIdentifier>{6f97f6fe-59be-490f-bdbd-c54eb075f370}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\COMPONENT">
+      <UniqueIdentifier>{47883130-88a1-48a1-baac-1028122ad737}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\COMPONENT">
+      <UniqueIdentifier>{8d827894-f36a-4da2-a814-5c206a655bba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI">
+      <UniqueIdentifier>{4be850c7-9a1d-43b0-b805-764b0dc50bbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI">
+      <UniqueIdentifier>{f9ecc26a-35eb-4446-904e-1f51e8c6b3a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GRAPHICS">
+      <UniqueIdentifier>{51550af7-679e-44bf-b18d-6085283c4de3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GRAPHICS">
+      <UniqueIdentifier>{7e67f10c-b7b6-4091-9092-641d91c87527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SHADERS">
+      <UniqueIdentifier>{21870a3e-7b8b-4c38-be3c-16634c954f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SHADERS\shaders">
+      <UniqueIdentifier>{21abb7be-81a8-4d2e-ace1-472613aa0f9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SHADERS">
+      <UniqueIdentifier>{fd1cb5e4-a81e-454d-bf6d-357faa644cfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MANAGER">
+      <UniqueIdentifier>{f7d04775-fd9d-4e8e-9e06-3d41426637ea}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App\SystemClass.h">
+      <Filter>Header Files\APP</Filter>
+    </ClInclude>
+    <ClInclude Include="App\ApplicationClass.h">
+      <Filter>Header Files\APP</Filter>
+    </ClInclude>
+    <ClInclude Include="MISC\FpsClass.h">
+      <Filter>Header Files\MISC</Filter>
+    </ClInclude>
+    <ClInclude Include="MISC\InputClass.h">
+      <Filter>Header Files\MISC</Filter>
+    </ClInclude>
+    <ClInclude Include="MISC\TimerClass.h">
+      <Filter>Header Files\MISC</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\GameObject.h">
+      <Filter>Header Files\BASE</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\Component.h">
+      <Filter>Header Files\BASE</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\Mesh.h">
+      <Filter>Header Files\BASE</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\ShaderManagerClass.h">
+      <Filter>Header Files\MANAGER</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\TextureManagerClass.h">
+      <Filter>Header Files\MANAGER</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D\D3DClass.h">
+      <Filter>Header Files\D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameobject\Camera.h">
+      <Filter>Header Files\GAMEOBJECT</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameobject\Cube.h">
+      <Filter>Header Files\GAMEOBJECT</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameobject\Skydome.h">
+      <Filter>Header Files\GAMEOBJECT</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameobject\Terrain.h">
+      <Filter>Header Files\GAMEOBJECT</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameobject\InstancedCube.h">
+      <Filter>Header Files\GAMEOBJECT</Filter>
+    </ClInclude>
+    <ClInclude Include="System\CameraMovementSystem.h">
+      <Filter>Header Files\SYSTEM</Filter>
+    </ClInclude>
+    <ClInclude Include="System\RenderingSystem.h">
+      <Filter>Header Files\SYSTEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\Prefab.h">
+      <Filter>Header Files\BASE</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\InstancingMesh.h">
+      <Filter>Header Files\COMPONENT</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ModelMesh.h">
+      <Filter>Header Files\COMPONENT</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Renderer.h">
+      <Filter>Header Files\COMPONENT</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\TerrainMesh.h">
+      <Filter>Header Files\COMPONENT</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Transform.h">
+      <Filter>Header Files\COMPONENT</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\userinterfaceclass.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="MISC\Enums.h">
+      <Filter>Header Files\MISC</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\ColorShaderClass.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\FontShaderClass.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\LightShaderClass.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\SkyDomeShaderClass.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\TerrainShaderClass.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\TextureShaderClass.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\TextureShaderInstanced.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\LightClass.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\MiniMap.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\TextureClass.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\BitmapClass.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\FontClass.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\TextClass.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="App\SystemClass.cpp">
+      <Filter>Source Files\APP</Filter>
+    </ClCompile>
+    <ClCompile Include="App\ApplicationClass.cpp">
+      <Filter>Source Files\APP</Filter>
+    </ClCompile>
+    <ClCompile Include="MISC\FpsClass.cpp">
+      <Filter>Source Files\MISC</Filter>
+    </ClCompile>
+    <ClCompile Include="MISC\InputClass.cpp">
+      <Filter>Source Files\MISC</Filter>
+    </ClCompile>
+    <ClCompile Include="MISC\TimerClass.cpp">
+      <Filter>Source Files\MISC</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\GameObject.cpp">
+      <Filter>Source Files\BASE</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D\D3DClass.cpp">
+      <Filter>Source Files\D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\Component.cpp">
+      <Filter>Source Files\BASE</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\Mesh.cpp">
+      <Filter>Source Files\BASE</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameobject\Camera.cpp">
+      <Filter>Source Files\GAMEOBJECT</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameobject\Cube.cpp">
+      <Filter>Source Files\GAMEOBJECT</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameobject\Skydome.cpp">
+      <Filter>Source Files\GAMEOBJECT</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameobject\Terrain.cpp">
+      <Filter>Source Files\GAMEOBJECT</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameobject\InstancedCube.cpp">
+      <Filter>Source Files\GAMEOBJECT</Filter>
+    </ClCompile>
+    <ClCompile Include="System\CameraMovementSystem.cpp">
+      <Filter>Source Files\SYSTEM</Filter>
+    </ClCompile>
+    <ClCompile Include="System\RenderingSystem.cpp">
+      <Filter>Source Files\SYSTEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\Prefab.cpp">
+      <Filter>Source Files\BASE</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\InstancingMesh.cpp">
+      <Filter>Source Files\COMPONENT</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ModelMesh.cpp">
+      <Filter>Source Files\COMPONENT</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Renderer.cpp">
+      <Filter>Source Files\COMPONENT</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\TerrainMesh.cpp">
+      <Filter>Source Files\COMPONENT</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Transform.cpp">
+      <Filter>Source Files\COMPONENT</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\userinterfaceclass.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\ColorShaderClass.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\FontShaderClass.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\LightShaderClass.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\SkyDomeShaderClass.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\TerrainShaderClass.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\TextureShaderClass.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\TextureShaderInstanced.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\LightClass.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\MiniMap.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\TextureClass.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\BitmapClass.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\FontClass.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\TextClass.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\ShaderManagerClass.cpp">
+      <Filter>Source Files\MANAGER</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\TextureManagerClass.cpp">
+      <Filter>Source Files\MANAGER</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\bumpmap.ps">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\bumpmap.vs">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\color.ps">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\color.vs">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\font.ps">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\font.vs">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\light.ps">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\light.vs">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\multitexture.ps">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\multitexture.vs">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\skydome.ps">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\skydome.vs">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\terrain.ps">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\terrain.vs">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\texture.ps">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\texture.vs">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\textureInstanced.vs">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>
