@@ -40,7 +40,8 @@ bool Skydome::Initialize(char* filename)
 	if (!m_renderer)
 		return false;
 
-	m_renderer->Initialize(ShaderType::SKYDOME);
+	vector<string> textureIds = vector<string>();
+	m_renderer->Initialize(ShaderType::SKYDOME, textureIds);
 	AddComponent(m_renderer);
 
 	// Set the color at the top of the sky dome.

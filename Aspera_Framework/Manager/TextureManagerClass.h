@@ -1,6 +1,10 @@
 #ifndef _TEXTUREMANAGERCLASS_H_
 #define _TEXTUREMANAGERCLASS_H_
 
+#include <map>
+#include <string>
+using namespace std;
+
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
@@ -13,15 +17,15 @@ public:
 	TextureManagerClass(const TextureManagerClass&);
 	~TextureManagerClass();
 
-	bool Initialize(int);
+	bool Initialize();
 	void Shutdown();
 
-	bool LoadTexture(ID3D11Device*, ID3D11DeviceContext*, char*, int);
+	bool LoadTexture(ID3D11Device*, ID3D11DeviceContext*, char*, string);
 
-	ID3D11ShaderResourceView* GetTexture(int);
+	ID3D11ShaderResourceView* GetTexture(string);
 
 private:
-	TextureClass* m_TextureArray;
+	map<string, TextureClass> m_TextureArray;
 	int m_textureCount;
 };
 

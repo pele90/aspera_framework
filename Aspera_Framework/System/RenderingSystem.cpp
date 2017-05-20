@@ -63,22 +63,29 @@ bool RenderingSystem::Initialize(HWND hwnd, int screenWidth, int screenHeight, v
 		return false;
 	}
 
+	// TODO: make function to load all needed textures
 	// Initialize the texture manager object.
-	result = m_TextureManager->Initialize(10);
+	/*result = m_TextureManager->Initialize(10);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the texture manager object.", L"Error", MB_OK);
 		return false;
-	}
+	}*/
 
 	// Load textures into the texture manager.
-	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "../Aspera_Framework/data/textures/dirt01d.tga", 0);
+	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "../Aspera_Framework/data/textures/tga/dirt01d.tga", "dirt01d");
 	if (!result)
 	{
 		return false;
 	}
 
-	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "../Aspera_Framework/data/textures/dirt01n.tga", 1);
+	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "../Aspera_Framework/data/textures/tga/dirt01n.tga", "dirt01n");
+	if (!result)
+	{
+		return false;
+	}
+
+	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "../Aspera_Framework/data/textures/tga/test.tga", "test");
 	if (!result)
 	{
 		return false;
@@ -223,10 +230,10 @@ bool RenderingSystem::Render(Camera* camera)
 
 			BindBuffer(mesh);
 
-			if (!RenderWithShader(mesh, ShaderType::TERRAIN))
+			if (!RenderWithShader(mesh, ShaderType::TERRAIN, renderer->GetTextureIds()))
 				return false;
 
-			if (!RenderWithShader(mesh, ShaderType::TEXTURE))
+			if (!RenderWithShader(mesh, ShaderType::TEXTURE, renderer->GetTextureIds()))
 				return false;
 
 			m_Direct3D->GetWorldMatrix(m_worldMatrix);
@@ -252,7 +259,7 @@ bool RenderingSystem::Render(Camera* camera)
 
 			BindBuffer(mesh);
 
-			if (!RenderWithShader(mesh, renderer->GetShaderType()))
+			if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
 				return false;
 
 			// Reset world matrix
@@ -277,7 +284,7 @@ bool RenderingSystem::Render(Camera* camera)
 				if (!LoadBuffersAndBind(mesh))
 					return false;
 
-				if (!RenderWithShader(mesh, renderer->GetShaderType()))
+				if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
 					return false;
 			}
 		}
@@ -308,7 +315,7 @@ bool RenderingSystem::LoadBuffersAndBind(Mesh* mesh)
 	return true;
 }
 
-bool RenderingSystem::RenderWithShader(Mesh* mesh, ShaderType shaderType)
+bool RenderingSystem::RenderWithShader(Mesh* mesh, ShaderType shaderType, vector<string> textureIds)
 {
 	bool result;
 
@@ -321,13 +328,13 @@ bool RenderingSystem::RenderWithShader(Mesh* mesh, ShaderType shaderType)
 		break;
 
 	case TEXTURE:
-		result = m_ShaderManager->RenderTextureShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(0));
+		result = m_ShaderManager->RenderTextureShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(textureIds.at(0)));
 		if (!result)
 			return false;
 		break;
 
 	case TEXTURE_INSTANCED:
-		result = m_ShaderManager->RenderTextureShaderInstanced(m_Direct3D->GetDeviceContext(), mesh->GetVertexCount(), mesh->GetInstanceCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(0));
+		result = m_ShaderManager->RenderTextureShaderInstanced(m_Direct3D->GetDeviceContext(), mesh->GetVertexCount(), mesh->GetInstanceCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(textureIds.at(0)));
 		if (!result)
 			return false;
 		break;
@@ -339,7 +346,7 @@ bool RenderingSystem::RenderWithShader(Mesh* mesh, ShaderType shaderType)
 		break;
 
 	case TERRAIN:
-		result = m_ShaderManager->RenderTerrainShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(0), m_TextureManager->GetTexture(1), XMFLOAT3(0.0f, -1.0f, 0.0), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+		result = m_ShaderManager->RenderTerrainShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(textureIds.at(0)), m_TextureManager->GetTexture(textureIds.at(1)), XMFLOAT3(0.0f, -1.0f, 0.0), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 		if (!result)
 			return false;
 		break;
@@ -351,7 +358,7 @@ bool RenderingSystem::RenderWithShader(Mesh* mesh, ShaderType shaderType)
 		break;
 
 	case FONT:
-		/*result = m_ShaderManager->RenderFontShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(0));
+		/*result = m_ShaderManager->RenderFontShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(textureIds.at(0)));
 		if (!result)
 			return false;*/
 		break;

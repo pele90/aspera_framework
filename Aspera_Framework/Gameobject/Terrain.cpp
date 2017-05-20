@@ -45,9 +45,12 @@ bool Terrain::Initialize(char* filename)
 	m_renderer = new Renderer;
 	if (!m_renderer)
 		return false;
-	result = m_renderer->Initialize(ShaderType::TERRAIN);
+
+	vector<string> textureIds = vector<string>{ "dirt01d", "dirt01n" };
+	result = m_renderer->Initialize(ShaderType::TERRAIN, textureIds);
 	if (!result)
 		return false;
+	AddComponent(m_renderer);
 
 	return true;
 }

@@ -11,13 +11,15 @@ public:
 	~Renderer();
 
 	virtual bool Initialize();
-	virtual bool Initialize(ShaderType);
+	virtual bool Initialize(ShaderType, vector<string>);
 	virtual void Shutdown();
 
 	ShaderType GetShaderType();
+	vector<string> GetTextureIds();
 
 private:
 	ShaderType m_shaderType;
+	vector<string> m_textureIds;
 };
 
 #endif // !_RENDERER_H_

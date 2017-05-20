@@ -75,14 +75,14 @@ bool SceneClass::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 	AddGameObject(skydome);
 
 	Terrain* terrain = new Terrain;
-	terrain->Initialize("../Aspera_Framework/data/setup.txt");
+	terrain->Initialize("../Aspera_Framework/data/terrain/setup.txt");
 	AddGameObject(terrain);
 
 	/*InstancedCube *cube = new InstancedCube;
 	cube->Initialize("../Rastertek/data/cube.txt");
 	AddGameObject(cube);*/
 
-	CreateGameObjects(5);
+	//CreateGameObjects(5);
 
 #pragma endregion
 
@@ -162,7 +162,7 @@ void SceneClass::CreateDummyObjects(int count)
 {
 	for (int i = 0; i < count; ++i) {
 		Cube* monkey = new Cube;
-		monkey->Initialize("../Aspera_Framework/data/monkey.txt");
+		monkey->Initialize("../Aspera_Framework/data/models/cube.txt");
 		monkey->GetComponent<Transform>("TRANSFORM")->SetPosition(i * 3.0f, 8.0f, 0.0f);
 		AddGameObject(monkey);
 	}
@@ -171,9 +171,10 @@ void SceneClass::CreateDummyObjects(int count)
 void SceneClass::CreateGameObjects(int count)
 {
 	ModelMesh* mesh = new ModelMesh;
-	mesh->Initialize("../Aspera_Framework/data/teapot.txt");
+	mesh->Initialize("../Aspera_Framework/data/models/teapot.txt");
 	Renderer* renderer = new Renderer;
-	renderer->Initialize(ShaderType::TEXTURE);
+	vector<string> textureIds = vector<string>{ "dirt01d" };
+	renderer->Initialize(ShaderType::TEXTURE, textureIds);
 
 	for (int i = 0; i < count; ++i) {
 		Prefab* monkey = new Prefab;

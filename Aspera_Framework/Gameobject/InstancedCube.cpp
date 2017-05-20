@@ -42,7 +42,8 @@ bool InstancedCube::Initialize(char* filename)
 	if (!m_renderer)
 		return false;
 
-	result = m_renderer->Initialize(ShaderType::TEXTURE_INSTANCED);
+	vector<string> textureIds = vector<string>{ "cube" };
+	result = m_renderer->Initialize(ShaderType::TEXTURE_INSTANCED, textureIds);
 	AddComponent(m_renderer);
 
 	return true;
