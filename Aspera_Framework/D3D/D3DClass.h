@@ -46,6 +46,9 @@ public:
 	void EnableWireframe();
 	void DisableWireframe();
 
+	ID3D11DepthStencilView* GetDepthStencilView();
+	void SetBackBufferRenderTarget();
+
 private:
 	bool m_vsync_enabled;
 	int m_videoCardMemory;

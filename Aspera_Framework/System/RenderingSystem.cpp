@@ -6,6 +6,8 @@ RenderingSystem::RenderingSystem()
 	m_ShaderManager = 0;
 	m_TextureManager = 0;
 	m_userInterface = 0;
+	m_RenderTexture = 0;
+	m_DebugWindow = 0;
 }
 
 RenderingSystem::~RenderingSystem()
@@ -91,6 +93,12 @@ bool RenderingSystem::Initialize(HWND hwnd, int screenWidth, int screenHeight, v
 		return false;
 	}
 
+	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "../Aspera_Framework/data/textures/tga/wall.tga", "wall");
+	if (!result)
+	{
+		return false;
+	}
+
 #pragma endregion
 
 #pragma region USERINTERFACE
@@ -102,6 +110,43 @@ bool RenderingSystem::Initialize(HWND hwnd, int screenWidth, int screenHeight, v
 	result = m_userInterface->Initialize(m_Direct3D, screenHeight, screenWidth);
 	if (!result)
 		return false;
+
+#pragma endregion
+
+#pragma region RENDER TEXTURE
+
+	// Create the render to texture object.
+	m_RenderTexture = new RenderTexture;
+	if (!m_RenderTexture)
+	{
+		return false;
+	}
+
+	// Initialize the render to texture object.
+	result = m_RenderTexture->Initialize(m_Direct3D->GetDevice(), screenWidth, screenHeight);
+	if (!result)
+	{
+		return false;
+	}
+
+#pragma endregion
+
+#pragma region DEBUG WINDOW
+
+	// Create the debug window object.
+	m_DebugWindow = new DebugWindow;
+	if (!m_DebugWindow)
+	{
+		return false;
+	}
+
+	// Initialize the debug window object.
+	result = m_DebugWindow->Initialize(m_Direct3D->GetDevice(), screenWidth, screenHeight, 100, 100);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the debug window object.", L"Error", MB_OK);
+		return false;
+	}
 
 #pragma endregion
 
@@ -141,6 +186,22 @@ bool RenderingSystem::InitializeGameObjects()
 
 void RenderingSystem::Shutdown()
 {
+	// Release the debug window object.
+	if (m_DebugWindow)
+	{
+		m_DebugWindow->Shutdown();
+		delete m_DebugWindow;
+		m_DebugWindow = 0;
+	}
+
+	// Release the render to texture object.
+	if (m_RenderTexture)
+	{
+		m_RenderTexture->Shutdown();
+		delete m_RenderTexture;
+		m_RenderTexture = 0;
+	}
+
 	// Release the texture manager object.
 	if (m_TextureManager)
 	{
@@ -196,6 +257,13 @@ bool RenderingSystem::Frame(vector<GameObject*> gameobjects, Camera* camera, int
 	// process user interface frame
 	m_userInterface->Frame(m_Direct3D->GetDeviceContext(), p_fps, cameraTransform->GetPosition());
 
+	// Render the entire scene to the texture first.
+	result = RenderToTexture(camera);
+	if (!result)
+	{
+		return false;
+	}
+
 	result = Render(camera);
 	if (!result)
 		return false;
@@ -233,6 +301,7 @@ bool RenderingSystem::Render(Camera* camera)
 			if (!RenderWithShader(mesh, ShaderType::TERRAIN, renderer->GetTextureIds()))
 				return false;
 
+			// render with normal map texture
 			if (!RenderWithShader(mesh, ShaderType::TEXTURE, renderer->GetTextureIds()))
 				return false;
 
@@ -288,13 +357,39 @@ bool RenderingSystem::Render(Camera* camera)
 					return false;
 			}
 		}
-
 	}
 
 	// render user interface
 	result = m_userInterface->Render(m_Direct3D, m_ShaderManager, m_worldMatrix, m_baseViewMatrix, m_orthographicMatrix);
 	if (!result)
 		return false;
+
+	//// Turn off the Z buffer to begin all 2D rendering.
+	//m_D3D->TurnZBufferOff();
+
+	//// Get the world, view, and ortho matrices from the camera and d3d objects.
+	//m_D3D->GetWorldMatrix(worldMatrix);
+	//m_Camera->GetViewMatrix(viewMatrix);
+	//m_D3D->GetOrthoMatrix(orthoMatrix);
+
+	//// Put the debug window vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	//result = m_DebugWindow->Render(m_D3D - GetDeviceContext(), 50, 50);
+	//if (!result)
+	//{
+	//	return false;
+	//}
+
+	//// Render the debug window using the texture shader.
+	//result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_DebugWindow->GetIndexCount(), worldMatrix, viewMatrix,
+	//	orthoMatrix, m_RenderTexture->GetShaderResourceView());
+	//if (!result)
+	//{
+	//	return false;
+	//}
+
+
+	// Turn the Z buffer back on now that all 2D rendering has completed.
+	m_D3D->TurnZBufferOn();
 
 	// Present the rendered scene to the screen.
 	m_Direct3D->EndScene();
@@ -318,6 +413,8 @@ bool RenderingSystem::LoadBuffersAndBind(Mesh* mesh)
 bool RenderingSystem::RenderWithShader(Mesh* mesh, ShaderType shaderType, vector<string> textureIds)
 {
 	bool result;
+	XMFLOAT3 lightDirection = XMFLOAT3(-1.0f, -1.0f, 0.0f);
+	XMFLOAT4 diffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	switch (shaderType)
 	{
@@ -340,13 +437,13 @@ bool RenderingSystem::RenderWithShader(Mesh* mesh, ShaderType shaderType, vector
 		break;
 
 	case LIGHT:
-		//result = m_ShaderManager->RenderLightShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(0));
-		//if (!result)
-			//return false;
+		result = m_ShaderManager->RenderLightShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(textureIds.at(0)), lightDirection, diffuseColor);
+		if (!result)
+			return false;
 		break;
 
 	case TERRAIN:
-		result = m_ShaderManager->RenderTerrainShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(textureIds.at(0)), m_TextureManager->GetTexture(textureIds.at(1)), XMFLOAT3(0.0f, -1.0f, 0.0), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+		result = m_ShaderManager->RenderTerrainShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(textureIds.at(0)), m_TextureManager->GetTexture(textureIds.at(1)), XMFLOAT3(-1.0f, -1.0f, 0.0), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 		if (!result)
 			return false;
 		break;
@@ -385,4 +482,32 @@ bool RenderingSystem::LoadBuffer(Mesh *mesh)
 		return false;
 
 	return true;
+}
+
+bool RenderingSystem::RenderToTexture(Camera* camera)
+{
+	bool result;
+
+	// Set the render target to be the render to texture.
+	m_RenderTexture->SetRenderTarget(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDepthStencilView());
+
+// Clear the render to texture.
+	m_RenderTexture->ClearRenderTarget(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDepthStencilView(), 0.0f, 0.0f, 1.0f, 1.0f);
+
+	// Render the scene now and it will draw to the render to texture instead of the back buffer.
+	result = Render(camera);
+	if(!result)
+	{
+		return false;
+	}
+
+	// Reset the render target back to the original back buffer and not the render to texture anymore.
+	m_Direct3D->SetBackBufferRenderTarget();
+
+	return;
+}
+
+bool RenderingSystem::RenderDebugWindow()
+{
+	return false;
 }

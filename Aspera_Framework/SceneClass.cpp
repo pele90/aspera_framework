@@ -82,7 +82,7 @@ bool SceneClass::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 	cube->Initialize("../Rastertek/data/cube.txt");
 	AddGameObject(cube);*/
 
-	//CreateGameObjects(5);
+	CreateGameObjects(5);
 
 #pragma endregion
 
@@ -174,7 +174,7 @@ void SceneClass::CreateGameObjects(int count)
 	mesh->Initialize("../Aspera_Framework/data/models/teapot.txt");
 	Renderer* renderer = new Renderer;
 	vector<string> textureIds = vector<string>{ "dirt01d" };
-	renderer->Initialize(ShaderType::TEXTURE, textureIds);
+	renderer->Initialize(ShaderType::LIGHT, textureIds);
 
 	for (int i = 0; i < count; ++i) {
 		Prefab* monkey = new Prefab;

@@ -5,6 +5,7 @@ UserInterfaceClass::UserInterfaceClass()
 	m_Font1 = 0;
 	m_FpsString = 0;
 	m_miniMap = 0;
+	m_VideoStrings = 0;
 }
 
 UserInterfaceClass::UserInterfaceClass(const UserInterfaceClass& other)
@@ -60,7 +61,7 @@ bool UserInterfaceClass::Initialize(D3DClass* Direct3D, int screenHeight, int sc
 	m_previousFps = -1;
 
 	// Setup the video card strings.
-	/*Direct3D->GetVideoCardInfo(videoCard, videoMemory);
+	Direct3D->GetVideoCardInfo(videoCard, videoMemory);
 	strcpy_s(videoString, "Video Card: ");
 	strcat_s(videoString, videoCard);
 
@@ -68,17 +69,17 @@ bool UserInterfaceClass::Initialize(D3DClass* Direct3D, int screenHeight, int sc
 
 	strcpy_s(memoryString, "Video Memory: ");
 	strcat_s(memoryString, tempString);
-	strcat_s(memoryString, " MB");*/
+	strcat_s(memoryString, " MB");
 
 	// Create the text objects for the video strings.
-	/*m_VideoStrings = new TextClass[2];
+	m_VideoStrings = new TextClass[2];
 	if (!m_VideoStrings)
 	{
 		return false;
-	}*/
+	}
 
 	// Initialize the video text strings.
-	/*result = m_VideoStrings[0].Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, false, m_Font1, 
+	result = m_VideoStrings[0].Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, false, m_Font1, 
 										  videoString, 10, 10, 1.0f, 1.0f, 1.0f);
 	if(!result)
 	{ 
@@ -90,7 +91,7 @@ bool UserInterfaceClass::Initialize(D3DClass* Direct3D, int screenHeight, int sc
 	if(!result)
 	{ 
 		return false;
-	}*/
+	}
 
 	// Create the mini-map object.
 	m_miniMap = new MiniMap;
@@ -112,14 +113,14 @@ bool UserInterfaceClass::Initialize(D3DClass* Direct3D, int screenHeight, int sc
 void UserInterfaceClass::Shutdown()
 {
 	// Release the video card string.
-	/*if(m_VideoStrings)
+	if(m_VideoStrings)
 	{
 		m_VideoStrings[0].Shutdown();
 		m_VideoStrings[1].Shutdown();
 
 		delete [] m_VideoStrings;
 		m_VideoStrings = 0;
-	}*/
+	}
 
 	// Release the mini-map object.
 	if (m_miniMap)
@@ -179,8 +180,8 @@ bool UserInterfaceClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderMa
 	m_FpsString->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
 
 	// Render the video card strings.
-	//m_VideoStrings[0].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
-	//m_VideoStrings[1].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
+	m_VideoStrings[0].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
+	m_VideoStrings[1].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
 
 	// Turn off alpha blending now that the text has been rendered.
 	Direct3D->DisableAlphaBlending();

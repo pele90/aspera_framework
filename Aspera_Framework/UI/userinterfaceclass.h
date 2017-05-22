@@ -23,6 +23,7 @@ private:
 private:
 	FontClass* m_Font1;
 	TextClass *m_FpsString;
+	TextClass *m_VideoStrings;
 	int m_previousFps;
 	MiniMap* m_miniMap;
 	//int m_previousPosition[6];

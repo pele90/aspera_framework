@@ -204,6 +204,12 @@
     <ClInclude Include="Graphics\TextClass.h">
       <Filter>Header Files\GRAPHICS</Filter>
     </ClInclude>
+    <ClInclude Include="RenderTexture.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugWindow.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App\SystemClass.cpp">
@@ -326,57 +332,63 @@
     <ClCompile Include="SceneClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DebugWindow.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTexture.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\bumpmap.ps">
+    <None Include="Shaders\shaders\bumpmap.ps">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\bumpmap.vs">
+    <None Include="Shaders\shaders\bumpmap.vs">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\color.ps">
+    <None Include="Shaders\shaders\color.ps">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\color.vs">
+    <None Include="Shaders\shaders\color.vs">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\font.ps">
+    <None Include="Shaders\shaders\font.ps">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\font.vs">
+    <None Include="Shaders\shaders\font.vs">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\light.ps">
+    <None Include="Shaders\shaders\light.ps">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\light.vs">
+    <None Include="Shaders\shaders\light.vs">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\multitexture.ps">
+    <None Include="Shaders\shaders\multitexture.ps">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\multitexture.vs">
+    <None Include="Shaders\shaders\multitexture.vs">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\skydome.ps">
+    <None Include="Shaders\shaders\skydome.ps">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\skydome.vs">
+    <None Include="Shaders\shaders\skydome.vs">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\terrain.ps">
+    <None Include="Shaders\shaders\terrain.ps">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\terrain.vs">
+    <None Include="Shaders\shaders\terrain.vs">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\texture.ps">
+    <None Include="Shaders\shaders\texture.ps">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\texture.vs">
+    <None Include="Shaders\shaders\texture.vs">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
-    <None Include="Shaders\textureInstanced.vs">
+    <None Include="Shaders\shaders\textureInstanced.vs">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
   </ItemGroup>

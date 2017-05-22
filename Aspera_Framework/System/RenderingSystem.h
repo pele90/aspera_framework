@@ -14,6 +14,8 @@
 #include "../Base/Mesh.h"
 #include "../Manager/ShaderManagerClass.h"
 #include "../Manager/TextureManagerClass.h"
+#include "../Graphics/DebugWindow.h"
+#include "../Graphics/RenderTexture.h"
 #include <d3d11.h>
 #include <vector>
 
@@ -40,6 +42,8 @@ public:
 	
 private:
 	bool Render(Camera*);
+	bool RenderToTexture(Camera*);
+	bool RenderDebugWindow();
 	bool LoadBuffersAndBind(Mesh*);
 
 	bool LoadBuffer(Mesh*);
@@ -52,6 +56,9 @@ private:
 	TextureManagerClass* m_TextureManager;
 	XMMATRIX m_worldMatrix, m_baseViewMatrix, m_viewMatrix, m_projectionMatrix, m_orthographicMatrix;
 	UserInterfaceClass* m_userInterface;
+
+	RenderTexture* m_RenderTexture;
+	DebugWindow* m_DebugWindow;
 
 	vector<GameObject*> m_initializedGameObjects;
 	vector<GameObject*> m_uninitializedGameObjects;

@@ -122,6 +122,7 @@
     <ClInclude Include="Component\TerrainMesh.h" />
     <ClInclude Include="Component\Transform.h" />
     <ClInclude Include="D3D\D3DClass.h" />
+    <ClInclude Include="DebugWindow.h" />
     <ClInclude Include="Gameobject\Camera.h" />
     <ClInclude Include="Gameobject\Cube.h" />
     <ClInclude Include="Gameobject\InstancedCube.h" />
@@ -139,6 +140,7 @@
     <ClInclude Include="MISC\FpsClass.h" />
     <ClInclude Include="MISC\InputClass.h" />
     <ClInclude Include="MISC\TimerClass.h" />
+    <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="SceneClass.h" />
     <ClInclude Include="Shaders\ColorShaderClass.h" />
     <ClInclude Include="Shaders\FontShaderClass.h" />
@@ -164,6 +166,7 @@
     <ClCompile Include="Component\TerrainMesh.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
     <ClCompile Include="D3D\D3DClass.cpp" />
+    <ClCompile Include="DebugWindow.cpp" />
     <ClCompile Include="Gameobject\Camera.cpp" />
     <ClCompile Include="Gameobject\Cube.cpp" />
     <ClCompile Include="Gameobject\InstancedCube.cpp" />
@@ -178,6 +181,7 @@
     <ClCompile Include="MISC\FpsClass.cpp" />
     <ClCompile Include="MISC\InputClass.cpp" />
     <ClCompile Include="MISC\TimerClass.cpp" />
+    <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="SceneClass.cpp" />
     <ClCompile Include="Shaders\ColorShaderClass.cpp" />
     <ClCompile Include="Shaders\FontShaderClass.cpp" />
@@ -194,23 +198,23 @@
     <ClCompile Include="UI\userinterfaceclass.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\bumpmap.ps" />
-    <None Include="Shaders\bumpmap.vs" />
-    <None Include="Shaders\color.ps" />
-    <None Include="Shaders\color.vs" />
-    <None Include="Shaders\font.ps" />
-    <None Include="Shaders\font.vs" />
-    <None Include="Shaders\light.ps" />
-    <None Include="Shaders\light.vs" />
-    <None Include="Shaders\multitexture.ps" />
-    <None Include="Shaders\multitexture.vs" />
-    <None Include="Shaders\skydome.ps" />
-    <None Include="Shaders\skydome.vs" />
-    <None Include="Shaders\terrain.ps" />
-    <None Include="Shaders\terrain.vs" />
-    <None Include="Shaders\texture.ps" />
-    <None Include="Shaders\texture.vs" />
-    <None Include="Shaders\textureInstanced.vs" />
+    <None Include="Shaders\shaders\bumpmap.ps" />
+    <None Include="Shaders\shaders\bumpmap.vs" />
+    <None Include="Shaders\shaders\color.ps" />
+    <None Include="Shaders\shaders\color.vs" />
+    <None Include="Shaders\shaders\font.ps" />
+    <None Include="Shaders\shaders\font.vs" />
+    <None Include="Shaders\shaders\light.ps" />
+    <None Include="Shaders\shaders\light.vs" />
+    <None Include="Shaders\shaders\multitexture.ps" />
+    <None Include="Shaders\shaders\multitexture.vs" />
+    <None Include="Shaders\shaders\skydome.ps" />
+    <None Include="Shaders\shaders\skydome.vs" />
+    <None Include="Shaders\shaders\terrain.ps" />
+    <None Include="Shaders\shaders\terrain.vs" />
+    <None Include="Shaders\shaders\texture.ps" />
+    <None Include="Shaders\shaders\texture.vs" />
+    <None Include="Shaders\shaders\textureInstanced.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
