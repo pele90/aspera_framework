@@ -183,8 +183,15 @@ bool RenderingSystem::InitializeGameObjects()
 			result = go->GetComponent<TerrainMesh>("TERRAIN_MESH")->InitializeBuffers(m_Direct3D->GetDevice());
 			m_initializedGameObjects.push_back(go);
 		}
-		else if (go->GetName() == "DIRECTIONAL_LIGHT")
+		else if (go->GetName() == "DIRECTIONAL_LIGHT") {
 			m_initializedGameObjects.push_back(go);
+
+			RenderTexture* rt = new RenderTexture;
+			result = rt->Initialize(m_Direct3D->GetDevice(), SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, SCREEN_DEPTH, SCREEN_NEAR);
+			if (!result)
+				return false;
+			m_renderToTextures.push_back(rt);
+		}
 	}
 
 	m_uninitializedGameObjects.clear();
@@ -247,7 +254,6 @@ bool RenderingSystem::Frame(vector<GameObject*> gameobjects, Camera* camera, int
 {
 	bool result;
 	vector<DirectionalLight*> lights;
-	DirectionalLight* directionalLight = NULL;
 
 	camera->RenderViewMatrix();
 
@@ -259,15 +265,14 @@ bool RenderingSystem::Frame(vector<GameObject*> gameobjects, Camera* camera, int
 
 	Transform* cameraTransform = camera->GetComponent<Transform>("TRANSFORM");
 
+	// Set skydome position to camera position and extract all lights in the scene
 	for (auto go : gameobjects) {
 		if (go->GetName() == "SkydomeGO")
 			go->GetComponent<Transform>("TRANSFORM")->SetTransform(*cameraTransform);
-		else if (go->GetName() == "DIRECTIONAL_LIGHT") 
+		else if (go->GetName() == "DIRECTIONAL_LIGHT")
 		{
-			/*directionalLight = dynamic_cast<DirectionalLight*>(go);*/
 			lights.push_back(dynamic_cast<DirectionalLight*>(go));
 		}
-			
 	}
 
 	// process user interface frame
@@ -275,16 +280,7 @@ bool RenderingSystem::Frame(vector<GameObject*> gameobjects, Camera* camera, int
 	if (!result)
 		return false;
 
-	for (vector<DirectionalLight*>::iterator iter = lights.begin(); iter != lights.end(); ++iter)
-	{
-		// Need to create n "render to texture" textures
-		result = RenderSceneToDepthMap((*iter));
-	}
-
-	// Render the entire scene to the texture first.
-	/*result = RenderToTexture(camera);
-	if (!result)
-		return false;*/
+	result = RenderSceneToDepthMaps(lights);
 
 	result = Render(camera);
 	if (!result)
@@ -431,7 +427,7 @@ bool RenderingSystem::RenderToTexture(Camera* camera)
 bool RenderingSystem::RenderScene(Camera* camera) {
 
 	DirectionalLight* light = NULL;
-	DirectionalLight* lights[4];
+	DirectionalLight* lights[2];
 	int i = 0;
 
 	for (vector<GameObject*>::iterator iter = m_initializedGameObjects.begin(); iter != m_initializedGameObjects.end(); ++iter)
@@ -441,7 +437,7 @@ bool RenderingSystem::RenderScene(Camera* camera) {
 			lights[i] = dynamic_cast<DirectionalLight*>((*iter));
 			i++;
 		}
-			
+
 	}
 
 	// render gameobjects
@@ -475,8 +471,8 @@ bool RenderingSystem::RenderScene(Camera* camera) {
 				/*if (!RenderWithShadows(mesh, renderer->GetTextureIds(), light))
 					return false;*/
 
-				/*if (!RenderWithPointLight(mesh, renderer->GetTextureIds(), lights))
-					return false;*/
+					/*if (!RenderWithPointLight(mesh, renderer->GetTextureIds(), lights))
+						return false;*/
 
 				m_Direct3D->GetWorldMatrix(m_worldMatrix);
 
@@ -519,34 +515,23 @@ bool RenderingSystem::RenderScene(Camera* camera) {
 					/*if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
 						return false;*/
 
-					if (!RenderWithShadows(mesh, renderer->GetTextureIds(), light))
+					if (!RenderWithShadows(mesh, renderer->GetTextureIds(), lights[0], 0))
+						return false;
+
+					if (!RenderWithShadows(mesh, renderer->GetTextureIds(), lights[1], 1))
 						return false;
 
 					/*if (!RenderWithPointLight(mesh, renderer->GetTextureIds(), lights))
 						return false;*/
 
 
-					// Reset world matrix
+						// Reset world matrix
 					m_Direct3D->GetWorldMatrix(m_worldMatrix);
 				}
 
 				break;
 			}
 		}
-
-		//if ((*iter)->GetName() == "InstancedCubeGO")
-		//{
-		//	InstancingMesh* mesh = (*iter)->GetComponent<InstancingMesh>("INSTANCING_MESH");
-		//	if (mesh != NULL)
-		//	{
-		//		// Load buffers and bind to the device context (GPU)
-		//		if (!LoadBuffersAndBind(mesh))
-		//			return false;
-
-		//		if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
-		//			return false;
-		//	}
-		//}
 	}
 
 	return true;
@@ -573,7 +558,7 @@ bool RenderingSystem::RenderDebugWindow(Camera* camera)
 
 	// Render the debug window using the texture shader.
 	result = m_ShaderManager->RenderTextureShader(m_Direct3D->GetDeviceContext(), m_DebugWindow->GetIndexCount(), m_worldMatrix, m_baseViewMatrix,
-		m_orthographicMatrix, m_RenderTexture->GetShaderResourceView());
+		m_orthographicMatrix, m_renderToTextures.at(0)->GetShaderResourceView());
 	if (!result)
 	{
 		return false;
@@ -586,8 +571,8 @@ bool RenderingSystem::RenderDebugWindow(Camera* camera)
 	return true;
 }
 
-bool RenderingSystem::RenderSceneToDepthMap(DirectionalLight* light) {
-
+bool RenderingSystem::RenderSceneToDepthMap(DirectionalLight* light)
+{
 	// Set the render target to be the render to texture.
 	m_RenderTexture->SetRenderTarget(m_Direct3D->GetDeviceContext());
 
@@ -651,20 +636,6 @@ bool RenderingSystem::RenderSceneToDepthMap(DirectionalLight* light) {
 				break;
 			}
 		}
-
-		//if ((*iter)->GetName() == "InstancedCubeGO")
-		//{
-		//	InstancingMesh* mesh = (*iter)->GetComponent<InstancingMesh>("INSTANCING_MESH");
-		//	if (mesh != NULL)
-		//	{
-		//		// Load buffers and bind to the device context (GPU)
-		//		if (!LoadBuffersAndBind(mesh))
-		//			return false;
-
-		//		if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
-		//			return false;
-		//	}
-		//}
 	}
 
 	// Reset the render target back to the original back buffer and not the render to texture anymore.
@@ -676,14 +647,46 @@ bool RenderingSystem::RenderSceneToDepthMap(DirectionalLight* light) {
 	return true;
 }
 
-bool RenderingSystem::RenderWithShadows(Mesh* mesh, vector<string> textureIds, DirectionalLight* light)
+bool RenderingSystem::RenderSceneToDepthMaps(vector<DirectionalLight*> lights)
+{
+	bool result;
+	int i = 0;
+	vector<RenderTexture*> temp_renderTextures;
+
+	for (vector<DirectionalLight*>::iterator iter = lights.begin(); iter != lights.end(); ++iter)
+	{
+		RenderTexture* rt = m_renderToTextures.back();
+		m_renderToTextures.pop_back();
+
+		rt->SetRenderTarget(m_Direct3D->GetDeviceContext());
+		rt->ClearRenderTarget(m_Direct3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
+
+		RenderGameObjectsForShadowMap((*iter));
+
+		// Reset the render target back to the original back buffer and not the render to texture anymore.
+		m_Direct3D->SetBackBufferRenderTarget();
+
+		// Reset the viewport back to the original.
+		m_Direct3D->ResetViewport();
+
+		temp_renderTextures.push_back(rt);
+
+		i++;
+	}
+
+	m_renderToTextures = temp_renderTextures;
+
+	return true;
+}
+
+bool RenderingSystem::RenderWithShadows(Mesh* mesh, vector<string> textureIds, DirectionalLight* light, int id)
 {
 	bool result;
 
 	Transform* transform = light->GetComponent<Transform>("TRANSFORM");
 	Light* lightInfo = light->GetComponent<Light>("LIGHT");
 
-	result = m_ShaderManager->RenderShadowShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH), m_TextureManager->GetTexture(textureIds.at(0)), m_RenderTexture->GetShaderResourceView(), transform->GetPosition(), lightInfo->GetAmbientColor(), lightInfo->GetDiffuseColor());
+	result = m_ShaderManager->RenderShadowShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH), m_TextureManager->GetTexture(textureIds.at(0)), m_renderToTextures.at(id)->GetShaderResourceView(), transform->GetPosition(), lightInfo->GetAmbientColor(), lightInfo->GetDiffuseColor());
 
 	if (!result)
 		return false;
@@ -691,7 +694,7 @@ bool RenderingSystem::RenderWithShadows(Mesh* mesh, vector<string> textureIds, D
 	return true;
 }
 
-bool RenderingSystem::RenderWithPointLight(Mesh* mesh, vector<string>textureIds , DirectionalLight* lights[])
+bool RenderingSystem::RenderWithPointLight(Mesh* mesh, vector<string>textureIds, DirectionalLight* lights[])
 {
 	bool result;
 	XMVECTOR diffuseColor[4];
@@ -711,4 +714,66 @@ bool RenderingSystem::RenderWithPointLight(Mesh* mesh, vector<string>textureIds 
 	}
 
 	return false;
+}
+
+bool RenderingSystem::RenderGameObjectsForShadowMap(DirectionalLight * light)
+{
+	for (vector<GameObject*>::iterator iter = m_initializedGameObjects.begin(); iter != m_initializedGameObjects.end(); ++iter)
+	{
+		XMFLOAT3 position = (*iter)->GetComponent<Transform>("TRANSFORM")->GetPosition();
+		Renderer* renderer = (*iter)->GetComponent<Renderer>("RENDERER");
+		Mesh* mesh = (*iter)->GetComponent<Mesh>();
+
+		if (mesh != NULL) {
+			switch (mesh->GetMeshType())
+			{
+			case MeshType::TERRAIN_MESH:
+
+				// Translate the model to be custom position.
+				m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
+
+				// Turn the Z buffer back and back face culling on.
+				m_Direct3D->TurnZBufferOn();
+				m_Direct3D->TurnOnCulling();
+
+				BindBuffer(mesh);
+
+				/*if (!RenderWithShader(mesh, ShaderType::TERRAIN, renderer->GetTextureIds()))
+				return false;*/
+
+				if (!m_ShaderManager->RenderDepthShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH)))
+					return false;
+
+				m_Direct3D->GetWorldMatrix(m_worldMatrix);
+
+				// Turn the Z buffer back and back face culling off.
+				m_Direct3D->TurnZBufferOn();
+				m_Direct3D->TurnOnCulling();
+				break;
+
+			case MeshType::D3INSTANCE_MESH:
+
+				break;
+
+			default:
+				if (renderer->GetShaderType() != ShaderType::SKYDOME)
+				{
+					// Translate the model to be custom position.
+					m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
+
+					BindBuffer(mesh);
+
+					if (!m_ShaderManager->RenderDepthShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH)))
+						return false;
+
+					// Reset world matrix
+					m_Direct3D->GetWorldMatrix(m_worldMatrix);
+				}
+
+				break;
+			}
+		}
+	}
+
+	return true;
 }

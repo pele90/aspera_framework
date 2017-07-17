@@ -47,15 +47,17 @@ public:
 private:
 	bool Render(Camera*);
 	bool RenderScene(Camera*);
+	bool RenderGameObjectsForShadowMap(DirectionalLight*);
 	bool RenderToTexture(Camera*);
 	bool RenderSceneToDepthMap(DirectionalLight*);
+	bool RenderSceneToDepthMaps(vector<DirectionalLight*>);
 	bool RenderDebugWindow(Camera*);
 	bool LoadBuffersAndBind(Mesh*);
 
 	bool LoadBuffer(Mesh*);
 	bool BindBuffer(Mesh*);
 	bool RenderWithShader(Mesh*, ShaderType, vector<string>);
-	bool RenderWithShadows(Mesh*, vector<string>, DirectionalLight*);
+	bool RenderWithShadows(Mesh*, vector<string>, DirectionalLight*, int);
 	bool RenderWithPointLight(Mesh*, vector<string>, DirectionalLight*[]);
 
 private:
@@ -65,11 +67,11 @@ private:
 	XMMATRIX m_worldMatrix, m_baseViewMatrix, m_viewMatrix, m_projectionMatrix, m_orthographicMatrix;
 	UserInterfaceClass* m_userInterface;
 
-	vector<RenderTexture> renderToTextures;
+	vector<RenderTexture*> m_renderToTextures;
 	RenderTexture* m_RenderTexture;
 	DebugWindow* m_DebugWindow;
 
-	// Initialized meaning their vertex and index buffers are initialized<
+	// Initialized meaning their vertex and index buffers are initialized
 	vector<GameObject*> m_initializedGameObjects;
 	vector<GameObject*> m_uninitializedGameObjects;
 };

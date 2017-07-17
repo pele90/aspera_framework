@@ -85,14 +85,15 @@ bool SceneClass::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 	if (!CreateCube(-1.5f, 0.5f, -3.0f))
 		return false;
 
-	// Create red light
-	if (!CreateLight(-6.0f, 3.0f, 6.0f, XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)))
-		return false;
-
 	// Create white light
 	if (!CreateLight(6.0f, 3.0f, -6.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)))
 		return false;
 
+	// Create red light
+	if (!CreateLight(-6.0f, 10.0f, 6.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)))
+		return false;
+
+	
 
 #pragma endregion
 
