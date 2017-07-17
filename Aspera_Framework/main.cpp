@@ -3,13 +3,8 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
 
-	/*Parser parser;
-	parser.LoadModel("../Rastertek/data/teapot.txt");
-	parser.ReleaseModel();*/
-
 	SystemClass* System;
 	bool result;
-
 
 	// Create the system object.
 	System = new SystemClass;

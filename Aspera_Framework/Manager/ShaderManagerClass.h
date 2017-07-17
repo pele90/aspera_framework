@@ -12,6 +12,8 @@
 #include "../Shaders/TerrainShaderClass.h"
 #include "../Shaders/SkyDomeShaderClass.h"
 #include "../Shaders/TextureShaderInstanced.h"
+#include "../Shaders/DepthShaderClass.h"
+#include "../Shaders/ShadowShaderClass.h"
 
 class ShaderManagerClass
 {
@@ -26,11 +28,15 @@ public:
 	bool RenderColorShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX);
 	bool RenderTextureShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
 	bool RenderLightShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4);
+	bool RenderLightShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMVECTOR[], XMVECTOR[]);
 	bool RenderFontShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMFLOAT4);
 	bool RenderTerrainShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, ID3D11ShaderResourceView*,
 		XMFLOAT3, XMFLOAT4);
 	bool RenderSkyDomeShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT4, XMFLOAT4);
 	bool RenderTextureShaderInstanced(ID3D11DeviceContext*, int, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
+	bool RenderDepthShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX);
+	bool RenderShadowShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, 
+		ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4, XMFLOAT4);
 
 private:
 	ColorShaderClass* m_ColorShader;
@@ -40,6 +46,8 @@ private:
 	TerrainShaderClass* m_TerrainShader;
 	SkyDomeShaderClass* m_SkyDomeShader;
 	TextureShaderInstanced* m_TextureShaderInstanced;
+	DepthShaderClass* m_DepthShader;
+	ShadowShaderClass* m_ShadowShader;
 };
 
 #endif "_SHADERMANAGERCLASS_H_"

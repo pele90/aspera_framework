@@ -16,19 +16,27 @@ public:
 
 	void SetAmbientColor(float, float, float, float);
 	void SetDiffuseColor(float, float, float, float);
-	void SetDirection(float, float, float);
+	void SetLookAt(float, float, float);
 	void SetPosition(float, float, float);
 
 	XMFLOAT4 GetAmbientColor();
 	XMFLOAT4 GetDiffuseColor();
-	XMFLOAT3 GetDirection();
-	XMFLOAT3 GetPosition();
+	XMVECTOR GetLookAt();
+	XMVECTOR GetPosition();
+
+	void GenerateViewMatrix();
+	void GenerateProjectionMatrix(float, float);
+
+	void GetViewMatrix(XMMATRIX&);
+	void GetProjectionMatrix(XMMATRIX&);
 
 private:
 	XMFLOAT4 m_ambientColor;
 	XMFLOAT4 m_diffuseColor;
-	XMFLOAT3 m_direction;
-	XMFLOAT3 m_position;
+	XMVECTOR m_lookAt;
+	XMVECTOR m_position;
+	XMMATRIX m_viewMatrix;
+	XMMATRIX m_projectionMatrix;
 };
 
 #endif

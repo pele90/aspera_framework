@@ -1,28 +1,32 @@
 #ifndef _SCENECLASS_H_
 #define _SCENECLASS_H_
 
+#pragma region INCLUDES
+
 #include <vector>
 #include <algorithm>
 
-#include "D3D/D3DClass.h"
+#include "D3D\D3DClass.h"
 
-#include "BASE/GameObject.h"
-#include "BASE/Prefab.h"
+#include "Base\GameObject.h"
+#include "Base\Prefab.h"
 
-#include "MANAGER/ShaderManagerClass.h"
-#include "MANAGER/TextureManagerClass.h"
+#include "Manager\ShaderManagerClass.h"
+#include "Manager\TextureManagerClass.h"
 
-#include "GAMEOBJECT/Camera.h"
-#include "GAMEOBJECT/Cube.h"
-#include "GAMEOBJECT/InstancedCube.h"
-#include "GAMEOBJECT/Terrain.h"
-#include "GAMEOBJECT/Skydome.h"
+#include "Gameobject\Camera.h"
+#include "Gameobject\Cube.h"
+#include "Gameobject\InstancedCube.h"
+#include "Gameobject\Terrain.h"
+#include "Gameobject\Skydome.h"
+#include "Gameobject\DirectionalLight.h"
 
-#include "SYSTEM/RenderingSystem.h"
-#include "SYSTEM/CameraMovementSystem.h"
+#include "System\RenderingSystem.h"
+#include "System\CameraMovementSystem.h"
 
-#include "MISC/InputClass.h"
+#include "MISC\InputClass.h"
 
+#pragma endregion
 
 using namespace std;
 
@@ -41,6 +45,10 @@ public:
 	void AddGameObject(GameObject*);
 	void RemoveGameObject(GameObject*);
 	void CreateDummyObjects(int);
+	bool CreateSkydome();
+	bool CreateTerrain();
+	bool CreateCube(float, float, float);
+	bool CreateLight(float, float, float, XMFLOAT4);
 
 private:
 	void CreateGameObjects(int);

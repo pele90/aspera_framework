@@ -8,7 +8,7 @@
 
 // INCLUDES //
 #include <d3d11.h>
-#include <directxmath.h>
+#include <DirectXMath.h>
 using namespace DirectX;
 
 class D3DClass
@@ -48,6 +48,7 @@ public:
 
 	ID3D11DepthStencilView* GetDepthStencilView();
 	void SetBackBufferRenderTarget();
+	void ResetViewport();
 
 private:
 	bool m_vsync_enabled;
@@ -70,6 +71,7 @@ private:
 	ID3D11BlendState* m_alphaEnableBlendingState;
 	ID3D11BlendState* m_alphaDisableBlendingState;
 	ID3D11BlendState* m_alphaEnableBlendingState2;
+	D3D11_VIEWPORT m_viewport;
 };
 
 #endif // !_D3DCLASS_H_

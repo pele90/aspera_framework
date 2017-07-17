@@ -2,6 +2,7 @@
 
 SceneClass::SceneClass()
 {
+	m_name = "DEFAULT_SCENE";
 	m_RenderingSystem = 0;
 	m_cameraMovementSystem = 0;
 	m_MainCamera = 0;
@@ -11,6 +12,7 @@ SceneClass::SceneClass(char* name)
 {
 	m_name = name;
 	m_RenderingSystem = 0;
+	m_cameraMovementSystem = 0;
 	m_MainCamera = 0;
 }
 
@@ -63,26 +65,34 @@ bool SceneClass::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 
 	m_GameObjects = vector<GameObject*>();
 
-	Skydome* skydome = new Skydome;
-	if (!skydome)
-		return false;
-	result = skydome->Initialize("../Aspera_Framework/data/skydome/skydome.txt");
+	result = CreateSkydome();
 	if (!result)
 		return false;
-	XMFLOAT3 cameraPosition;
-	cameraPosition = m_MainCamera->GetComponent<Transform>("TRANSFORM")->GetPosition();
-	skydome->GetComponent<Transform>("TRANSFORM")->SetPosition(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-	AddGameObject(skydome);
 
-	Terrain* terrain = new Terrain;
-	terrain->Initialize("../Aspera_Framework/data/terrain/setup.txt");
-	AddGameObject(terrain);
+	/*result = CreateTerrain();
+	if (!result)
+		return false;*/
 
-	/*InstancedCube *cube = new InstancedCube;
-	cube->Initialize("../Rastertek/data/cube.txt");
-	AddGameObject(cube);*/
 
-	CreateGameObjects(5);
+	CreateGameObjects(1);
+
+	if (!CreateCube(3.0f, 0.5f, -1.5f))
+		return false;
+
+	if (!CreateCube(1.0f, 0.5f, 0.0f))
+		return false;
+
+	if (!CreateCube(-1.5f, 0.5f, -3.0f))
+		return false;
+
+	// Create red light
+	if (!CreateLight(-6.0f, 3.0f, 6.0f, XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)))
+		return false;
+
+	// Create white light
+	if (!CreateLight(6.0f, 3.0f, -6.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)))
+		return false;
+
 
 #pragma endregion
 
@@ -128,18 +138,18 @@ void SceneClass::Shutdown()
 
 bool SceneClass::Frame(InputClass* p_input, int p_frameTime, int p_fps)
 {
-	bool result;
+	// Process systems
+
+	bool result = true;
+
+	// System for handling user input such as adding gameobjects or removing them
+	// example: m_UserInputSystem->HandleUserInput(p_input, m_MainCamera); 
 
 	m_cameraMovementSystem->HandleMovementInput(p_input, m_MainCamera, p_frameTime);
 
-	// Process rendering 
 	result = m_RenderingSystem->Frame(m_GameObjects, m_MainCamera, p_fps);
-	if (!result)
-	{
-		return false;
-	}
 
-	return true;
+	return result;
 }
 
 void SceneClass::AddGameObject(GameObject* gameobject)
@@ -171,19 +181,94 @@ void SceneClass::CreateDummyObjects(int count)
 void SceneClass::CreateGameObjects(int count)
 {
 	ModelMesh* mesh = new ModelMesh;
-	mesh->Initialize("../Aspera_Framework/data/models/teapot.txt");
+	mesh->Initialize("../Aspera_Framework/data/models/plane01.txt");
 	Renderer* renderer = new Renderer;
-	vector<string> textureIds = vector<string>{ "dirt01d" };
-	renderer->Initialize(ShaderType::LIGHT, textureIds);
+	vector<string> textureIds = vector<string>{ "stone01d" };
+	renderer->Initialize(ShaderType::TEXTURE, textureIds);
 
-	for (int i = 0; i < count; ++i) {
+	for (int i = 1; i <= count; ++i) {
 		Prefab* monkey = new Prefab;
 		Transform* position = new Transform;
-		position->SetPosition(i * 200.0f, 50.0f, i * 200.0f);
-		//position->SetPosition(512.0f, 50.0f, 512.0f);
+		position->SetPosition(0.0f, 0.0f, 0.0f);
 		monkey->AddComponent(position);
 		monkey->AddComponent(mesh);
 		monkey->AddComponent(renderer);
 		AddGameObject(monkey);
 	}
+}
+
+bool SceneClass::CreateSkydome()
+{
+	bool result;
+
+	Skydome* skydome = new Skydome;
+	if (!skydome)
+		return false;
+	result = skydome->Initialize("../Aspera_Framework/data/skydome/skydome.txt");
+	if (!result)
+		return false;
+	XMFLOAT3 cameraPosition;
+	cameraPosition = m_MainCamera->GetComponent<Transform>("TRANSFORM")->GetPosition();
+	skydome->GetComponent<Transform>("TRANSFORM")->SetPosition(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+	AddGameObject(skydome);
+
+	return true;
+}
+
+bool SceneClass::CreateTerrain()
+{
+	Terrain* terrain = new Terrain;
+	terrain->Initialize("../Aspera_Framework/data/terrain/setup.txt");
+	AddGameObject(terrain);
+
+	return true;
+}
+
+bool SceneClass::CreateCube(float x, float y, float z)
+{
+	bool result;
+
+	Prefab* prefab = new Prefab;
+
+	ModelMesh* mesh = new ModelMesh;
+	result = mesh->Initialize("../Aspera_Framework/data/models/cube.txt");
+	if (!result)
+		return false;
+	prefab->AddComponent(mesh);
+
+	Renderer* renderer = new Renderer;
+	vector<string> textureIds = vector<string>{ "wall" };
+	result = renderer->Initialize(ShaderType::TEXTURE, textureIds);
+	if (!result)
+		return false;
+	prefab->AddComponent(renderer);
+
+
+	Transform* position = new Transform;
+	position->SetPosition(x, y, z);
+	prefab->AddComponent(position);
+
+	AddGameObject(prefab);
+
+	return true;
+
+}
+
+bool SceneClass::CreateLight(float x, float y, float z, XMFLOAT4 color)
+{
+	bool result;
+
+	DirectionalLight* light;
+
+	light = new DirectionalLight;
+	result = light->Initialize();
+	if (!result)
+		return false;
+
+	light->GetComponent<Transform>("TRANSFORM")->SetPosition(x, y, z);
+	light->GetComponent<Light>("LIGHT")->SetDiffuseColor(color);
+	AddGameObject(light);
+
+	return true;
+
 }

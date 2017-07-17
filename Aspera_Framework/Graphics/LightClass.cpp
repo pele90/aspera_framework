@@ -24,15 +24,15 @@ void LightClass::SetDiffuseColor(float red, float green, float blue, float alpha
 	return;
 }
 
-void LightClass::SetDirection(float x, float y, float z)
+void LightClass::SetLookAt(float x, float y, float z)
 {
-	m_direction = XMFLOAT3(x, y, z);
+	m_lookAt = XMVectorSet(x, y, z, 0);
 	return;
 }
 
 void LightClass::SetPosition(float x, float y, float z)
 {
-	m_position = XMFLOAT3(x, y, z);
+	m_position = XMVectorSet(x, y, z, 0);
 	return;
 }
 
@@ -46,12 +46,50 @@ XMFLOAT4 LightClass::GetDiffuseColor()
 	return m_diffuseColor;
 }
 
-XMFLOAT3 LightClass::GetDirection()
+XMVECTOR LightClass::GetLookAt()
 {
-	return m_direction;
+	return m_lookAt;
 }
 
-XMFLOAT3 LightClass::GetPosition()
+XMVECTOR LightClass::GetPosition()
 {
 	return m_position;
+}
+
+void LightClass::GenerateViewMatrix()
+{
+	// Setup the vector that points upwards.
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	// Create the view matrix from the three vectors.
+	m_viewMatrix = XMMatrixLookAtLH(m_position, m_lookAt, up);
+
+	return;
+}
+
+void LightClass::GenerateProjectionMatrix(float screenDepth, float screenNear)
+{
+	float fieldOfView, screenAspect;
+
+
+	// Setup field of view and screen aspect for a square light source.
+	fieldOfView = (float)XM_PI / 2.0f;
+	screenAspect = 1.0f;
+
+	// Create the projection matrix for the light.
+	m_projectionMatrix = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);
+
+	return;
+}
+
+void LightClass::GetViewMatrix(XMMATRIX& viewMatrix)
+{
+	viewMatrix = m_viewMatrix;
+	return;
+}
+
+void LightClass::GetProjectionMatrix(XMMATRIX& projectionMatrix)
+{
+	projectionMatrix = m_projectionMatrix;
+	return;
 }

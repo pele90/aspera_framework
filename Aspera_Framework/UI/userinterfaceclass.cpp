@@ -187,11 +187,11 @@ bool UserInterfaceClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderMa
 	Direct3D->DisableAlphaBlending();
 
 	// Render the mini-map.
-	result = m_miniMap->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix);
+	/*result = m_miniMap->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix);
 	if (!result)
 	{
 		return false;
-	}
+	}*/
 
 	// Turn the Z buffer back on now that the 2D rendering has completed.
 	Direct3D->TurnZBufferOn();

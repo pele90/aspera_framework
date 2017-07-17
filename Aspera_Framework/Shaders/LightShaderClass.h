@@ -1,6 +1,11 @@
 #ifndef _LIGHTSHADERMANAGER_H_
 #define _LIGHTSHADERMANAGER_H_
 
+/////////////
+// GLOBALS //
+/////////////
+const int NUM_LIGHTS = 4;
+
 //////////////
 // INCLUDES //
 //////////////
@@ -28,6 +33,17 @@ private:
 		float padding;
 	};
 
+	struct LightColorBufferType
+	{
+		XMVECTOR diffuseColor[NUM_LIGHTS];
+	};
+
+	struct LightPositionBufferType
+	{
+		XMVECTOR lightPosition[NUM_LIGHTS];
+	};
+
+
 public:
 	LightShaderClass();
 	LightShaderClass(const LightShaderClass&);
@@ -35,6 +51,7 @@ public:
 
 	bool Initialize(ID3D11Device*, HWND);
 	bool Render(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4);
+	bool Render(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMVECTOR[], XMVECTOR[]);
 	void Shutdown();
 
 private:
@@ -43,6 +60,7 @@ private:
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, WCHAR*);
 
 	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4);
+	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMVECTOR[], XMVECTOR[]);
 	void RenderShader(ID3D11DeviceContext*, int);
 
 private:
@@ -52,6 +70,9 @@ private:
 	ID3D11Buffer* m_matrixBuffer;
 	ID3D11SamplerState* m_sampleState;
 	ID3D11Buffer* m_lightBuffer;
+
+	ID3D11Buffer* m_lightColorBuffer;
+	ID3D11Buffer* m_lightPositionBuffer;
 };
 
 #endif // !_LIGHTSHADERMANAGER_H_

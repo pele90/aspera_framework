@@ -4,10 +4,12 @@
 #include "../UI/userinterfaceclass.h"
 #include "../Component/Transform.h"
 #include "../Gameobject/Camera.h"
+#include "..\Gameobject\DirectionalLight.h"
 #include "../Component/ModelMesh.h"
 #include "../Component/InstancingMesh.h"
 #include "../Component/Renderer.h"
 #include "../Component/TerrainMesh.h"
+#include "..\Component\Light.h"
 #include "../MISC/Enums.h"
 #include "../D3D/D3DClass.h"
 #include "../Base/GameObject.h"
@@ -26,6 +28,8 @@ const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 10000.0f;
 const float SCREEN_NEAR = 0.1f;
+const int SHADOWMAP_WIDTH = 2048;
+const int SHADOWMAP_HEIGHT = 2048;
 
 
 class RenderingSystem
@@ -42,13 +46,17 @@ public:
 	
 private:
 	bool Render(Camera*);
+	bool RenderScene(Camera*);
 	bool RenderToTexture(Camera*);
-	bool RenderDebugWindow();
+	bool RenderSceneToDepthMap(DirectionalLight*);
+	bool RenderDebugWindow(Camera*);
 	bool LoadBuffersAndBind(Mesh*);
 
 	bool LoadBuffer(Mesh*);
 	bool BindBuffer(Mesh*);
 	bool RenderWithShader(Mesh*, ShaderType, vector<string>);
+	bool RenderWithShadows(Mesh*, vector<string>, DirectionalLight*);
+	bool RenderWithPointLight(Mesh*, vector<string>, DirectionalLight*[]);
 
 private:
 	D3DClass* m_Direct3D;
@@ -57,9 +65,11 @@ private:
 	XMMATRIX m_worldMatrix, m_baseViewMatrix, m_viewMatrix, m_projectionMatrix, m_orthographicMatrix;
 	UserInterfaceClass* m_userInterface;
 
+	vector<RenderTexture> renderToTextures;
 	RenderTexture* m_RenderTexture;
 	DebugWindow* m_DebugWindow;
 
+	// Initialized meaning their vertex and index buffers are initialized<
 	vector<GameObject*> m_initializedGameObjects;
 	vector<GameObject*> m_uninitializedGameObjects;
 };

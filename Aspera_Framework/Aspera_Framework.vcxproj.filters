@@ -204,11 +204,23 @@
     <ClInclude Include="Graphics\TextClass.h">
       <Filter>Header Files\GRAPHICS</Filter>
     </ClInclude>
-    <ClInclude Include="RenderTexture.h">
+    <ClInclude Include="Graphics\DebugWindow.h">
       <Filter>Header Files\GRAPHICS</Filter>
     </ClInclude>
-    <ClInclude Include="DebugWindow.h">
+    <ClInclude Include="Graphics\RenderTexture.h">
       <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\DepthShaderClass.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\ShadowShaderClass.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Light.h">
+      <Filter>Header Files\COMPONENT</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameobject\DirectionalLight.h">
+      <Filter>Header Files\GAMEOBJECT</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -332,11 +344,23 @@
     <ClCompile Include="SceneClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugWindow.cpp">
+    <ClCompile Include="Graphics\DebugWindow.cpp">
       <Filter>Source Files\GRAPHICS</Filter>
     </ClCompile>
-    <ClCompile Include="RenderTexture.cpp">
+    <ClCompile Include="Graphics\RenderTexture.cpp">
       <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\DepthShaderClass.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\ShadowShaderClass.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Light.cpp">
+      <Filter>Source Files\COMPONENT</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameobject\DirectionalLight.cpp">
+      <Filter>Source Files\GAMEOBJECT</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -389,6 +413,18 @@
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
     <None Include="Shaders\shaders\textureInstanced.vs">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\shaders\depth.ps">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\shaders\depth.vs">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\shaders\shadow.ps">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\shaders\shadow.vs">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
   </ItemGroup>

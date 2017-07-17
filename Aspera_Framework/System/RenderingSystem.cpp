@@ -75,6 +75,12 @@ bool RenderingSystem::Initialize(HWND hwnd, int screenWidth, int screenHeight, v
 	}*/
 
 	// Load textures into the texture manager.
+	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "../Aspera_Framework/data/textures/tga/stone01.tga", "stone01d");
+	if (!result)
+	{
+		return false;
+	}
+
 	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), "../Aspera_Framework/data/textures/tga/dirt01d.tga", "dirt01d");
 	if (!result)
 	{
@@ -123,7 +129,7 @@ bool RenderingSystem::Initialize(HWND hwnd, int screenWidth, int screenHeight, v
 	}
 
 	// Initialize the render to texture object.
-	result = m_RenderTexture->Initialize(m_Direct3D->GetDevice(), screenWidth, screenHeight);
+	result = m_RenderTexture->Initialize(m_Direct3D->GetDevice(), SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, SCREEN_DEPTH, SCREEN_NEAR);
 	if (!result)
 	{
 		return false;
@@ -177,6 +183,8 @@ bool RenderingSystem::InitializeGameObjects()
 			result = go->GetComponent<TerrainMesh>("TERRAIN_MESH")->InitializeBuffers(m_Direct3D->GetDevice());
 			m_initializedGameObjects.push_back(go);
 		}
+		else if (go->GetName() == "DIRECTIONAL_LIGHT")
+			m_initializedGameObjects.push_back(go);
 	}
 
 	m_uninitializedGameObjects.clear();
@@ -238,6 +246,8 @@ void RenderingSystem::Shutdown()
 bool RenderingSystem::Frame(vector<GameObject*> gameobjects, Camera* camera, int p_fps)
 {
 	bool result;
+	vector<DirectionalLight*> lights;
+	DirectionalLight* directionalLight = NULL;
 
 	camera->RenderViewMatrix();
 
@@ -250,19 +260,31 @@ bool RenderingSystem::Frame(vector<GameObject*> gameobjects, Camera* camera, int
 	Transform* cameraTransform = camera->GetComponent<Transform>("TRANSFORM");
 
 	for (auto go : gameobjects) {
-		if(go->GetName() == "SkydomeGO")
+		if (go->GetName() == "SkydomeGO")
 			go->GetComponent<Transform>("TRANSFORM")->SetTransform(*cameraTransform);
+		else if (go->GetName() == "DIRECTIONAL_LIGHT") 
+		{
+			/*directionalLight = dynamic_cast<DirectionalLight*>(go);*/
+			lights.push_back(dynamic_cast<DirectionalLight*>(go));
+		}
+			
 	}
 
 	// process user interface frame
-	m_userInterface->Frame(m_Direct3D->GetDeviceContext(), p_fps, cameraTransform->GetPosition());
+	result = m_userInterface->Frame(m_Direct3D->GetDeviceContext(), p_fps, cameraTransform->GetPosition());
+	if (!result)
+		return false;
+
+	for (vector<DirectionalLight*>::iterator iter = lights.begin(); iter != lights.end(); ++iter)
+	{
+		// Need to create n "render to texture" textures
+		result = RenderSceneToDepthMap((*iter));
+	}
 
 	// Render the entire scene to the texture first.
-	result = RenderToTexture(camera);
+	/*result = RenderToTexture(camera);
 	if (!result)
-	{
-		return false;
-	}
+		return false;*/
 
 	result = Render(camera);
 	if (!result)
@@ -278,123 +300,19 @@ bool RenderingSystem::Render(Camera* camera)
 	// Clear the buffers to begin the scene.
 	m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-	// render gameobjects
-	for (vector<GameObject*>::iterator iter = m_initializedGameObjects.begin(); iter != m_initializedGameObjects.end(); ++iter)
-	{
-		XMFLOAT3 position = (*iter)->GetComponent<Transform>("TRANSFORM")->GetPosition();
-		Renderer* renderer = (*iter)->GetComponent<Renderer>("RENDERER");
-		Mesh* mesh = (*iter)->GetComponent<Mesh>();
+	result = RenderScene(camera);
 
-		switch (mesh->GetMeshType())
-		{
-		case MeshType::TERRAIN_MESH:
-
-			// Translate the model to be custom position.
-			m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
-
-			// Turn the Z buffer back and back face culling on.
-			m_Direct3D->TurnZBufferOn();
-			m_Direct3D->TurnOnCulling();
-
-			BindBuffer(mesh);
-
-			if (!RenderWithShader(mesh, ShaderType::TERRAIN, renderer->GetTextureIds()))
-				return false;
-
-			// render with normal map texture
-			if (!RenderWithShader(mesh, ShaderType::TEXTURE, renderer->GetTextureIds()))
-				return false;
-
-			m_Direct3D->GetWorldMatrix(m_worldMatrix);
-
-			// Turn the Z buffer back and back face culling off.
-			m_Direct3D->TurnZBufferOn();
-			m_Direct3D->TurnOnCulling();
-			break;
-		case MeshType::D3INSTANCE_MESH:
-
-			break;
-		default:
-
-			if (renderer->GetShaderType() == ShaderType::SKYDOME)
-			{
-				// Turn off back face culling and turn off the Z buffer if skybox.
-				m_Direct3D->TurnOffCulling();
-				m_Direct3D->TurnZBufferOff();
-			}
-
-			// Translate the model to be custom position.
-			m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
-
-			BindBuffer(mesh);
-
-			if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
-				return false;
-
-			// Reset world matrix
-			m_Direct3D->GetWorldMatrix(m_worldMatrix);
-
-			if (renderer->GetShaderType() == ShaderType::SKYDOME)
-			{
-				// Turn the Z buffer back and back face culling off.
-				m_Direct3D->TurnZBufferOn();
-				m_Direct3D->TurnOnCulling();
-			}
-
-			break;
-		}
-
-		if ((*iter)->GetName() == "InstancedCubeGO")
-		{
-			InstancingMesh* mesh = (*iter)->GetComponent<InstancingMesh>("INSTANCING_MESH");
-			if (mesh != NULL)
-			{
-				// Load buffers and bind to the device context (GPU)
-				if (!LoadBuffersAndBind(mesh))
-					return false;
-
-				if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
-					return false;
-			}
-		}
-	}
+	result = RenderDebugWindow(camera);
 
 	// render user interface
 	result = m_userInterface->Render(m_Direct3D, m_ShaderManager, m_worldMatrix, m_baseViewMatrix, m_orthographicMatrix);
 	if (!result)
 		return false;
 
-	//// Turn off the Z buffer to begin all 2D rendering.
-	//m_D3D->TurnZBufferOff();
-
-	//// Get the world, view, and ortho matrices from the camera and d3d objects.
-	//m_D3D->GetWorldMatrix(worldMatrix);
-	//m_Camera->GetViewMatrix(viewMatrix);
-	//m_D3D->GetOrthoMatrix(orthoMatrix);
-
-	//// Put the debug window vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	//result = m_DebugWindow->Render(m_D3D - GetDeviceContext(), 50, 50);
-	//if (!result)
-	//{
-	//	return false;
-	//}
-
-	//// Render the debug window using the texture shader.
-	//result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_DebugWindow->GetIndexCount(), worldMatrix, viewMatrix,
-	//	orthoMatrix, m_RenderTexture->GetShaderResourceView());
-	//if (!result)
-	//{
-	//	return false;
-	//}
-
-
-	// Turn the Z buffer back on now that all 2D rendering has completed.
-	m_D3D->TurnZBufferOn();
-
 	// Present the rendered scene to the screen.
 	m_Direct3D->EndScene();
 
-	return true;
+	return result;
 }
 
 bool RenderingSystem::LoadBuffersAndBind(Mesh* mesh)
@@ -413,7 +331,7 @@ bool RenderingSystem::LoadBuffersAndBind(Mesh* mesh)
 bool RenderingSystem::RenderWithShader(Mesh* mesh, ShaderType shaderType, vector<string> textureIds)
 {
 	bool result;
-	XMFLOAT3 lightDirection = XMFLOAT3(-1.0f, -1.0f, 0.0f);
+	XMFLOAT3 lightDirection = XMFLOAT3(-1.0f, 0.0f, 0.0f);
 	XMFLOAT4 diffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	switch (shaderType)
@@ -489,14 +407,14 @@ bool RenderingSystem::RenderToTexture(Camera* camera)
 	bool result;
 
 	// Set the render target to be the render to texture.
-	m_RenderTexture->SetRenderTarget(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDepthStencilView());
+	m_RenderTexture->SetRenderTarget(m_Direct3D->GetDeviceContext());
 
-// Clear the render to texture.
-	m_RenderTexture->ClearRenderTarget(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDepthStencilView(), 0.0f, 0.0f, 1.0f, 1.0f);
+	// Clear the render to texture.
+	m_RenderTexture->ClearRenderTarget(m_Direct3D->GetDeviceContext(), 0.0f, 0.0f, 1.0f, 1.0f);
 
 	// Render the scene now and it will draw to the render to texture instead of the back buffer.
-	result = Render(camera);
-	if(!result)
+	result = RenderScene(camera);
+	if (!result)
 	{
 		return false;
 	}
@@ -504,10 +422,293 @@ bool RenderingSystem::RenderToTexture(Camera* camera)
 	// Reset the render target back to the original back buffer and not the render to texture anymore.
 	m_Direct3D->SetBackBufferRenderTarget();
 
-	return;
+	// Reset the viewport back to the original.
+	m_Direct3D->ResetViewport();
+
+	return true;
 }
 
-bool RenderingSystem::RenderDebugWindow()
+bool RenderingSystem::RenderScene(Camera* camera) {
+
+	DirectionalLight* light = NULL;
+	DirectionalLight* lights[4];
+	int i = 0;
+
+	for (vector<GameObject*>::iterator iter = m_initializedGameObjects.begin(); iter != m_initializedGameObjects.end(); ++iter)
+	{
+		if ((*iter)->GetName() == "DIRECTIONAL_LIGHT") {
+			light = dynamic_cast<DirectionalLight*>((*iter));
+			lights[i] = dynamic_cast<DirectionalLight*>((*iter));
+			i++;
+		}
+			
+	}
+
+	// render gameobjects
+	for (vector<GameObject*>::iterator iter = m_initializedGameObjects.begin(); iter != m_initializedGameObjects.end(); ++iter)
+	{
+		XMFLOAT3 position = (*iter)->GetComponent<Transform>("TRANSFORM")->GetPosition();
+		Renderer* renderer = (*iter)->GetComponent<Renderer>("RENDERER");
+		Mesh* mesh = (*iter)->GetComponent<Mesh>();
+
+		if (mesh != NULL) {
+			switch (mesh->GetMeshType())
+			{
+			case MeshType::TERRAIN_MESH:
+
+				// Translate the model to be custom position.
+				m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
+
+				// Turn the Z buffer back and back face culling on.
+				m_Direct3D->TurnZBufferOn();
+				m_Direct3D->TurnOnCulling();
+
+				BindBuffer(mesh);
+
+				if (!RenderWithShader(mesh, ShaderType::TERRAIN, renderer->GetTextureIds()))
+					return false;
+
+				// render with normal map texture
+				if (!RenderWithShader(mesh, ShaderType::LIGHT, renderer->GetTextureIds()))
+					return false;
+
+				/*if (!RenderWithShadows(mesh, renderer->GetTextureIds(), light))
+					return false;*/
+
+				/*if (!RenderWithPointLight(mesh, renderer->GetTextureIds(), lights))
+					return false;*/
+
+				m_Direct3D->GetWorldMatrix(m_worldMatrix);
+
+				// Turn the Z buffer back and back face culling off.
+				m_Direct3D->TurnZBufferOn();
+				m_Direct3D->TurnOnCulling();
+				break;
+			case MeshType::D3INSTANCE_MESH:
+
+				break;
+			default:
+
+				if (renderer->GetShaderType() == ShaderType::SKYDOME)
+				{
+					// Turn off back face culling and turn off the Z buffer if skybox.
+					m_Direct3D->TurnOffCulling();
+					m_Direct3D->TurnZBufferOff();
+
+					// Translate the model to be custom position.
+					m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
+
+					BindBuffer(mesh);
+
+					if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
+						return false;
+
+					// Reset world matrix
+					m_Direct3D->GetWorldMatrix(m_worldMatrix);
+
+					// Turn the Z buffer back and back face culling off.
+					m_Direct3D->TurnZBufferOn();
+					m_Direct3D->TurnOnCulling();
+				}
+				else {
+					// Translate the model to be custom position.
+					m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
+
+					BindBuffer(mesh);
+
+					/*if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
+						return false;*/
+
+					if (!RenderWithShadows(mesh, renderer->GetTextureIds(), light))
+						return false;
+
+					/*if (!RenderWithPointLight(mesh, renderer->GetTextureIds(), lights))
+						return false;*/
+
+
+					// Reset world matrix
+					m_Direct3D->GetWorldMatrix(m_worldMatrix);
+				}
+
+				break;
+			}
+		}
+
+		//if ((*iter)->GetName() == "InstancedCubeGO")
+		//{
+		//	InstancingMesh* mesh = (*iter)->GetComponent<InstancingMesh>("INSTANCING_MESH");
+		//	if (mesh != NULL)
+		//	{
+		//		// Load buffers and bind to the device context (GPU)
+		//		if (!LoadBuffersAndBind(mesh))
+		//			return false;
+
+		//		if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
+		//			return false;
+		//	}
+		//}
+	}
+
+	return true;
+}
+
+bool RenderingSystem::RenderDebugWindow(Camera* camera)
 {
+	bool result;
+
+	// Turn off the Z buffer to begin all 2D rendering.
+	m_Direct3D->TurnZBufferOff();
+
+	// Get the world, view, and ortho matrices from the camera and d3d objects.
+	m_Direct3D->GetWorldMatrix(m_worldMatrix);
+	camera->GetViewMatrix(m_viewMatrix);
+	m_Direct3D->GetOrthoMatrix(m_orthographicMatrix);
+
+	// Put the debug window vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	result = m_DebugWindow->Render(m_Direct3D->GetDeviceContext(), 690, 10);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Render the debug window using the texture shader.
+	result = m_ShaderManager->RenderTextureShader(m_Direct3D->GetDeviceContext(), m_DebugWindow->GetIndexCount(), m_worldMatrix, m_baseViewMatrix,
+		m_orthographicMatrix, m_RenderTexture->GetShaderResourceView());
+	if (!result)
+	{
+		return false;
+	}
+
+
+	// Turn the Z buffer back on now that all 2D rendering has completed.
+	m_Direct3D->TurnZBufferOn();
+
+	return true;
+}
+
+bool RenderingSystem::RenderSceneToDepthMap(DirectionalLight* light) {
+
+	// Set the render target to be the render to texture.
+	m_RenderTexture->SetRenderTarget(m_Direct3D->GetDeviceContext());
+
+	// Clear the render to texture.
+	m_RenderTexture->ClearRenderTarget(m_Direct3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
+
+	// render gameobjects to depth map (shadow map)
+	for (vector<GameObject*>::iterator iter = m_initializedGameObjects.begin(); iter != m_initializedGameObjects.end(); ++iter)
+	{
+		XMFLOAT3 position = (*iter)->GetComponent<Transform>("TRANSFORM")->GetPosition();
+		Renderer* renderer = (*iter)->GetComponent<Renderer>("RENDERER");
+		Mesh* mesh = (*iter)->GetComponent<Mesh>();
+
+		if (mesh != NULL) {
+			switch (mesh->GetMeshType())
+			{
+			case MeshType::TERRAIN_MESH:
+
+				// Translate the model to be custom position.
+				m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
+
+				// Turn the Z buffer back and back face culling on.
+				m_Direct3D->TurnZBufferOn();
+				m_Direct3D->TurnOnCulling();
+
+				BindBuffer(mesh);
+
+				/*if (!RenderWithShader(mesh, ShaderType::TERRAIN, renderer->GetTextureIds()))
+				return false;*/
+
+				if (!m_ShaderManager->RenderDepthShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH)))
+					return false;
+
+				m_Direct3D->GetWorldMatrix(m_worldMatrix);
+
+				// Turn the Z buffer back and back face culling off.
+				m_Direct3D->TurnZBufferOn();
+				m_Direct3D->TurnOnCulling();
+				break;
+
+			case MeshType::D3INSTANCE_MESH:
+
+				break;
+
+			default:
+
+				if (renderer->GetShaderType() != ShaderType::SKYDOME)
+				{
+					// Translate the model to be custom position.
+					m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
+
+					BindBuffer(mesh);
+
+					if (!m_ShaderManager->RenderDepthShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH)))
+						return false;
+
+					// Reset world matrix
+					m_Direct3D->GetWorldMatrix(m_worldMatrix);
+				}
+
+				break;
+			}
+		}
+
+		//if ((*iter)->GetName() == "InstancedCubeGO")
+		//{
+		//	InstancingMesh* mesh = (*iter)->GetComponent<InstancingMesh>("INSTANCING_MESH");
+		//	if (mesh != NULL)
+		//	{
+		//		// Load buffers and bind to the device context (GPU)
+		//		if (!LoadBuffersAndBind(mesh))
+		//			return false;
+
+		//		if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
+		//			return false;
+		//	}
+		//}
+	}
+
+	// Reset the render target back to the original back buffer and not the render to texture anymore.
+	m_Direct3D->SetBackBufferRenderTarget();
+
+	// Reset the viewport back to the original.
+	m_Direct3D->ResetViewport();
+
+	return true;
+}
+
+bool RenderingSystem::RenderWithShadows(Mesh* mesh, vector<string> textureIds, DirectionalLight* light)
+{
+	bool result;
+
+	Transform* transform = light->GetComponent<Transform>("TRANSFORM");
+	Light* lightInfo = light->GetComponent<Light>("LIGHT");
+
+	result = m_ShaderManager->RenderShadowShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH), m_TextureManager->GetTexture(textureIds.at(0)), m_RenderTexture->GetShaderResourceView(), transform->GetPosition(), lightInfo->GetAmbientColor(), lightInfo->GetDiffuseColor());
+
+	if (!result)
+		return false;
+
+	return true;
+}
+
+bool RenderingSystem::RenderWithPointLight(Mesh* mesh, vector<string>textureIds , DirectionalLight* lights[])
+{
+	bool result;
+	XMVECTOR diffuseColor[4];
+	XMVECTOR lightPosition[4];
+
+	for (int i = 0; i < 4; i++) {
+		diffuseColor[i] = XMLoadFloat4(&(lights[i]->GetComponent<Light>("LIGHT")->GetDiffuseColor()));
+		lightPosition[i] = XMLoadFloat3(&(lights[i]->GetComponent<Transform>("TRANSFORM")->GetPosition()));
+	}
+
+	// Render the model using the light shader and the light arrays.
+	result = m_ShaderManager->RenderLightShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix,
+		m_TextureManager->GetTexture(textureIds.at(0)), diffuseColor, lightPosition);
+	if (!result)
+	{
+		return false;
+	}
+
 	return false;
 }
