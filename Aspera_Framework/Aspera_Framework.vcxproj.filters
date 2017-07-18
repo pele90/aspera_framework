@@ -222,6 +222,9 @@
     <ClInclude Include="Gameobject\DirectionalLight.h">
       <Filter>Header Files\GAMEOBJECT</Filter>
     </ClInclude>
+    <ClInclude Include="Shaders\MultipleShadowShader.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App\SystemClass.cpp">
@@ -362,6 +365,9 @@
     <ClCompile Include="Gameobject\DirectionalLight.cpp">
       <Filter>Source Files\GAMEOBJECT</Filter>
     </ClCompile>
+    <ClCompile Include="Shaders\MultipleShadowShader.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\shaders\bumpmap.ps">
@@ -425,6 +431,12 @@
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
     <None Include="Shaders\shaders\shadow.vs">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\shaders\multipleShadow.ps">
+      <Filter>Header Files\SHADERS\shaders</Filter>
+    </None>
+    <None Include="Shaders\shaders\multipleShadow.vs">
       <Filter>Header Files\SHADERS\shaders</Filter>
     </None>
   </ItemGroup>

@@ -148,6 +148,7 @@
     <ClInclude Include="Shaders\DepthShaderClass.h" />
     <ClInclude Include="Shaders\FontShaderClass.h" />
     <ClInclude Include="Shaders\LightShaderClass.h" />
+    <ClInclude Include="Shaders\MultipleShadowShader.h" />
     <ClInclude Include="Shaders\ShadowShaderClass.h" />
     <ClInclude Include="Shaders\SkyDomeShaderClass.h" />
     <ClInclude Include="Shaders\TerrainShaderClass.h" />
@@ -193,6 +194,7 @@
     <ClCompile Include="Shaders\DepthShaderClass.cpp" />
     <ClCompile Include="Shaders\FontShaderClass.cpp" />
     <ClCompile Include="Shaders\LightShaderClass.cpp" />
+    <ClCompile Include="Shaders\MultipleShadowShader.cpp" />
     <ClCompile Include="Shaders\ShadowShaderClass.cpp" />
     <ClCompile Include="Shaders\SkyDomeShaderClass.cpp" />
     <ClCompile Include="Shaders\TerrainShaderClass.cpp" />
@@ -216,6 +218,8 @@
     <None Include="Shaders\shaders\font.vs" />
     <None Include="Shaders\shaders\light.ps" />
     <None Include="Shaders\shaders\light.vs" />
+    <None Include="Shaders\shaders\multipleShadow.ps" />
+    <None Include="Shaders\shaders\multipleShadow.vs" />
     <None Include="Shaders\shaders\multitexture.ps" />
     <None Include="Shaders\shaders\multitexture.vs" />
     <None Include="Shaders\shaders\shadow.ps" />

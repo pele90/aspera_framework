@@ -1,6 +1,6 @@
-#include "ShadowShaderClass.h"
+#include "MultipleShadowShader.h"
 
-ShadowShaderClass::ShadowShaderClass()
+MultipleShadowShader::MultipleShadowShader()
 {
 	m_vertexShader = 0;
 	m_pixelShader = 0;
@@ -9,19 +9,18 @@ ShadowShaderClass::ShadowShaderClass()
 	m_sampleStateClamp = 0;
 	m_matrixBuffer = 0;
 	m_lightBuffer = 0;
-	m_lightBuffer2 = 0;
 }
 
-ShadowShaderClass::ShadowShaderClass(const ShadowShaderClass& other) {}
+MultipleShadowShader::MultipleShadowShader(const MultipleShadowShader &){}
 
-ShadowShaderClass::~ShadowShaderClass() {}
+MultipleShadowShader::~MultipleShadowShader(){}
 
-bool ShadowShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool MultipleShadowShader::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"../Aspera_Framework/Shaders/shaders/shadow.vs", L"../Aspera_Framework/Shaders/shaders/shadow.ps");
+	result = InitializeShader(device, hwnd, L"../Aspera_Framework/Shaders/shaders/multipleShadow.vs", L"../Aspera_Framework/Shaders/shaders/multipleShadow.ps");
 	if (!result)
 	{
 		return false;
@@ -30,7 +29,7 @@ bool ShadowShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 	return true;
 }
 
-void ShadowShaderClass::Shutdown()
+void MultipleShadowShader::Shutdown()
 {
 	// Shutdown the vertex and pixel shaders as well as the related objects.
 	ShutdownShader();
@@ -38,15 +37,12 @@ void ShadowShaderClass::Shutdown()
 	return;
 }
 
-bool ShadowShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix, XMMATRIX lightProjectionMatrix,
-	ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightPosition,
-	XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
+bool MultipleShadowShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix[], XMMATRIX lightProjectionMatrix[], ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture[], DirectionalLight* lights[])
 {
 	bool result;
 
 	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture, depthMapTexture, lightPosition, ambientColor, diffuseColor);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture, depthMapTexture, lights);
 	if (!result)
 	{
 		return false;
@@ -58,7 +54,7 @@ bool ShadowShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCoun
 	return true;
 }
 
-bool ShadowShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
+bool MultipleShadowShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -69,8 +65,6 @@ bool ShadowShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR*
 	D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_BUFFER_DESC lightBufferDesc;
-
-	D3D11_BUFFER_DESC lightBufferDesc2;
 
 	// Initialize the pointers this function will use to null.
 	errorMessage = 0;
@@ -236,37 +230,16 @@ bool ShadowShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR*
 		return false;
 	}
 
-	// Setup the description of the light dynamic constant buffer that is in the vertex shader.
-	lightBufferDesc2.Usage = D3D11_USAGE_DYNAMIC;
-	lightBufferDesc2.ByteWidth = sizeof(LightBufferType2);
-	lightBufferDesc2.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	lightBufferDesc2.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	lightBufferDesc2.MiscFlags = 0;
-	lightBufferDesc2.StructureByteStride = 0;
-
-	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-	result = device->CreateBuffer(&lightBufferDesc2, NULL, &m_lightBuffer2);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
 	return true;
 }
 
-void ShadowShaderClass::ShutdownShader()
+void MultipleShadowShader::ShutdownShader()
 {
 	// Release the light constant buffers.
 	if (m_lightBuffer)
 	{
 		m_lightBuffer->Release();
 		m_lightBuffer = 0;
-	}
-
-	if (m_lightBuffer2)
-	{
-		m_lightBuffer2->Release();
-		m_lightBuffer2 = 0;
 	}
 
 	// Release the matrix constant buffer.
@@ -313,7 +286,7 @@ void ShadowShaderClass::ShutdownShader()
 	return;
 }
 
-void ShadowShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
+void MultipleShadowShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long bufferSize, i;
@@ -348,25 +321,24 @@ void ShadowShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND 
 	return;
 }
 
-bool ShadowShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix, XMMATRIX lightProjectionMatrix,
-	ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightPosition,
-	XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
+bool MultipleShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix[], XMMATRIX lightProjectionMatrix[], ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture[], DirectionalLight* lights[])
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	unsigned int bufferNumber;
 	MatrixBufferType* dataPtr;
 	LightBufferType* dataPtr2;
-	LightBufferType2* dataPtr3;
-
 
 	// Transpose the matrices to prepare them for the shader.
 	worldMatrix = XMMatrixTranspose(worldMatrix);
 	viewMatrix = XMMatrixTranspose(viewMatrix);
-	projectionMatrix= XMMatrixTranspose(projectionMatrix);
-	lightViewMatrix = XMMatrixTranspose(lightViewMatrix);
-	lightProjectionMatrix = XMMatrixTranspose(lightProjectionMatrix);
+	projectionMatrix = XMMatrixTranspose(projectionMatrix);
+
+	for (int i = 0; i < 2; i++)
+	{
+		lightViewMatrix[i] = XMMatrixTranspose(lightViewMatrix[i]);
+		lightProjectionMatrix[i] = XMMatrixTranspose(lightProjectionMatrix[i]);
+	}
 
 	// Lock the constant buffer so it can be written to.
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -382,8 +354,12 @@ bool ShadowShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, 
 	dataPtr->world = worldMatrix;
 	dataPtr->view = viewMatrix;
 	dataPtr->projection = projectionMatrix;
-	dataPtr->lightView = lightViewMatrix;
-	dataPtr->lightProjection = lightProjectionMatrix;
+
+	for (int i = 0; i < 2; i++)
+	{
+		dataPtr->lightView[i] = lightViewMatrix[i];
+		dataPtr->lightProjection[i] = lightProjectionMatrix[i];
+	}
 
 	// Unlock the constant buffer.
 	deviceContext->Unmap(m_matrixBuffer, 0);
@@ -397,7 +373,9 @@ bool ShadowShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, 
 	// Set shader texture resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 
-	deviceContext->PSSetShaderResources(1, 1, &depthMapTexture);
+	deviceContext->PSSetShaderResources(1, 2, depthMapTexture);
+
+//####################################################################################################################//
 
 	// Lock the light constant buffer so it can be written to.
 	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -410,8 +388,15 @@ bool ShadowShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, 
 	dataPtr2 = (LightBufferType*)mappedResource.pData;
 
 	// Copy the lighting variables into the constant buffer.
-	dataPtr2->ambientColor = ambientColor;
-	dataPtr2->diffuseColor = diffuseColor;
+	for (int i = 0; i < 2; i++)
+	{
+		Transform* transform = lights[i]->GetComponent<Transform>("TRANSFORM");
+		Light* light = lights[i]->GetComponent<Light>("LIGHT");
+
+		dataPtr2->lights[i].ambientColor = light->GetAmbientColor();
+		dataPtr2->lights[i].diffuseColor = light->GetDiffuseColor();
+		dataPtr2->lights[i].lightPosition = transform->GetPosition();
+	}
 
 	// Unlock the constant buffer.
 	deviceContext->Unmap(m_lightBuffer, 0);
@@ -422,33 +407,10 @@ bool ShadowShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, 
 	// Finally set the light constant buffer in the pixel shader with the updated values.
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
 
-	// Lock the second light constant buffer so it can be written to.
-	result = deviceContext->Map(m_lightBuffer2, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Get a pointer to the data in the constant buffer.
-	dataPtr3 = (LightBufferType2*)mappedResource.pData;
-
-	// Copy the lighting variables into the constant buffer.
-	dataPtr3->lightPosition = lightPosition;
-	dataPtr3->padding = 0.0f;
-
-	// Unlock the constant buffer.
-	deviceContext->Unmap(m_lightBuffer2, 0);
-
-	// Set the position of the light constant buffer in the vertex shader.
-	bufferNumber = 1;
-
-	// Finally set the light constant buffer in the pixel shader with the updated values.
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer2);
-
 	return true;
 }
 
-void ShadowShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+void MultipleShadowShader::RenderShader(ID3D11DeviceContext *deviceContext, int indexCount)
 {
 	// Set the vertex input layout.
 	deviceContext->IASetInputLayout(m_layout);

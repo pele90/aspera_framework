@@ -11,6 +11,7 @@ ShaderManagerClass::ShaderManagerClass()
 	m_TextureShaderInstanced = 0;
 	m_DepthShader = 0;
 	m_ShadowShader = 0;
+	m_MultipleShadowShader = 0;
 }
 
 ShaderManagerClass::ShaderManagerClass(const ShaderManagerClass& other)
@@ -151,6 +152,20 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
+	// Create the multiple shadow shader object.
+	m_MultipleShadowShader = new MultipleShadowShader;
+	if (!m_ShadowShader)
+	{
+		return false;
+	}
+
+	// Initialize the multiple shadow shader object.
+	result = m_MultipleShadowShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -228,6 +243,14 @@ void ShaderManagerClass::Shutdown()
 		m_ShadowShader = 0;
 	}
 
+	// Release the multiple shadow shader object.
+	if (m_MultipleShadowShader)
+	{
+		m_MultipleShadowShader->Shutdown();
+		delete m_MultipleShadowShader;
+		m_MultipleShadowShader = 0;
+	}
+
 	return;
 }
 
@@ -291,4 +314,9 @@ bool ShaderManagerClass::RenderShadowShader(ID3D11DeviceContext* deviceContext, 
 	XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
 {
 	return m_ShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture, depthMapTexture, lightPosition, ambientColor, diffuseColor);
+}
+
+bool ShaderManagerClass::RenderMultipleShadowShader(ID3D11DeviceContext * deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix[], XMMATRIX lightProjectionMatrix[], ID3D11ShaderResourceView * texture, ID3D11ShaderResourceView * depthMapTexture[], DirectionalLight * lights[])
+{
+	return m_MultipleShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture, depthMapTexture, lights);
 }

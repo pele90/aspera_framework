@@ -14,6 +14,8 @@
 #include "../Shaders/TextureShaderInstanced.h"
 #include "../Shaders/DepthShaderClass.h"
 #include "../Shaders/ShadowShaderClass.h"
+#include "../Shaders/MultipleShadowShader.h"
+#include "../Gameobject/DirectionalLight.h"
 
 class ShaderManagerClass
 {
@@ -37,6 +39,7 @@ public:
 	bool RenderDepthShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX);
 	bool RenderShadowShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, 
 		ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4, XMFLOAT4);
+	bool RenderMultipleShadowShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMMATRIX[], XMMATRIX[], ID3D11ShaderResourceView* , ID3D11ShaderResourceView*[], DirectionalLight*[]);
 
 private:
 	ColorShaderClass* m_ColorShader;
@@ -48,6 +51,7 @@ private:
 	TextureShaderInstanced* m_TextureShaderInstanced;
 	DepthShaderClass* m_DepthShader;
 	ShadowShaderClass* m_ShadowShader;
+	MultipleShadowShader* m_MultipleShadowShader;
 };
 
 #endif "_SHADERMANAGERCLASS_H_"

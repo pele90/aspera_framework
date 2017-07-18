@@ -515,14 +515,14 @@ bool RenderingSystem::RenderScene(Camera* camera) {
 					/*if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
 						return false;*/
 
-					if (!RenderWithShadows(mesh, renderer->GetTextureIds(), lights[0], 0))
-						return false;
-
-					if (!RenderWithShadows(mesh, renderer->GetTextureIds(), lights[1], 1))
-						return false;
+					/*if (!RenderWithShadows(mesh, renderer->GetTextureIds(), lights[0]))
+						return false;*/
 
 					/*if (!RenderWithPointLight(mesh, renderer->GetTextureIds(), lights))
 						return false;*/
+
+					if (!RenderWithMultipleLightsAndShadows(mesh, renderer->GetTextureIds(), lights))
+						return false;
 
 
 						// Reset world matrix
@@ -679,14 +679,14 @@ bool RenderingSystem::RenderSceneToDepthMaps(vector<DirectionalLight*> lights)
 	return true;
 }
 
-bool RenderingSystem::RenderWithShadows(Mesh* mesh, vector<string> textureIds, DirectionalLight* light, int id)
+bool RenderingSystem::RenderWithShadows(Mesh* mesh, vector<string> textureIds, DirectionalLight* light)
 {
 	bool result;
 
 	Transform* transform = light->GetComponent<Transform>("TRANSFORM");
 	Light* lightInfo = light->GetComponent<Light>("LIGHT");
 
-	result = m_ShaderManager->RenderShadowShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH), m_TextureManager->GetTexture(textureIds.at(0)), m_renderToTextures.at(id)->GetShaderResourceView(), transform->GetPosition(), lightInfo->GetAmbientColor(), lightInfo->GetDiffuseColor());
+	result = m_ShaderManager->RenderShadowShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH), m_TextureManager->GetTexture(textureIds.at(0)), m_renderToTextures.at(0)->GetShaderResourceView(), transform->GetPosition(), lightInfo->GetAmbientColor(), lightInfo->GetDiffuseColor());
 
 	if (!result)
 		return false;
@@ -694,7 +694,7 @@ bool RenderingSystem::RenderWithShadows(Mesh* mesh, vector<string> textureIds, D
 	return true;
 }
 
-bool RenderingSystem::RenderWithPointLight(Mesh* mesh, vector<string>textureIds, DirectionalLight* lights[])
+bool RenderingSystem::RenderWithPointLight(Mesh* mesh, vector<string> textureIds, DirectionalLight* lights[])
 {
 	bool result;
 	XMVECTOR diffuseColor[4];
@@ -774,6 +774,28 @@ bool RenderingSystem::RenderGameObjectsForShadowMap(DirectionalLight * light)
 			}
 		}
 	}
+
+	return true;
+}
+
+bool RenderingSystem::RenderWithMultipleLightsAndShadows(Mesh* mesh, vector<string> textureIds, DirectionalLight* lights[])
+{
+	bool result;
+
+	XMMATRIX viewMatrices[2], projectionMatrices[2];
+	ID3D11ShaderResourceView* renderTextures[2];
+
+	for (int i = 0; i < 2; i++)
+	{
+		viewMatrices[i] = lights[i]->GenerateViewMatrix();
+		projectionMatrices[i] = lights[i]->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH);
+		renderTextures[i] = m_renderToTextures.at(i)->GetShaderResourceView();
+	}
+
+	result = m_ShaderManager->RenderMultipleShadowShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, viewMatrices, projectionMatrices, m_TextureManager->GetTexture(textureIds.at(0)), renderTextures, lights);
+
+	if (!result)
+		return false;
 
 	return true;
 }
