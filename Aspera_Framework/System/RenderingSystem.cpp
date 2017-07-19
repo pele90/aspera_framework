@@ -427,14 +427,14 @@ bool RenderingSystem::RenderToTexture(Camera* camera)
 bool RenderingSystem::RenderScene(Camera* camera) {
 
 	DirectionalLight* light = NULL;
-	DirectionalLight* lights[2];
+	vector<DirectionalLight*> lights;
 	int i = 0;
 
 	for (vector<GameObject*>::iterator iter = m_initializedGameObjects.begin(); iter != m_initializedGameObjects.end(); ++iter)
 	{
 		if ((*iter)->GetName() == "DIRECTIONAL_LIGHT") {
 			light = dynamic_cast<DirectionalLight*>((*iter));
-			lights[i] = dynamic_cast<DirectionalLight*>((*iter));
+			lights.push_back(dynamic_cast<DirectionalLight*>((*iter)));
 			i++;
 		}
 
@@ -461,18 +461,21 @@ bool RenderingSystem::RenderScene(Camera* camera) {
 
 				BindBuffer(mesh);
 
-				if (!RenderWithShader(mesh, ShaderType::TERRAIN, renderer->GetTextureIds()))
-					return false;
+				/*if (!RenderWithShader(mesh, ShaderType::TERRAIN, renderer->GetTextureIds()))
+					return false;*/
 
-				// render with normal map texture
-				if (!RenderWithShader(mesh, ShaderType::LIGHT, renderer->GetTextureIds()))
-					return false;
+				//// render with normal map texture
+				//if (!RenderWithShader(mesh, ShaderType::LIGHT, renderer->GetTextureIds()))
+				//	return false;
 
 				/*if (!RenderWithShadows(mesh, renderer->GetTextureIds(), light))
 					return false;*/
 
-					/*if (!RenderWithPointLight(mesh, renderer->GetTextureIds(), lights))
-						return false;*/
+				/*if (!RenderWithPointLight(mesh, renderer->GetTextureIds(), lights))
+					return false;*/
+
+				if (!RenderWithMultipleLightsAndShadows(mesh, renderer->GetTextureIds(), lights))
+					return false;
 
 				m_Direct3D->GetWorldMatrix(m_worldMatrix);
 
@@ -778,18 +781,18 @@ bool RenderingSystem::RenderGameObjectsForShadowMap(DirectionalLight * light)
 	return true;
 }
 
-bool RenderingSystem::RenderWithMultipleLightsAndShadows(Mesh* mesh, vector<string> textureIds, DirectionalLight* lights[])
+bool RenderingSystem::RenderWithMultipleLightsAndShadows(Mesh* mesh, vector<string> textureIds, vector<DirectionalLight*> lights)
 {
 	bool result;
 
-	XMMATRIX viewMatrices[2], projectionMatrices[2];
-	ID3D11ShaderResourceView* renderTextures[2];
+	vector<XMMATRIX> viewMatrices, projectionMatrices;
+	vector<ID3D11ShaderResourceView*> renderTextures;
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < lights.size(); i++)
 	{
-		viewMatrices[i] = lights[i]->GenerateViewMatrix();
-		projectionMatrices[i] = lights[i]->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH);
-		renderTextures[i] = m_renderToTextures.at(i)->GetShaderResourceView();
+		viewMatrices.push_back(lights[i]->GenerateViewMatrix());
+		projectionMatrices.push_back(lights[i]->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH));
+		renderTextures.push_back(m_renderToTextures.at(i)->GetShaderResourceView());
 	}
 
 	result = m_ShaderManager->RenderMultipleShadowShader(m_Direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, viewMatrices, projectionMatrices, m_TextureManager->GetTexture(textureIds.at(0)), renderTextures, lights);

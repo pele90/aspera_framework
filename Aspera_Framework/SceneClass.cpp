@@ -69,12 +69,12 @@ bool SceneClass::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 	if (!result)
 		return false;
 
-	/*result = CreateTerrain();
+	result = CreateTerrain();
 	if (!result)
-		return false;*/
+		return false;
 
 
-	CreateGameObjects(1);
+	/*CreateGameObjects(1);
 
 	if (!CreateCube(3.0f, 0.5f, -1.5f))
 		return false;
@@ -83,17 +83,23 @@ bool SceneClass::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 		return false;
 
 	if (!CreateCube(-1.5f, 0.5f, -3.0f))
+		return false;*/
+
+	// Create green light
+	if (!CreateLight(0.0f, 200.0f, 1024.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f)))
 		return false;
 
-	// Create white light
-	if (!CreateLight(6.0f, 3.0f, -6.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)))
+	// Create blue light
+	if (!CreateLight(1024.0f, 200.0f, 0.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f)))
 		return false;
 
 	// Create red light
-	if (!CreateLight(-6.0f, 10.0f, 6.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)))
+	if (!CreateLight(1024.0f, 200.0f, 1024.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f)))
 		return false;
 
-	
+	//// Create white light
+	//if (!CreateLight(100.0f, 200.0f, 100.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f)))
+	//	return false;
 
 #pragma endregion
 
@@ -268,6 +274,7 @@ bool SceneClass::CreateLight(float x, float y, float z, XMFLOAT4 color)
 
 	light->GetComponent<Transform>("TRANSFORM")->SetPosition(x, y, z);
 	light->GetComponent<Light>("LIGHT")->SetDiffuseColor(color);
+	light->GetComponent<Light>("LIGHT")->SetAmbientColor(XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f));
 	AddGameObject(light);
 
 	return true;

@@ -316,7 +316,7 @@ bool ShaderManagerClass::RenderShadowShader(ID3D11DeviceContext* deviceContext, 
 	return m_ShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture, depthMapTexture, lightPosition, ambientColor, diffuseColor);
 }
 
-bool ShaderManagerClass::RenderMultipleShadowShader(ID3D11DeviceContext * deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix[], XMMATRIX lightProjectionMatrix[], ID3D11ShaderResourceView * texture, ID3D11ShaderResourceView * depthMapTexture[], DirectionalLight * lights[])
+bool ShaderManagerClass::RenderMultipleShadowShader(ID3D11DeviceContext * deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, vector<XMMATRIX> lightViewMatrix, vector<XMMATRIX> lightProjectionMatrix, ID3D11ShaderResourceView * texture, vector<ID3D11ShaderResourceView*> depthMapTexture, vector<DirectionalLight*> lights)
 {
 	return m_MultipleShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture, depthMapTexture, lights);
 }

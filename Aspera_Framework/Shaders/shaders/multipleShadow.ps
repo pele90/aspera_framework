@@ -1,11 +1,11 @@
-#define MAX_NUM_LIGHTS 2
+#define NUM_LIGHTS 4
 
 //////////////
 // TEXTURES //
 //////////////
 Texture2D shaderTexture : register(t0);
 
-Texture2D depthMapTexture[2] : register(t1);
+Texture2D depthMapTexture[NUM_LIGHTS] : register(t1);
 
 ///////////////////
 // SAMPLE STATES //
@@ -28,7 +28,7 @@ struct PointLight
 
 cbuffer LightBuffer
 {
-	PointLight lights[MAX_NUM_LIGHTS];
+	PointLight lights[NUM_LIGHTS];
 };
 
 
@@ -40,8 +40,8 @@ struct PixelInputType
     float4 position : SV_POSITION;
     float2 tex : TEXCOORD0;
     float3 normal : NORMAL;
-    float4 lightViewPosition[2] : TEXCOORD2;
-    float3 lightPos[2] : TEXCOORD4;
+    float4 lightViewPosition[NUM_LIGHTS] : TEXCOORD4;
+    float3 lightPos[NUM_LIGHTS] : TEXCOORD8;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,10 +61,10 @@ float4 ShadowPixelShader(PixelInputType input) : SV_TARGET
     bias = 0.00001f;
 
     // Set the default output color to the ambient light value for all pixels.
-    color = lights[0].ambientColor;
+    color = float4(0.01f, 0.01f, 0.01f, 0.0f);
 
 	[unroll]
-	for( uint i = 0;i < 2; i++ )
+	for( uint i = 0; i < NUM_LIGHTS; i++ )
 	{
 		// Calculate the projected texture coordinates.
 		projectTexCoord.x =  input.lightViewPosition[i].x / input.lightViewPosition[i].w / 2.0f + 0.5f;

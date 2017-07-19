@@ -1,16 +1,12 @@
-/////////////
-// GLOBALS //
-/////////////
-
-#define MAX_NUM_LIGHTS 2
+#define NUM_LIGHTS 4
 
 cbuffer MatrixBuffer
 {
     matrix worldMatrix;
     matrix viewMatrix;
     matrix projectionMatrix;
-    matrix lightViewMatrix[2];
-    matrix lightProjectionMatrix[2];
+    matrix lightViewMatrix[NUM_LIGHTS];
+    matrix lightProjectionMatrix[NUM_LIGHTS];
 };
 
 struct PointLight
@@ -23,7 +19,7 @@ struct PointLight
 
 cbuffer LightBuffer
 {
-	PointLight lights[MAX_NUM_LIGHTS];
+	PointLight lights[NUM_LIGHTS];
 };
 
 
@@ -42,8 +38,8 @@ struct PixelInputType
     float4 position : SV_POSITION;
     float2 tex : TEXCOORD0;
     float3 normal : NORMAL;
-    float4 lightViewPosition[2] : TEXCOORD2;
-    float3 lightPos[2] : TEXCOORD4;
+    float4 lightViewPosition[NUM_LIGHTS] : TEXCOORD4;
+    float3 lightPos[NUM_LIGHTS] : TEXCOORD8;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,6 +47,7 @@ struct PixelInputType
 ////////////////////////////////////////////////////////////////////////////////
 PixelInputType ShadowVertexShader(VertexInputType input)
 {
+
     PixelInputType output;
     float4 worldPosition;
     
@@ -63,7 +60,7 @@ PixelInputType ShadowVertexShader(VertexInputType input)
     output.position = mul(output.position, projectionMatrix);
 
 	[unroll]
-	for( uint i = 0;i < 2; i++ )
+	for( uint i = 0;i < NUM_LIGHTS; i++)
 	{
 		// Calculate the position of the vertice as viewed by the light source.
 		output.lightViewPosition[i] = mul(input.position, worldMatrix);
@@ -84,11 +81,11 @@ PixelInputType ShadowVertexShader(VertexInputType input)
     worldPosition = mul(input.position, worldMatrix);
 
 	[unroll]
-	for( uint j = 0;j < 2; j++ )
+	for( uint j = 0;j < NUM_LIGHTS; j++ )
 	{
 		// Determine the light position based on the position of the light and the position of the vertex in the world.
 		output.lightPos[j] = lights[j].lightPosition.xyz - worldPosition.xyz;
-
+	
 		// Normalize the light position vector.
 		output.lightPos[j] = normalize(output.lightPos[j]);
 	}

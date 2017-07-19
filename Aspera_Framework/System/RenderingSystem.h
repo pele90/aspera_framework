@@ -58,7 +58,7 @@ private:
 	bool BindBuffer(Mesh*);
 	bool RenderWithShader(Mesh*, ShaderType, vector<string>);
 	bool RenderWithShadows(Mesh*, vector<string>, DirectionalLight*);
-	bool RenderWithMultipleLightsAndShadows(Mesh*, vector<string>, DirectionalLight*[]);
+	bool RenderWithMultipleLightsAndShadows(Mesh*, vector<string>, vector<DirectionalLight*>);
 	bool RenderWithPointLight(Mesh*, vector<string>, DirectionalLight*[]);
 
 private:

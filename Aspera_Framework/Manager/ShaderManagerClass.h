@@ -39,7 +39,7 @@ public:
 	bool RenderDepthShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX);
 	bool RenderShadowShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, 
 		ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4, XMFLOAT4);
-	bool RenderMultipleShadowShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMMATRIX[], XMMATRIX[], ID3D11ShaderResourceView* , ID3D11ShaderResourceView*[], DirectionalLight*[]);
+	bool RenderMultipleShadowShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, vector<XMMATRIX>, vector<XMMATRIX>, ID3D11ShaderResourceView* , vector<ID3D11ShaderResourceView*>, vector<DirectionalLight*>);
 
 private:
 	ColorShaderClass* m_ColorShader;

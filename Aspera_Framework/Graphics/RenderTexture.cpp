@@ -128,8 +128,6 @@ bool RenderTexture::Initialize(ID3D11Device* device, int textureWidth, int textu
 	return true;
 }
 
-// Shutdown releases the three interfaces used by the RenderTextureClass.
-
 void RenderTexture::Shutdown()
 {
 	if (m_depthStencilView)

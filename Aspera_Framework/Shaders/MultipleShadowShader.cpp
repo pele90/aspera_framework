@@ -37,7 +37,7 @@ void MultipleShadowShader::Shutdown()
 	return;
 }
 
-bool MultipleShadowShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix[], XMMATRIX lightProjectionMatrix[], ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture[], DirectionalLight* lights[])
+bool MultipleShadowShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, vector<XMMATRIX> lightViewMatrix, vector<XMMATRIX> lightProjectionMatrix, ID3D11ShaderResourceView* texture, vector<ID3D11ShaderResourceView*> depthMapTexture, vector<DirectionalLight*> lights)
 {
 	bool result;
 
@@ -235,6 +235,7 @@ bool MultipleShadowShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCH
 
 void MultipleShadowShader::ShutdownShader()
 {
+
 	// Release the light constant buffers.
 	if (m_lightBuffer)
 	{
@@ -321,7 +322,7 @@ void MultipleShadowShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HW
 	return;
 }
 
-bool MultipleShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix[], XMMATRIX lightProjectionMatrix[], ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture[], DirectionalLight* lights[])
+bool MultipleShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, vector<XMMATRIX> lightViewMatrix, vector<XMMATRIX> lightProjectionMatrix, ID3D11ShaderResourceView* texture, vector<ID3D11ShaderResourceView*> depthMapTexture, vector<DirectionalLight*> lights)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -329,12 +330,13 @@ bool MultipleShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	MatrixBufferType* dataPtr;
 	LightBufferType* dataPtr2;
 
+
 	// Transpose the matrices to prepare them for the shader.
 	worldMatrix = XMMatrixTranspose(worldMatrix);
 	viewMatrix = XMMatrixTranspose(viewMatrix);
 	projectionMatrix = XMMatrixTranspose(projectionMatrix);
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < lights.size(); i++)
 	{
 		lightViewMatrix[i] = XMMatrixTranspose(lightViewMatrix[i]);
 		lightProjectionMatrix[i] = XMMatrixTranspose(lightProjectionMatrix[i]);
@@ -355,7 +357,7 @@ bool MultipleShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	dataPtr->view = viewMatrix;
 	dataPtr->projection = projectionMatrix;
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < lights.size(); i++)
 	{
 		dataPtr->lightView[i] = lightViewMatrix[i];
 		dataPtr->lightProjection[i] = lightProjectionMatrix[i];
@@ -373,7 +375,8 @@ bool MultipleShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	// Set shader texture resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 
-	deviceContext->PSSetShaderResources(1, 2, depthMapTexture);
+	vector <ID3D11ShaderResourceView*>::iterator it = depthMapTexture.begin();
+	deviceContext->PSSetShaderResources(1, lights.size(), &(*it));
 
 //####################################################################################################################//
 
@@ -388,7 +391,7 @@ bool MultipleShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	dataPtr2 = (LightBufferType*)mappedResource.pData;
 
 	// Copy the lighting variables into the constant buffer.
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < lights.size(); i++)
 	{
 		Transform* transform = lights[i]->GetComponent<Transform>("TRANSFORM");
 		Light* light = lights[i]->GetComponent<Light>("LIGHT");
@@ -402,6 +405,11 @@ bool MultipleShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	deviceContext->Unmap(m_lightBuffer, 0);
 
 	// Set the position of the light constant buffer in the pixel shader.
+	bufferNumber = 1;
+
+	// Now set the constant buffer in the vertex shader with the updated values.
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
+
 	bufferNumber = 0;
 
 	// Finally set the light constant buffer in the pixel shader with the updated values.
