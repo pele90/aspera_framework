@@ -1,6 +1,6 @@
-#include "LightShaderClass.h"
+#include "TerrainShader.h"
 
-LightShaderClass::LightShaderClass()
+TerrainShader::TerrainShader()
 {
 	m_vertexShader = 0;
 	m_pixelShader = 0;
@@ -8,26 +8,19 @@ LightShaderClass::LightShaderClass()
 	m_matrixBuffer = 0;
 	m_sampleState = 0;
 	m_lightBuffer = 0;
-
-	m_lightColorBuffer = 0;
-	m_lightPositionBuffer = 0;
 }
 
-LightShaderClass::LightShaderClass(const LightShaderClass& other)
-{
-}
+TerrainShader::TerrainShader(const TerrainShader& other){}
 
-LightShaderClass::~LightShaderClass()
-{
-}
+TerrainShader::~TerrainShader(){}
 
-bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool TerrainShader::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"../Aspera_Framework/Shaders/shaders/light.vs", L"../Aspera_Framework/Shaders/shaders/light.ps");
+	result = InitializeShader(device, hwnd, L"../Aspera_Framework/Shaders/shaders/terrain.vs", L"../Aspera_Framework/Shaders/shaders/terrain.ps");
 	if (!result)
 	{
 		return false;
@@ -36,7 +29,7 @@ bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 	return true;
 }
 
-void LightShaderClass::Shutdown()
+void TerrainShader::Shutdown()
 {
 	// Shutdown the vertex and pixel shaders as well as the related objects.
 	ShutdownShader();
@@ -44,13 +37,15 @@ void LightShaderClass::Shutdown()
 	return;
 }
 
-bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor)
+bool TerrainShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* normalMap,
+	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor)
 {
 	bool result;
 
+
 	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, lightDirection, diffuseColor);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, normalMap, lightDirection, diffuseColor);
 	if (!result)
 	{
 		return false;
@@ -62,36 +57,17 @@ bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount
 	return true;
 }
 
-bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView * texture, XMVECTOR diffuseColor[], XMVECTOR lightPosition[])
-{
-	bool result;
-
-	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, diffuseColor, lightPosition);
-	if (!result)
-	{
-		return false;
-	}
-
-	// Now render the prepared buffers with the shader.
-	RenderShader(deviceContext, indexCount);
-
-	return true;
-}
-
-bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
+bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
 	ID3D10Blob* vertexShaderBuffer;
 	ID3D10Blob* pixelShaderBuffer;
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[6];
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC lightBufferDesc;
-	D3D11_BUFFER_DESC lightColorBufferDesc;
-	D3D11_BUFFER_DESC lightPositionBufferDesc;
 
 
 	// Initialize the pointers this function will use to null.
@@ -100,7 +76,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	pixelShaderBuffer = 0;
 
 	// Compile the vertex shader code.
-	result = D3DCompileFromFile(vsFilename, NULL, NULL, "LightVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
+	result = D3DCompileFromFile(vsFilename, NULL, NULL, "TerrainVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
 		&vertexShaderBuffer, &errorMessage);
 	if (FAILED(result))
 	{
@@ -119,7 +95,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	}
 
 	// Compile the pixel shader code.
-	result = D3DCompileFromFile(psFilename, NULL, NULL, "LightPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
+	result = D3DCompileFromFile(psFilename, NULL, NULL, "TerrainPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
 		&pixelShaderBuffer, &errorMessage);
 	if (FAILED(result))
 	{
@@ -175,6 +151,30 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	polygonLayout[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[2].InstanceDataStepRate = 0;
+
+	polygonLayout[3].SemanticName = "TANGENT";
+	polygonLayout[3].SemanticIndex = 0;
+	polygonLayout[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[3].InputSlot = 0;
+	polygonLayout[3].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout[3].InstanceDataStepRate = 0;
+
+	polygonLayout[4].SemanticName = "BINORMAL";
+	polygonLayout[4].SemanticIndex = 0;
+	polygonLayout[4].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[4].InputSlot = 0;
+	polygonLayout[4].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[4].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout[4].InstanceDataStepRate = 0;
+
+	polygonLayout[5].SemanticName = "COLOR";
+	polygonLayout[5].SemanticIndex = 0;
+	polygonLayout[5].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[5].InputSlot = 0;
+	polygonLayout[5].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[5].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout[5].InstanceDataStepRate = 0;
 
 	// Get a count of the elements in the layout.
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
@@ -239,38 +239,8 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	lightBufferDesc.MiscFlags = 0;
 	lightBufferDesc.StructureByteStride = 0;
 
-	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-	result = device->CreateBuffer(&lightBufferDesc, NULL, &m_lightBuffer);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Setup the description of the dynamic constant buffer that is in the pixel shader.
-	lightColorBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	lightColorBufferDesc.ByteWidth = sizeof(LightColorBufferType);
-	lightColorBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	lightColorBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	lightColorBufferDesc.MiscFlags = 0;
-	lightColorBufferDesc.StructureByteStride = 0;
-
 	// Create the constant buffer pointer so we can access the pixel shader constant buffer from within this class.
-	result = device->CreateBuffer(&lightColorBufferDesc, NULL, &m_lightColorBuffer);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Setup the description of the dynamic constant buffer that is in the vertex shader.
-	lightPositionBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	lightPositionBufferDesc.ByteWidth = sizeof(LightPositionBufferType);
-	lightPositionBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	lightPositionBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	lightPositionBufferDesc.MiscFlags = 0;
-	lightPositionBufferDesc.StructureByteStride = 0;
-
-	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-	result = device->CreateBuffer(&lightPositionBufferDesc, NULL, &m_lightPositionBuffer);
+	result = device->CreateBuffer(&lightBufferDesc, NULL, &m_lightBuffer);
 	if (FAILED(result))
 	{
 		return false;
@@ -279,20 +249,9 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* 
 	return true;
 }
 
-void LightShaderClass::ShutdownShader()
+void TerrainShader::ShutdownShader()
 {
 	// Release the light constant buffer.
-	if (m_lightColorBuffer)
-	{
-		m_lightColorBuffer->Release();
-		m_lightColorBuffer = 0;
-	}
-	if (m_lightPositionBuffer)
-	{
-		m_lightPositionBuffer->Release();
-		m_lightPositionBuffer = 0;
-	}
-
 	if (m_lightBuffer)
 	{
 		m_lightBuffer->Release();
@@ -337,7 +296,7 @@ void LightShaderClass::ShutdownShader()
 	return;
 }
 
-void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
+void TerrainShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long long bufferSize, i;
@@ -354,7 +313,7 @@ void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 	fout.open("shader-error.txt");
 
 	// Write out the error message.
-	for (i = 0; i < bufferSize; i++)
+	for (i = 0; i<bufferSize; i++)
 	{
 		fout << compileErrors[i];
 	}
@@ -372,9 +331,9 @@ void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 	return;
 }
 
-bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection,
-	XMFLOAT4 diffuseColor)
+bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* normalMap,
+	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -414,6 +373,8 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 
 	// Set shader texture resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(1, 1, &normalMap);
+
 
 	// Lock the light constant buffer so it can be written to.
 	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -442,116 +403,19 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 	return true;
 }
 
-bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture,
-	XMVECTOR diffuseColor[], XMVECTOR lightPosition[])
-{
-	HRESULT result;
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	MatrixBufferType* dataPtr;
-	LightPositionBufferType* dataPtr2;
-	LightColorBufferType* dataPtr3;
-	unsigned int bufferNumber;
-
-
-	// Transpose the matrices to prepare them for the shader.
-	worldMatrix = XMMatrixTranspose(worldMatrix);
-	viewMatrix = XMMatrixTranspose(viewMatrix);
-	projectionMatrix = XMMatrixTranspose(projectionMatrix);
-
-	// Lock the matrix constant buffer so it can be written to.
-	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Get a pointer to the data in the constant buffer.
-	dataPtr = (MatrixBufferType*)mappedResource.pData;
-
-	// Copy the matrices into the constant buffer.
-	dataPtr->world = worldMatrix;
-	dataPtr->view = viewMatrix;
-	dataPtr->projection = projectionMatrix;
-
-	// Unlock the matrix constant buffer.
-	deviceContext->Unmap(m_matrixBuffer, 0);
-
-	// Set the position of the matrix constant buffer in the vertex shader.
-	bufferNumber = 0;
-
-	// Now set the matrix constant buffer in the vertex shader with the updated values.
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
-
-	// Lock the light position constant buffer so it can be written to.
-	result = deviceContext->Map(m_lightPositionBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Get a pointer to the data in the constant buffer.
-	dataPtr2 = (LightPositionBufferType*)mappedResource.pData;
-
-	// Copy the light position variables into the constant buffer.
-	dataPtr2->lightPosition[0] = lightPosition[0];
-	dataPtr2->lightPosition[1] = lightPosition[1];
-	dataPtr2->lightPosition[2] = lightPosition[2];
-	dataPtr2->lightPosition[3] = lightPosition[3];
-
-	// Unlock the constant buffer.
-	deviceContext->Unmap(m_lightPositionBuffer, 0);
-
-	// Set the position of the constant buffer in the vertex shader.
-	bufferNumber = 1;
-
-	// Finally set the constant buffer in the vertex shader with the updated values.
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_lightPositionBuffer);
-
-	// Set shader texture resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, 1, &texture);
-
-	// Lock the light color constant buffer so it can be written to.
-	result = deviceContext->Map(m_lightColorBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Get a pointer to the data in the constant buffer.
-	dataPtr3 = (LightColorBufferType*)mappedResource.pData;
-
-	// Copy the light color variables into the constant buffer.
-	dataPtr3->diffuseColor[0] = diffuseColor[0];
-	dataPtr3->diffuseColor[1] = diffuseColor[1];
-	dataPtr3->diffuseColor[2] = diffuseColor[2];
-	dataPtr3->diffuseColor[3] = diffuseColor[3];
-
-	// Unlock the constant buffer.
-	deviceContext->Unmap(m_lightColorBuffer, 0);
-
-	// Set the position of the constant buffer in the pixel shader.
-	bufferNumber = 0;
-
-	// Finally set the constant buffer in the pixel shader with the updated values.
-	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightColorBuffer);
-
-	return true;
-}
-
-void LightShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+void TerrainShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
 {
 	// Set the vertex input layout.
 	deviceContext->IASetInputLayout(m_layout);
 
-	// Set the vertex and pixel shaders that will be used to render this triangle.
+	// Set the vertex and pixel shaders that will be used to render.
 	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
 	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
 
 	// Set the sampler state in the pixel shader.
 	deviceContext->PSSetSamplers(0, 1, &m_sampleState);
 
-	// Render the triangle.
+	// Render the polygon data.
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 
 	return;

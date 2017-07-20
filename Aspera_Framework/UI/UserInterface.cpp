@@ -1,22 +1,18 @@
-#include "userinterfaceclass.h"
+#include "UserInterface.h"
 
-UserInterfaceClass::UserInterfaceClass()
+UserInterface::UserInterface()
 {
-	m_Font1 = 0;
-	m_FpsString = 0;
+	m_font1 = 0;
+	m_fpsString = 0;
 	m_miniMap = 0;
-	m_VideoStrings = 0;
+	m_videoStrings = 0;
 }
 
-UserInterfaceClass::UserInterfaceClass(const UserInterfaceClass& other)
-{
-}
+UserInterface::UserInterface(const UserInterface& other){}
 
-UserInterfaceClass::~UserInterfaceClass()
-{
-}
+UserInterface::~UserInterface(){}
 
-bool UserInterfaceClass::Initialize(D3D* Direct3D, int screenHeight, int screenWidth)
+bool UserInterface::Initialize(D3D* Direct3D, int screenHeight, int screenWidth)
 {
 	bool result;
 	char videoCard[128];
@@ -24,18 +20,16 @@ bool UserInterfaceClass::Initialize(D3D* Direct3D, int screenHeight, int screenW
 	char videoString[144];
 	char memoryString[32];
 	char tempString[16];
-	int i;
-
 
 	// Create the first font object.
-	m_Font1 = new FontClass;
-	if (!m_Font1)
+	m_font1 = new Font;
+	if (!m_font1)
 	{
 		return false;
 	}
 
 	// Initialize the first font object.
-	result = m_Font1->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), "../Aspera_Framework/data/font/font01.txt", 
+	result = m_font1->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), "../Aspera_Framework/data/font/font01.txt", 
 								 "../Aspera_Framework/data/font/font01.tga", 32.0f, 3);
 	if (!result)
 	{
@@ -43,14 +37,14 @@ bool UserInterfaceClass::Initialize(D3D* Direct3D, int screenHeight, int screenW
 	}
 
 	// Create the text object for the fps string.
-	m_FpsString = new TextClass;
-	if (!m_FpsString)
+	m_fpsString = new Text;
+	if (!m_fpsString)
 	{
 		return false;
 	}
 
 	// Initialize the fps text string.
-	result = m_FpsString->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 16, false, m_Font1, 
+	result = m_fpsString->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 16, false, m_font1, 
 									 "Fps: 0", 10, 50, 0.0f, 1.0f, 0.0f);
 	if (!result)
 	{
@@ -72,21 +66,21 @@ bool UserInterfaceClass::Initialize(D3D* Direct3D, int screenHeight, int screenW
 	strcat_s(memoryString, " MB");
 
 	// Create the text objects for the video strings.
-	m_VideoStrings = new TextClass[2];
-	if (!m_VideoStrings)
+	m_videoStrings = new Text[2];
+	if (!m_videoStrings)
 	{
 		return false;
 	}
 
 	// Initialize the video text strings.
-	result = m_VideoStrings[0].Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, false, m_Font1, 
+	result = m_videoStrings[0].Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, false, m_font1, 
 										  videoString, 10, 10, 1.0f, 1.0f, 1.0f);
 	if(!result)
 	{ 
 		return false; 
 	}
 
-	result = m_VideoStrings[1].Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 32, false, m_Font1, 
+	result = m_videoStrings[1].Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 32, false, m_font1, 
 										  memoryString, 10, 30, 1.0f, 1.0f, 1.0f);
 	if(!result)
 	{ 
@@ -110,16 +104,16 @@ bool UserInterfaceClass::Initialize(D3D* Direct3D, int screenHeight, int screenW
 	return true;
 }
 
-void UserInterfaceClass::Shutdown()
+void UserInterface::Shutdown()
 {
 	// Release the video card string.
-	if(m_VideoStrings)
+	if(m_videoStrings)
 	{
-		m_VideoStrings[0].Shutdown();
-		m_VideoStrings[1].Shutdown();
+		m_videoStrings[0].Shutdown();
+		m_videoStrings[1].Shutdown();
 
-		delete [] m_VideoStrings;
-		m_VideoStrings = 0;
+		delete [] m_videoStrings;
+		m_videoStrings = 0;
 	}
 
 	// Release the mini-map object.
@@ -131,25 +125,25 @@ void UserInterfaceClass::Shutdown()
 	}
 
 	// Release the fps text string.
-	if(m_FpsString)
+	if(m_fpsString)
 	{
-		m_FpsString->Shutdown();
-		delete m_FpsString;
-		m_FpsString = 0;
+		m_fpsString->Shutdown();
+		delete m_fpsString;
+		m_fpsString = 0;
 	}
 
 	// Release the font object.
-	if(m_Font1)
+	if(m_font1)
 	{
-		m_Font1->Shutdown();
-		delete m_Font1;
-		m_Font1 = 0;
+		m_font1->Shutdown();
+		delete m_font1;
+		m_font1 = 0;
 	}
 
 	return;
 }
 
-bool UserInterfaceClass::Frame(ID3D11DeviceContext* deviceContext, int fps, XMFLOAT3 position)
+bool UserInterface::Frame(ID3D11DeviceContext* deviceContext, int fps, XMFLOAT3 position)
 {
 	bool result;
 
@@ -166,10 +160,9 @@ bool UserInterfaceClass::Frame(ID3D11DeviceContext* deviceContext, int fps, XMFL
 	return true;
 }
 
-bool UserInterfaceClass::Render(D3D* Direct3D, ShaderManager* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, 
+bool UserInterface::Render(D3D* Direct3D, ShaderManager* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, 
 								XMMATRIX orthoMatrix)
 {
-	int i;
 	bool result;
 
 	// Turn off the Z buffer and enable alpha blending to begin 2D rendering.
@@ -177,21 +170,21 @@ bool UserInterfaceClass::Render(D3D* Direct3D, ShaderManager* ShaderManager, XMM
 	Direct3D->EnableAlphaBlending();
 
 	// Render the fps string.
-	m_FpsString->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
+	m_fpsString->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_font1->GetTexture());
 
 	// Render the video card strings.
-	m_VideoStrings[0].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
-	m_VideoStrings[1].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
+	m_videoStrings[0].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_font1->GetTexture());
+	m_videoStrings[1].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_font1->GetTexture());
 
 	// Turn off alpha blending now that the text has been rendered.
 	Direct3D->DisableAlphaBlending();
 
 	// Render the mini-map.
-	/*result = m_miniMap->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix);
+	result = m_miniMap->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix);
 	if (!result)
 	{
 		return false;
-	}*/
+	}
 
 	// Turn the Z buffer back on now that the 2D rendering has completed.
 	Direct3D->TurnZBufferOn();
@@ -199,7 +192,7 @@ bool UserInterfaceClass::Render(D3D* Direct3D, ShaderManager* ShaderManager, XMM
 	return true;
 }
 
-bool UserInterfaceClass::UpdateFpsString(ID3D11DeviceContext* deviceContext, int fps)
+bool UserInterface::UpdateFpsString(ID3D11DeviceContext* deviceContext, int fps)
 {
 	char tempString[16];
 	char finalString[16];
@@ -254,7 +247,7 @@ bool UserInterfaceClass::UpdateFpsString(ID3D11DeviceContext* deviceContext, int
 	}
 
 	// Update the sentence vertex buffer with the new string information.
-	result = m_FpsString->UpdateSentence(deviceContext, m_Font1, finalString, 10, 50, red, green, blue);
+	result = m_fpsString->UpdateSentence(deviceContext, m_font1, finalString, 10, 50, red, green, blue);
 	if(!result)
 	{
 		return false;

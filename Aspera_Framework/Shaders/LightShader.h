@@ -1,5 +1,5 @@
-#ifndef _LIGHTSHADERMANAGER_H_
-#define _LIGHTSHADERMANAGER_H_
+#ifndef _LIGHT_SHADER_H_
+#define _LIGHT_SHADER_H_
 
 /////////////
 // GLOBALS //
@@ -16,7 +16,7 @@ const int NUM_LIGHTS = 4;
 using namespace DirectX;
 using namespace std;
 
-class LightShaderClass
+class LightShader
 {
 private:
 	struct MatrixBufferType
@@ -45,9 +45,9 @@ private:
 
 
 public:
-	LightShaderClass();
-	LightShaderClass(const LightShaderClass&);
-	~LightShaderClass();
+	LightShader();
+	LightShader(const LightShader&);
+	~LightShader();
 
 	bool Initialize(ID3D11Device*, HWND);
 	bool Render(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4);
@@ -70,10 +70,9 @@ private:
 	ID3D11Buffer* m_matrixBuffer;
 	ID3D11SamplerState* m_sampleState;
 	ID3D11Buffer* m_lightBuffer;
-
 	ID3D11Buffer* m_lightColorBuffer;
 	ID3D11Buffer* m_lightPositionBuffer;
 };
 
-#endif // !_LIGHTSHADERMANAGER_H_
+#endif // !_LIGHT_SHADER_H_
 

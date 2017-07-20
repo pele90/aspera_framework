@@ -1,17 +1,21 @@
-#ifndef _TEXTURE_SHADER_INSTANCED_H_
-#define _TEXTURE_SHADER_INSTANCED_H_
+#ifndef _DEPTH_SHADER_H_
+#define _DEPTH_SHADER_H_
 
 //////////////
 // INCLUDES //
 //////////////
 #include <d3d11.h>
+#include <DirectXMath.h>
 #include <d3dcompiler.h>
-#include <directxmath.h>
 #include <fstream>
-using namespace DirectX;
 using namespace std;
+using namespace DirectX;
 
-class TextureShaderInstanced
+
+////////////////////////////////////////////////////////////////////////////////
+// Class name: DepthShaderClass
+////////////////////////////////////////////////////////////////////////////////
+class DepthShader
 {
 private:
 	struct MatrixBufferType
@@ -22,28 +26,27 @@ private:
 	};
 
 public:
-	TextureShaderInstanced();
-	TextureShaderInstanced(const TextureShaderInstanced&);
-	~TextureShaderInstanced();
+	DepthShader();
+	DepthShader(const DepthShader&);
+	~DepthShader();
 
 	bool Initialize(ID3D11Device*, HWND);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext*, int, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
+	bool Render(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX);
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, WCHAR*, WCHAR*);
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, WCHAR*);
 
-	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
-	void RenderShader(ID3D11DeviceContext*, int, int);
+	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX);
+	void RenderShader(ID3D11DeviceContext*, int);
 
 private:
 	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;
 	ID3D11InputLayout* m_layout;
 	ID3D11Buffer* m_matrixBuffer;
-	ID3D11SamplerState* m_sampleState;
 };
 
-#endif "!_TEXTURE_SHADER_INSTANCED_H_"
+#endif "!_DEPTH_SHADER_H_"

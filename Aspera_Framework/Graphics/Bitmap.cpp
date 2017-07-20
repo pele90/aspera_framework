@@ -1,21 +1,17 @@
-#include "BitmapClass.h"
+#include "Bitmap.h"
 
-BitmapClass::BitmapClass()
+Bitmap::Bitmap()
 {
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
-	m_Texture = 0;
+	m_texture = 0;
 }
 
-BitmapClass::BitmapClass(const BitmapClass& other)
-{
-}
+Bitmap::Bitmap(const Bitmap& other){}
 
-BitmapClass::~BitmapClass()
-{
-}
+Bitmap::~Bitmap(){}
 
-bool BitmapClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screenWidth, int screenHeight, int bitmapWidth, int bitmapHeight, char* textureFilename)
+bool Bitmap::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screenWidth, int screenHeight, int bitmapWidth, int bitmapHeight, char* textureFilename)
 {
 	bool result;
 
@@ -49,7 +45,7 @@ bool BitmapClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 	return true;
 }
 
-void BitmapClass::Shutdown()
+void Bitmap::Shutdown()
 {
 	// Release the bitmap texture.
 	ReleaseTexture();
@@ -60,10 +56,9 @@ void BitmapClass::Shutdown()
 	return;
 }
 
-bool BitmapClass::Render(ID3D11DeviceContext* deviceContext, int positionX, int positionY)
+bool Bitmap::Render(ID3D11DeviceContext* deviceContext, int positionX, int positionY)
 {
 	bool result;
-
 
 	// Re-build the dynamic vertex buffer for rendering to possibly a different location on the screen.
 	result = UpdateBuffers(deviceContext, positionX, positionY);
@@ -78,17 +73,17 @@ bool BitmapClass::Render(ID3D11DeviceContext* deviceContext, int positionX, int 
 	return true;
 }
 
-int BitmapClass::GetIndexCount()
+int Bitmap::GetIndexCount()
 {
 	return m_indexCount;
 }
 
-ID3D11ShaderResourceView* BitmapClass::GetTexture()
+ID3D11ShaderResourceView* Bitmap::GetTexture()
 {
-	return m_Texture->GetTexture();
+	return m_texture->GetTexture();
 }
 
-bool BitmapClass::InitializeBuffers(ID3D11Device* device)
+bool Bitmap::InitializeBuffers(ID3D11Device* device)
 {
 	VertexType* vertices;
 	unsigned long* indices;
@@ -177,7 +172,7 @@ bool BitmapClass::InitializeBuffers(ID3D11Device* device)
 	return true;
 }
 
-void BitmapClass::ShutdownBuffers()
+void Bitmap::ShutdownBuffers()
 {
 	// Release the index buffer.
 	if(m_indexBuffer)
@@ -196,7 +191,7 @@ void BitmapClass::ShutdownBuffers()
 	return;
 }
 
-bool BitmapClass::UpdateBuffers(ID3D11DeviceContext* deviceContent, int positionX, int positionY)
+bool Bitmap::UpdateBuffers(ID3D11DeviceContext* deviceContent, int positionX, int positionY)
 {
 	float left, right, top, bottom;
 	VertexType* vertices;
@@ -282,7 +277,7 @@ bool BitmapClass::UpdateBuffers(ID3D11DeviceContext* deviceContent, int position
 	return true;
 }
 
-void BitmapClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
+void Bitmap::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
 	unsigned int stride;
 	unsigned int offset;
@@ -304,20 +299,20 @@ void BitmapClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
-bool BitmapClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* filename)
+bool Bitmap::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* filename)
 {
 	bool result;
 
 
 	// Create the texture object.
-	m_Texture = new Texture;
-	if(!m_Texture)
+	m_texture = new Texture;
+	if(!m_texture)
 	{
 		return false;
 	}
 
 	// Initialize the texture object.
-	result = m_Texture->Initialize(device, deviceContext, filename);
+	result = m_texture->Initialize(device, deviceContext, filename);
 	if(!result)
 	{
 		return false;
@@ -326,14 +321,14 @@ bool BitmapClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceC
 	return true;
 }
 
-void BitmapClass::ReleaseTexture()
+void Bitmap::ReleaseTexture()
 {
 	// Release the texture object.
-	if(m_Texture)
+	if(m_texture)
 	{
-		m_Texture->Shutdown();
-		delete m_Texture;
-		m_Texture = 0;
+		m_texture->Shutdown();
+		delete m_texture;
+		m_texture = 0;
 	}
 
 	return;

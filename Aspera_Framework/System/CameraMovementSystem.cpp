@@ -68,7 +68,7 @@ void CameraMovementSystem::GetRotation(float& x, float& y, float& z)
 	return;
 }
 
-void CameraMovementSystem::HandleMovementInput(Input* p_input, GameObject* p_gameobject, int p_frameTime)
+void CameraMovementSystem::HandleMovementInput(Input* p_input, GameObject* p_gameobject, float p_frameTime)
 {
 	bool keyDown;
 	float posX, posY, posZ, rotX, rotY, rotZ;
@@ -416,8 +416,6 @@ void CameraMovementSystem::LookDownward(bool keydown)
 
 void CameraMovementSystem::StrafeLeft(bool keydown)
 {
-	float radians;
-
 	if (keydown)
 	{
 		m_strafeLeftSpeed += m_frameTime * 0.04f;
@@ -454,8 +452,6 @@ void CameraMovementSystem::StrafeLeft(bool keydown)
 
 void CameraMovementSystem::StrafeRight(bool keydown)
 {
-	float radians;
-
 	if (keydown)
 	{
 		m_strafeRightSpeed += m_frameTime * 0.04f;

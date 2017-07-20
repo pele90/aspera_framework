@@ -143,11 +143,11 @@ void Scene::Shutdown()
 
 }
 
-bool Scene::Frame(Input* p_input, int p_frameTime, int p_fps)
+bool Scene::Frame(Input* p_input, float p_frameTime, int p_fps)
 {
 	// Process systems
 
-	bool result = true;
+	bool result;
 
 	// System for handling user input such as adding gameobjects or removing them
 	// example: m_UserInputSystem->HandleUserInput(p_input, m_MainCamera); 
@@ -155,8 +155,10 @@ bool Scene::Frame(Input* p_input, int p_frameTime, int p_fps)
 	m_cameraMovementSystem->HandleMovementInput(p_input, m_MainCamera, p_frameTime);
 
 	result = m_RenderingSystem->Frame(m_GameObjects, m_MainCamera, p_fps);
+	if (!result)
+		return false;
 
-	return result;
+	return true;
 }
 
 void Scene::AddGameObject(GameObject* gameobject)

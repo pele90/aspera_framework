@@ -14,8 +14,6 @@ Terrain::~Terrain()
 
 bool Terrain::Initialize()
 {
-	bool result;
-
 	return true;
 }
 

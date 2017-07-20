@@ -1,5 +1,5 @@
-#ifndef _LIGHTCLASS_H_
-#define _LIGHTCLASS_H_
+#ifndef _LIGHT_INFO_H_
+#define _LIGHT_INFO_H_
 
 //////////////
 // INCLUDES //
@@ -7,12 +7,12 @@
 #include <directxmath.h>
 using namespace DirectX;
 
-class LightClass
+class LightInfo
 {
 public:
-	LightClass();
-	LightClass(const LightClass&);
-	~LightClass();
+	LightInfo();
+	LightInfo(const LightInfo&);
+	~LightInfo();
 
 	void SetAmbientColor(float, float, float, float);
 	void SetDiffuseColor(float, float, float, float);
@@ -39,4 +39,4 @@ private:
 	XMMATRIX m_projectionMatrix;
 };
 
-#endif
+#endif "!_LIGHT_H_"

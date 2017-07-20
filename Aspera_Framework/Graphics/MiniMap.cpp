@@ -2,8 +2,8 @@
 
 MiniMap::MiniMap()
 {
-	m_MiniMapBitmap = 0;
-	m_PointBitmap = 0;
+	m_miniMapBitmap = 0;
+	m_pointBitmap = 0;
 }
 
 MiniMap::MiniMap(const MiniMap& other)
@@ -32,14 +32,14 @@ bool MiniMap::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContex
 	m_terrainHeight = terrainHeight;
 
 	// Create the mini-map bitmap object.
-	m_MiniMapBitmap = new BitmapClass;
-	if (!m_MiniMapBitmap)
+	m_miniMapBitmap = new Bitmap;
+	if (!m_miniMapBitmap)
 	{
 		return false;
 	}
 
 	// Initialize the mini-map bitmap object.
-	result = m_MiniMapBitmap->Initialize(device, deviceContext, screenWidth, screenHeight, 154, 154,
+	result = m_miniMapBitmap->Initialize(device, deviceContext, screenWidth, screenHeight, 154, 154,
 		"../Aspera_Framework/data/minimap/minimap.tga");
 	if (!result)
 	{
@@ -47,14 +47,14 @@ bool MiniMap::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContex
 	}
 
 	// Create the point bitmap object.
-	m_PointBitmap = new BitmapClass;
-	if (!m_PointBitmap)
+	m_pointBitmap = new Bitmap;
+	if (!m_pointBitmap)
 	{
 		return false;
 	}
 
 	// Initialize the point bitmap object.
-	result = m_PointBitmap->Initialize(device, deviceContext, screenWidth, screenHeight, 3, 3,
+	result = m_pointBitmap->Initialize(device, deviceContext, screenWidth, screenHeight, 3, 3,
 		"../Aspera_Framework/data/minimap/point.tga");
 	if (!result)
 	{
@@ -67,19 +67,19 @@ bool MiniMap::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContex
 void MiniMap::Shutdown()
 {
 	// Release the point bitmap object.
-	if (m_PointBitmap)
+	if (m_pointBitmap)
 	{
-		m_PointBitmap->Shutdown();
-		delete m_PointBitmap;
-		m_PointBitmap = 0;
+		m_pointBitmap->Shutdown();
+		delete m_pointBitmap;
+		m_pointBitmap = 0;
 	}
 
 	// Release the mini-map bitmap object.
-	if (m_MiniMapBitmap)
+	if (m_miniMapBitmap)
 	{
-		m_MiniMapBitmap->Shutdown();
-		delete m_MiniMapBitmap;
-		m_MiniMapBitmap = 0;
+		m_miniMapBitmap->Shutdown();
+		delete m_miniMapBitmap;
+		m_miniMapBitmap = 0;
 	}
 
 	return;
@@ -91,30 +91,30 @@ bool MiniMap::Render(ID3D11DeviceContext* deviceContext, ShaderManager* ShaderMa
 	bool result;
 
 	// Put the mini-map bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	result = m_MiniMapBitmap->Render(deviceContext, m_mapLocationX, m_mapLocationY);
+	result = m_miniMapBitmap->Render(deviceContext, m_mapLocationX, m_mapLocationY);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Render the mini-map bitmap using the texture shader.
-	result = ShaderManager->RenderTextureShader(deviceContext, m_MiniMapBitmap->GetIndexCount(), worldMatrix, viewMatrix,
-		orthoMatrix, m_MiniMapBitmap->GetTexture());
+	result = ShaderManager->RenderTextureShader(deviceContext, m_miniMapBitmap->GetIndexCount(), worldMatrix, viewMatrix,
+		orthoMatrix, m_miniMapBitmap->GetTexture());
 	if (!result)
 	{
 		return false;
 	}
 
 	// Put the point bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	result = m_PointBitmap->Render(deviceContext, m_pointLocationX, m_pointLocationY);
+	result = m_pointBitmap->Render(deviceContext, m_pointLocationX, m_pointLocationY);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Render the point bitmap using the texture shader.
-	result = ShaderManager->RenderTextureShader(deviceContext, m_PointBitmap->GetIndexCount(), worldMatrix, viewMatrix,
-		orthoMatrix, m_PointBitmap->GetTexture());
+	result = ShaderManager->RenderTextureShader(deviceContext, m_pointBitmap->GetIndexCount(), worldMatrix, viewMatrix,
+		orthoMatrix, m_pointBitmap->GetTexture());
 	if (!result)
 	{
 		return false;

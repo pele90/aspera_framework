@@ -12,15 +12,10 @@ Mesh::Mesh(unsigned index, char * type) : Component(index, type)
 	m_instanceBuffer = 0;
 }
 
-Mesh::~Mesh()
-{
-
-}
+Mesh::~Mesh(){}
 
 bool Mesh::Initialize() 
 {
-	bool result;
-
 	return true;
 }
 

@@ -1,6 +1,6 @@
-#include "TextClass.h"
+#include "Text.h"
 
-TextClass::TextClass()
+Text::Text()
 {
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
@@ -8,19 +8,14 @@ TextClass::TextClass()
 	m_indexBuffer2 = 0;
 }
 
-TextClass::TextClass(const TextClass& other)
-{
-}
+Text::Text(const Text& other){}
 
-TextClass::~TextClass()
-{
-}
+Text::~Text(){}
 
-bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screenWidth, int screenHeight, int maxLength,
-	bool shadow, FontClass* Font, char* text, int positionX, int positionY, float red, float green, float blue)
+bool Text::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screenWidth, int screenHeight, int maxLength,
+	bool shadow, Font* Font, char* text, int positionX, int positionY, float red, float green, float blue)
 {
 	bool result;
-
 
 	// Store the screen width and height.
 	m_screenWidth = screenWidth;
@@ -42,7 +37,7 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 	return true;
 }
 
-void TextClass::Shutdown()
+void Text::Shutdown()
 {
 	// Release the buffers.
 	if (m_vertexBuffer)
@@ -72,7 +67,7 @@ void TextClass::Shutdown()
 	return;
 }
 
-void TextClass::Render(ID3D11DeviceContext* deviceContext, ShaderManager* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+void Text::Render(ID3D11DeviceContext* deviceContext, ShaderManager* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX orthoMatrix, ID3D11ShaderResourceView* fontTexture)
 {
 	// Draw the sentence.
@@ -81,7 +76,7 @@ void TextClass::Render(ID3D11DeviceContext* deviceContext, ShaderManager* Shader
 	return;
 }
 
-bool TextClass::InitializeSentence(ID3D11Device* device, ID3D11DeviceContext* deviceContext, FontClass* Font, char* text, int positionX,
+bool Text::InitializeSentence(ID3D11Device* device, ID3D11DeviceContext* deviceContext, Font* Font, char* text, int positionX,
 	int positionY, float red, float green, float blue)
 {
 	VertexType* vertices;
@@ -193,7 +188,7 @@ bool TextClass::InitializeSentence(ID3D11Device* device, ID3D11DeviceContext* de
 	return true;
 }
 
-bool TextClass::UpdateSentence(ID3D11DeviceContext* deviceContext, FontClass* Font, char* text, int positionX, int positionY, float red,
+bool Text::UpdateSentence(ID3D11DeviceContext* deviceContext, Font* Font, char* text, int positionX, int positionY, float red,
 	float green, float blue)
 {
 	int numLetters;
@@ -275,7 +270,7 @@ bool TextClass::UpdateSentence(ID3D11DeviceContext* deviceContext, FontClass* Fo
 	return true;
 }
 
-void TextClass::RenderSentence(ID3D11DeviceContext* deviceContext, ShaderManager* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+void Text::RenderSentence(ID3D11DeviceContext* deviceContext, ShaderManager* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX orthoMatrix, ID3D11ShaderResourceView* fontTexture)
 {
 	unsigned int stride, offset;

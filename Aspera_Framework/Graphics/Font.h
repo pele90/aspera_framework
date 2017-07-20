@@ -1,5 +1,5 @@
-#ifndef _FONTCLASS_H_
-#define _FONTCLASS_H_
+#ifndef _FONT_H_
+#define _FONT_H_
 
 //////////////
 // INCLUDES //
@@ -14,7 +14,7 @@ using namespace std;
 ///////////////////////
 #include "Texture.h"
 
-class FontClass
+class Font
 {
 private:
 	struct FontType
@@ -30,9 +30,9 @@ private:
 	};
 
 public:
-	FontClass();
-	FontClass(const FontClass&);
-	~FontClass();
+	Font();
+	Font(const Font&);
+	~Font();
 
 	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, char*, char*, float, int);
 	void Shutdown();
@@ -49,10 +49,10 @@ private:
 	void ReleaseTexture();
 
 private:
-	FontType* m_Font;
-	Texture* m_Texture;
+	FontType* m_font;
+	Texture* m_texture;
 	float m_fontHeight;
 	int m_spaceSize;
 };
 
-#endif "_FONTCLASS_H_"
+#endif "_FONT_H_"

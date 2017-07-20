@@ -13,8 +13,6 @@ TerrainMesh::~TerrainMesh() {}
 
 bool TerrainMesh::Initialize() 
 {
-	bool result;
-
 	return true;
 }
 
@@ -757,9 +755,7 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
-	int i, j, terrainWidth, terrainHeight, index;
 	XMFLOAT4 color;
-	float positionX, positionZ;
 
 	// Calculate the number of vertices in the terrain.
 	m_vertexCount = (m_terrainWidth - 1) * (m_terrainHeight - 1) * 6;
@@ -782,7 +778,7 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 	}
 
 	// Load the vertex array and index array with 3D terrain model data.
-	for (i = 0; i<m_vertexCount; i++)
+	for (int i = 0; i<m_vertexCount; i++)
 	{
 		vertices[i].position = XMFLOAT3(m_terrainModel[i].x, m_terrainModel[i].y, m_terrainModel[i].z);
 		vertices[i].texture = XMFLOAT2(m_terrainModel[i].tu, m_terrainModel[i].tv);

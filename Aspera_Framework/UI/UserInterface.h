@@ -1,15 +1,15 @@
-#ifndef _USERINTERFACECLASS_H_
-#define _USERINTERFACECLASS_H_
+#ifndef _USER_INTERFACE_H_
+#define _USER_INTERFACE_H_
 
-#include "../Graphics/TextClass.h"
+#include "../Graphics/Text.h"
 #include "../Graphics/MiniMap.h"
 
-class UserInterfaceClass
+class UserInterface
 {
 public:
-	UserInterfaceClass();
-	UserInterfaceClass(const UserInterfaceClass&);
-	~UserInterfaceClass();
+	UserInterface();
+	UserInterface(const UserInterface&);
+	~UserInterface();
 
 	bool Initialize(D3D*, int, int);
 	void Shutdown();
@@ -21,12 +21,12 @@ private:
 	bool UpdateFpsString(ID3D11DeviceContext*, int);
 
 private:
-	FontClass* m_Font1;
-	TextClass *m_FpsString;
-	TextClass *m_VideoStrings;
+	Font* m_font1;
+	Text *m_fpsString;
+	Text *m_videoStrings;
 	int m_previousFps;
 	MiniMap* m_miniMap;
 	//int m_previousPosition[6];
 };
 
-#endif
+#endif "!_USER_INTERFACE_H_"

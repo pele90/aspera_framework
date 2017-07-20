@@ -11,8 +11,6 @@ Cube::~Cube(){}
 
 bool Cube::Initialize()
 {
-	bool result;
-
 	return true;
 }
 

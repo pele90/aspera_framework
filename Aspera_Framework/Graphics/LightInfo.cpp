@@ -1,62 +1,56 @@
-#include "LightClass.h"
+#include "LightInfo.h"
 
-LightClass::LightClass()
-{
-}
+LightInfo::LightInfo(){}
 
-LightClass::LightClass(const LightClass& other)
-{
-}
+LightInfo::LightInfo(const LightInfo& other){}
 
-LightClass::~LightClass()
-{
-}
+LightInfo::~LightInfo(){}
 
-void LightClass::SetAmbientColor(float red, float green, float blue, float alpha)
+void LightInfo::SetAmbientColor(float red, float green, float blue, float alpha)
 {
 	m_ambientColor = XMFLOAT4(red, green, blue, alpha);
 	return;
 }
 
-void LightClass::SetDiffuseColor(float red, float green, float blue, float alpha)
+void LightInfo::SetDiffuseColor(float red, float green, float blue, float alpha)
 {
 	m_diffuseColor = XMFLOAT4(red, green, blue, alpha);
 	return;
 }
 
-void LightClass::SetLookAt(float x, float y, float z)
+void LightInfo::SetLookAt(float x, float y, float z)
 {
 	m_lookAt = XMVectorSet(x, y, z, 0);
 	return;
 }
 
-void LightClass::SetPosition(float x, float y, float z)
+void LightInfo::SetPosition(float x, float y, float z)
 {
 	m_position = XMVectorSet(x, y, z, 0);
 	return;
 }
 
-XMFLOAT4 LightClass::GetAmbientColor()
+XMFLOAT4 LightInfo::GetAmbientColor()
 {
 	return m_ambientColor;
 }
 
-XMFLOAT4 LightClass::GetDiffuseColor()
+XMFLOAT4 LightInfo::GetDiffuseColor()
 {
 	return m_diffuseColor;
 }
 
-XMVECTOR LightClass::GetLookAt()
+XMVECTOR LightInfo::GetLookAt()
 {
 	return m_lookAt;
 }
 
-XMVECTOR LightClass::GetPosition()
+XMVECTOR LightInfo::GetPosition()
 {
 	return m_position;
 }
 
-void LightClass::GenerateViewMatrix()
+void LightInfo::GenerateViewMatrix()
 {
 	// Setup the vector that points upwards.
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -67,7 +61,7 @@ void LightClass::GenerateViewMatrix()
 	return;
 }
 
-void LightClass::GenerateProjectionMatrix(float screenDepth, float screenNear)
+void LightInfo::GenerateProjectionMatrix(float screenDepth, float screenNear)
 {
 	float fieldOfView, screenAspect;
 
@@ -82,13 +76,13 @@ void LightClass::GenerateProjectionMatrix(float screenDepth, float screenNear)
 	return;
 }
 
-void LightClass::GetViewMatrix(XMMATRIX& viewMatrix)
+void LightInfo::GetViewMatrix(XMMATRIX& viewMatrix)
 {
 	viewMatrix = m_viewMatrix;
 	return;
 }
 
-void LightClass::GetProjectionMatrix(XMMATRIX& projectionMatrix)
+void LightInfo::GetProjectionMatrix(XMMATRIX& projectionMatrix)
 {
 	projectionMatrix = m_projectionMatrix;
 	return;

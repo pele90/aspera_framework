@@ -1,7 +1,7 @@
 #ifndef _RENDERINGSYSTEM_H_
 #define _RENDERINGSYSTEM_H_
 
-#include "../UI/userinterfaceclass.h"
+#include "../UI/UserInterface.h"
 #include "../Component/Transform.h"
 #include "../Gameobject/Camera.h"
 #include "..\Gameobject\DirectionalLight.h"
@@ -66,7 +66,7 @@ private:
 	ShaderManager* m_ShaderManager;
 	TextureManager* m_TextureManager;
 	XMMATRIX m_worldMatrix, m_baseViewMatrix, m_viewMatrix, m_projectionMatrix, m_orthographicMatrix;
-	UserInterfaceClass* m_userInterface;
+	UserInterface* m_userInterface;
 
 	vector<RenderTexture*> m_renderToTextures;
 	RenderTexture* m_RenderTexture;

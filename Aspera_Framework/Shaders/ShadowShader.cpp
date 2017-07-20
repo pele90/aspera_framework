@@ -1,6 +1,6 @@
-#include "ShadowShaderClass.h"
+#include "ShadowShader.h"
 
-ShadowShaderClass::ShadowShaderClass()
+ShadowShader::ShadowShader()
 {
 	m_vertexShader = 0;
 	m_pixelShader = 0;
@@ -12,11 +12,11 @@ ShadowShaderClass::ShadowShaderClass()
 	m_lightBuffer2 = 0;
 }
 
-ShadowShaderClass::ShadowShaderClass(const ShadowShaderClass& other) {}
+ShadowShader::ShadowShader(const ShadowShader& other) {}
 
-ShadowShaderClass::~ShadowShaderClass() {}
+ShadowShader::~ShadowShader() {}
 
-bool ShadowShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool ShadowShader::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
@@ -30,7 +30,7 @@ bool ShadowShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 	return true;
 }
 
-void ShadowShaderClass::Shutdown()
+void ShadowShader::Shutdown()
 {
 	// Shutdown the vertex and pixel shaders as well as the related objects.
 	ShutdownShader();
@@ -38,7 +38,7 @@ void ShadowShaderClass::Shutdown()
 	return;
 }
 
-bool ShadowShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+bool ShadowShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix, XMMATRIX lightProjectionMatrix,
 	ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightPosition,
 	XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
@@ -58,7 +58,7 @@ bool ShadowShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCoun
 	return true;
 }
 
-bool ShadowShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
+bool ShadowShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -254,7 +254,7 @@ bool ShadowShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR*
 	return true;
 }
 
-void ShadowShaderClass::ShutdownShader()
+void ShadowShader::ShutdownShader()
 {
 	// Release the light constant buffers.
 	if (m_lightBuffer)
@@ -313,10 +313,10 @@ void ShadowShaderClass::ShutdownShader()
 	return;
 }
 
-void ShadowShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
+void ShadowShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
 {
 	char* compileErrors;
-	unsigned long bufferSize, i;
+	SIZE_T bufferSize, i;
 	ofstream fout;
 
 
@@ -348,7 +348,7 @@ void ShadowShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND 
 	return;
 }
 
-bool ShadowShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+bool ShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix, XMMATRIX lightProjectionMatrix,
 	ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightPosition,
 	XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
@@ -448,7 +448,7 @@ bool ShadowShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, 
 	return true;
 }
 
-void ShadowShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+void ShadowShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
 {
 	// Set the vertex input layout.
 	deviceContext->IASetInputLayout(m_layout);

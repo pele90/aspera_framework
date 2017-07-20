@@ -1,5 +1,5 @@
-#ifndef _LIGHT_
-#define _LIGHT_
+#ifndef _LIGHT_H
+#define _LIGHT_H
 
 #include "..\Base\Component.h"
 
@@ -27,5 +27,5 @@ private:
 	XMFLOAT4 m_diffuseColor;
 
 };
-#endif // !_LIGHT_
+#endif // !_LIGHT_H
 

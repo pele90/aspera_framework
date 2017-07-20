@@ -16,8 +16,6 @@ GameObject::~GameObject() {}
 
 bool GameObject::Initialize()
 {
-	bool result;
-
 	m_Components = vector<Component*>();
 
 	return true;

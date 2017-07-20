@@ -40,7 +40,7 @@ public:
 
 	bool Initialize(HWND hwnd, int screenWidth, int screenHeight);
 	void Shutdown();
-	bool Frame(Input*,int, int);
+	bool Frame(Input*,float, int);
 
 	void AddGameObject(GameObject*);
 	void RemoveGameObject(GameObject*);

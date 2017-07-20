@@ -4,7 +4,7 @@
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
-#include "BitmapClass.h"
+#include "Bitmap.h"
 #include "../Manager/ShaderManager.h"
 
 class MiniMap
@@ -23,7 +23,7 @@ public:
 private:
 	int m_mapLocationX, m_mapLocationY, m_pointLocationX, m_pointLocationY;
 	float m_mapSizeX, m_mapSizeY, m_terrainWidth, m_terrainHeight;
-	BitmapClass *m_MiniMapBitmap, *m_PointBitmap;
+	Bitmap* m_miniMapBitmap, *m_pointBitmap;
 };
 
 #endif

@@ -17,7 +17,7 @@ public:
 	bool Initialize();
 	void Shutdown();
 
-	void HandleMovementInput(Input*, GameObject*, int);
+	void HandleMovementInput(Input*, GameObject*, float);
 
 private:
 	void SetPosition(float, float, float);

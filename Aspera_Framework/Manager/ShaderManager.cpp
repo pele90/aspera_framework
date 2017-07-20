@@ -23,7 +23,7 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 	bool result;
 
 	// Create the terrain shader object.
-	m_terrainShader = new TerrainShaderClass;
+	m_terrainShader = new TerrainShader;
 	if (!m_terrainShader)
 	{
 		return false;
@@ -37,7 +37,7 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 	}
 
 	// Create the color shader object.
-	m_colorShader = new ColorShaderClass;
+	m_colorShader = new ColorShader;
 	if (!m_colorShader)
 	{
 		return false;
@@ -51,7 +51,7 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 	}
 
 	// Create the texture shader object.
-	m_textureShader = new TextureShaderClass;
+	m_textureShader = new TextureShader;
 	if (!m_textureShader)
 	{
 		return false;
@@ -65,7 +65,7 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 	}
 
 	// Create the light shader object.
-	m_lightShader = new LightShaderClass;
+	m_lightShader = new LightShader;
 	if (!m_lightShader)
 	{
 		return false;
@@ -93,7 +93,7 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 	}
 
 	// Create the font shader object.
-	m_fontShader = new FontShaderClass;
+	m_fontShader = new FontShader;
 	if (!m_fontShader)
 	{
 		return false;
@@ -107,7 +107,7 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 	}
 
 	// Create the sky dome shader object.
-	m_skydomeShader = new SkyDomeShaderClass;
+	m_skydomeShader = new SkyDomeShader;
 	if (!m_skydomeShader)
 	{
 		return false;
@@ -121,7 +121,7 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 	}
 
 	// Create the depth shader object.
-	m_depthShader = new DepthShaderClass;
+	m_depthShader = new DepthShader;
 	if (!m_depthShader)
 	{
 		return false;
@@ -135,7 +135,7 @@ bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 	}
 
 	// Create the shadow shader object.
-	m_shadowShader = new ShadowShaderClass;
+	m_shadowShader = new ShadowShader;
 	if (!m_shadowShader)
 	{
 		return false;

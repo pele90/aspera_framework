@@ -1,5 +1,5 @@
-#ifndef _SHADOWSHADERCLASS_H_
-#define _SHADOWSHADERCLASS_H_
+#ifndef _SHADOW_SHADER_H_
+#define _SHADOW_SHADER_H_
 
 //////////////
 // INCLUDES //
@@ -11,7 +11,7 @@
 using namespace std;
 using namespace DirectX;
 
-class ShadowShaderClass
+class ShadowShader
 {
 private:
 	struct MatrixBufferType
@@ -36,9 +36,9 @@ private:
 	};
 
 public:
-	ShadowShaderClass();
-	ShadowShaderClass(const ShadowShaderClass&);
-	~ShadowShaderClass();
+	ShadowShader();
+	ShadowShader(const ShadowShader&);
+	~ShadowShader();
 
 	bool Initialize(ID3D11Device*, HWND);
 	void Shutdown();
@@ -65,4 +65,4 @@ private:
 	ID3D11Buffer* m_lightBuffer2;
 };
 
-#endif "_SHADOWSHADERCLASS_H_"
+#endif "_SHADOW_SHADER_H_"

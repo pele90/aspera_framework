@@ -1,14 +1,14 @@
-#ifndef _TEXTCLASS_H_
-#define _TEXTCLASS_H_
+#ifndef _TEXT_H_
+#define _TEXT_H_
 
 
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
-#include "FontClass.h"
+#include "Font.h"
 #include "../Manager/ShaderManager.h"
 
-class TextClass
+class Text
 {
 private:
 	struct VertexType
@@ -18,18 +18,18 @@ private:
 	};
 
 public:
-	TextClass();
-	TextClass(const TextClass&);
-	~TextClass();
+	Text();
+	Text(const Text&);
+	~Text();
 
-	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, int, int, int, bool, FontClass*, char*, int, int, float, float, float);
+	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, int, int, int, bool, Font*, char*, int, int, float, float, float);
 	void Shutdown();
 	void Render(ID3D11DeviceContext*, ShaderManager*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
 
-	bool UpdateSentence(ID3D11DeviceContext*, FontClass*, char*, int, int, float, float, float);
+	bool UpdateSentence(ID3D11DeviceContext*, Font*, char*, int, int, float, float, float);
 
 private:
-	bool InitializeSentence(ID3D11Device*, ID3D11DeviceContext*, FontClass*, char*, int, int, float, float, float);
+	bool InitializeSentence(ID3D11Device*, ID3D11DeviceContext*, Font*, char*, int, int, float, float, float);
 	void RenderSentence(ID3D11DeviceContext*, ShaderManager*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
 
 private:
@@ -39,4 +39,4 @@ private:
 	XMFLOAT4 m_pixelColor;
 };
 
-#endif "_TEXTCLASS_H_"
+#endif "_TEXT_H_"

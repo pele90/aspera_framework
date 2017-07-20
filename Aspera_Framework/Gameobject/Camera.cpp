@@ -12,13 +12,19 @@ Camera::~Camera()
 
 bool Camera::Initialize()
 {
+	bool result;
+
 	m_Transform = new Transform;
 	if (!m_Transform)
 		return false;
 
-	m_Transform->Initialize();
+	result = m_Transform->Initialize();
+	if (!result)
+		return false;
 
 	AddComponent(m_Transform);
+
+	return true;
 }
 
 void Camera::Shutdown()

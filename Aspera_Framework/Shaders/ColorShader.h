@@ -1,21 +1,15 @@
-#ifndef _DEPTHSHADERCLASS_H_
-#define _DEPTHSHADERCLASS_H_
+#ifndef _COLOR_SHADER_H_
+#define _COLOR_SHADER_H_
 
-//////////////
 // INCLUDES //
-//////////////
 #include <d3d11.h>
-#include <DirectXMath.h>
-#include <d3dcompiler.h>
+#include <D3Dcompiler.h>
+#include <directxmath.h>
 #include <fstream>
-using namespace std;
 using namespace DirectX;
+using namespace std;
 
-
-////////////////////////////////////////////////////////////////////////////////
-// Class name: DepthShaderClass
-////////////////////////////////////////////////////////////////////////////////
-class DepthShaderClass
+class ColorShader
 {
 private:
 	struct MatrixBufferType
@@ -26,9 +20,9 @@ private:
 	};
 
 public:
-	DepthShaderClass();
-	DepthShaderClass(const DepthShaderClass&);
-	~DepthShaderClass();
+	ColorShader();
+	ColorShader(const ColorShader&);
+	~ColorShader();
 
 	bool Initialize(ID3D11Device*, HWND);
 	void Shutdown();
@@ -49,4 +43,4 @@ private:
 	ID3D11Buffer* m_matrixBuffer;
 };
 
-#endif
+#endif //_COLOR_SHADER_H_

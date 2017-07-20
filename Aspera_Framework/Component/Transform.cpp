@@ -1,19 +1,11 @@
 #include "Transform.h"
 
-Transform::Transform() : Component(10, "TRANSFORM")
-{
-	
-}
+Transform::Transform() : Component(10, "TRANSFORM"){}
 
-Transform::~Transform()
-{
-
-}
+Transform::~Transform(){}
 
 bool Transform::Initialize()
 {
-	bool result;
-
 	m_positionX = 0;
 	m_positionY = 0;
 	m_positionZ = 0;
@@ -25,10 +17,7 @@ bool Transform::Initialize()
 	return true;
 }
 
-void Transform::Shutdown()
-{
-
-}
+void Transform::Shutdown(){}
 
 void Transform::SetTransform(const Transform other)
 {

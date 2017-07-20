@@ -132,46 +132,13 @@
     <ClInclude Include="Component\Transform.h">
       <Filter>Header Files\COMPONENT</Filter>
     </ClInclude>
-    <ClInclude Include="UI\userinterfaceclass.h">
-      <Filter>Header Files\UI</Filter>
-    </ClInclude>
     <ClInclude Include="MISC\Enums.h">
       <Filter>Header Files\MISC</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders\ColorShaderClass.h">
-      <Filter>Header Files\SHADERS</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders\FontShaderClass.h">
-      <Filter>Header Files\SHADERS</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders\LightShaderClass.h">
-      <Filter>Header Files\SHADERS</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders\SkyDomeShaderClass.h">
-      <Filter>Header Files\SHADERS</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders\TerrainShaderClass.h">
-      <Filter>Header Files\SHADERS</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders\TextureShaderClass.h">
-      <Filter>Header Files\SHADERS</Filter>
     </ClInclude>
     <ClInclude Include="Shaders\TextureShaderInstanced.h">
       <Filter>Header Files\SHADERS</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\LightClass.h">
-      <Filter>Header Files\GRAPHICS</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\MiniMap.h">
-      <Filter>Header Files\GRAPHICS</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\BitmapClass.h">
-      <Filter>Header Files\GRAPHICS</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\FontClass.h">
-      <Filter>Header Files\GRAPHICS</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\TextClass.h">
       <Filter>Header Files\GRAPHICS</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\DebugWindow.h">
@@ -179,12 +146,6 @@
     </ClInclude>
     <ClInclude Include="Graphics\RenderTexture.h">
       <Filter>Header Files\GRAPHICS</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders\DepthShaderClass.h">
-      <Filter>Header Files\SHADERS</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders\ShadowShaderClass.h">
-      <Filter>Header Files\SHADERS</Filter>
     </ClInclude>
     <ClInclude Include="Component\Light.h">
       <Filter>Header Files\COMPONENT</Filter>
@@ -225,11 +186,47 @@
     <ClInclude Include="Graphics\Texture.h">
       <Filter>Header Files\GRAPHICS</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Bitmap.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Font.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Text.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\UserInterface.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\ColorShader.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\DepthShader.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\FontShader.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\LightShader.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\ShadowShader.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\SkyDomeShader.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\TerrainShader.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\TextureShader.h">
+      <Filter>Header Files\SHADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\LightInfo.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MISC\FpsClass.cpp">
-      <Filter>Source Files\MISC</Filter>
-    </ClCompile>
     <ClCompile Include="Base\GameObject.cpp">
       <Filter>Source Files\BASE</Filter>
     </ClCompile>
@@ -278,62 +275,20 @@
     <ClCompile Include="Component\Transform.cpp">
       <Filter>Source Files\COMPONENT</Filter>
     </ClCompile>
-    <ClCompile Include="UI\userinterfaceclass.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Shaders\ColorShaderClass.cpp">
-      <Filter>Source Files\SHADERS</Filter>
-    </ClCompile>
-    <ClCompile Include="Shaders\FontShaderClass.cpp">
-      <Filter>Source Files\SHADERS</Filter>
-    </ClCompile>
-    <ClCompile Include="Shaders\LightShaderClass.cpp">
-      <Filter>Source Files\SHADERS</Filter>
-    </ClCompile>
-    <ClCompile Include="Shaders\SkyDomeShaderClass.cpp">
-      <Filter>Source Files\SHADERS</Filter>
-    </ClCompile>
-    <ClCompile Include="Shaders\TerrainShaderClass.cpp">
-      <Filter>Source Files\SHADERS</Filter>
-    </ClCompile>
-    <ClCompile Include="Shaders\TextureShaderClass.cpp">
-      <Filter>Source Files\SHADERS</Filter>
-    </ClCompile>
     <ClCompile Include="Shaders\TextureShaderInstanced.cpp">
       <Filter>Source Files\SHADERS</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\LightClass.cpp">
-      <Filter>Source Files\GRAPHICS</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\MiniMap.cpp">
       <Filter>Source Files\GRAPHICS</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\TextureClass.cpp">
-      <Filter>Source Files\GRAPHICS</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\BitmapClass.cpp">
-      <Filter>Source Files\GRAPHICS</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\FontClass.cpp">
-      <Filter>Source Files\GRAPHICS</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\TextClass.cpp">
-      <Filter>Source Files\GRAPHICS</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\DebugWindow.cpp">
       <Filter>Source Files\GRAPHICS</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\RenderTexture.cpp">
       <Filter>Source Files\GRAPHICS</Filter>
-    </ClCompile>
-    <ClCompile Include="Shaders\DepthShaderClass.cpp">
-      <Filter>Source Files\SHADERS</Filter>
-    </ClCompile>
-    <ClCompile Include="Shaders\ShadowShaderClass.cpp">
-      <Filter>Source Files\SHADERS</Filter>
     </ClCompile>
     <ClCompile Include="Component\Light.cpp">
       <Filter>Source Files\COMPONENT</Filter>
@@ -367,6 +322,51 @@
     </ClCompile>
     <ClCompile Include="Manager\TextureManager.cpp">
       <Filter>Source Files\MANAGER</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Bitmap.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Font.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="MISC\Fps.cpp">
+      <Filter>Source Files\MISC</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Text.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Texture.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\UserInterface.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\ColorShader.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\DepthShader.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\FontShader.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\LightShader.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\ShadowShader.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\SkyDomeShader.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\TerrainShader.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders\TextureShader.cpp">
+      <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\LightInfo.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -5,15 +5,15 @@
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "../D3D/D3D.h"
-#include "../Shaders/ColorShaderClass.h"
-#include "../Shaders/TextureShaderClass.h"
-#include "../Shaders/FontShaderClass.h"
-#include "../Shaders/LightShaderClass.h"
-#include "../Shaders/TerrainShaderClass.h"
-#include "../Shaders/SkyDomeShaderClass.h"
+#include "../Shaders/ColorShader.h"
+#include "../Shaders/TextureShader.h"
+#include "../Shaders/FontShader.h"
+#include "../Shaders/LightShader.h"
+#include "../Shaders/TerrainShader.h"
+#include "../Shaders/SkyDomeShader.h"
 #include "../Shaders/TextureShaderInstanced.h"
-#include "../Shaders/DepthShaderClass.h"
-#include "../Shaders/ShadowShaderClass.h"
+#include "../Shaders/DepthShader.h"
+#include "../Shaders/ShadowShader.h"
 #include "../Shaders/MultipleShadowShader.h"
 #include "../Gameobject/DirectionalLight.h"
 
@@ -42,15 +42,15 @@ public:
 	bool RenderMultipleShadowShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, vector<XMMATRIX>, vector<XMMATRIX>, ID3D11ShaderResourceView* , vector<ID3D11ShaderResourceView*>, vector<DirectionalLight*>);
 
 private:
-	ColorShaderClass* m_colorShader;
-	TextureShaderClass* m_textureShader;
-	LightShaderClass* m_lightShader;
-	FontShaderClass* m_fontShader;
-	TerrainShaderClass* m_terrainShader;
-	SkyDomeShaderClass* m_skydomeShader;
+	ColorShader* m_colorShader;
+	TextureShader* m_textureShader;
+	LightShader* m_lightShader;
+	FontShader* m_fontShader;
+	TerrainShader* m_terrainShader;
+	SkyDomeShader* m_skydomeShader;
 	TextureShaderInstanced* m_textureShaderInstanced;
-	DepthShaderClass* m_depthShader;
-	ShadowShaderClass* m_shadowShader;
+	DepthShader* m_depthShader;
+	ShadowShader* m_shadowShader;
 	MultipleShadowShader* m_multipleShadowShader;
 };
 

@@ -11,8 +11,6 @@ InstancedCube::~InstancedCube() {}
 
 bool InstancedCube::Initialize()
 {
-	bool result;
-
 	return true;
 }
 

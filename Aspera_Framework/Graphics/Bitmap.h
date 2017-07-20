@@ -1,5 +1,5 @@
-#ifndef _BITMAPCLASS_H_
-#define _BITMAPCLASS_H_
+#ifndef _BITMAP_H_
+#define _BITMAP_H_
 
 //////////////
 // INCLUDES //
@@ -12,7 +12,7 @@ using namespace DirectX;
 ///////////////////////
 #include "Texture.h"
 
-class BitmapClass
+class Bitmap
 {
 private:
 	struct VertexType
@@ -22,9 +22,9 @@ private:
 	};
 
 public:
-	BitmapClass();
-	BitmapClass(const BitmapClass&);
-	~BitmapClass();
+	Bitmap();
+	Bitmap(const Bitmap&);
+	~Bitmap();
 
 	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, int, int, int, int, char*);
 	void Shutdown();
@@ -47,7 +47,7 @@ private:
 	int m_screenWidth, m_screenHeight;
 	int m_bitmapWidth, m_bitmapHeight;
 	int m_previousPosX, m_previousPosY;
-	Texture* m_Texture;
+	Texture* m_texture;
 };
 
-#endif
+#endif "!_BITMAP_H_"

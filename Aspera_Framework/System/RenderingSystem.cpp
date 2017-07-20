@@ -107,7 +107,7 @@ bool RenderingSystem::Initialize(HWND hwnd, int screenWidth, int screenHeight, v
 
 #pragma region USERINTERFACE
 
-	m_userInterface = new UserInterfaceClass;
+	m_userInterface = new UserInterface;
 	if (!m_userInterface)
 		return false;
 
@@ -378,8 +378,6 @@ bool RenderingSystem::RenderWithShader(Mesh* mesh, ShaderType shaderType, vector
 
 bool RenderingSystem::BindBuffer(Mesh *mesh)
 {
-	bool result;
-
 	mesh->Render(m_direct3D->GetDeviceContext());
 
 	return true;
@@ -650,7 +648,6 @@ bool RenderingSystem::RenderSceneToDepthMap(DirectionalLight* light)
 
 bool RenderingSystem::RenderSceneToDepthMaps(vector<DirectionalLight*> lights)
 {
-	bool result;
 	int i = 0;
 	vector<RenderTexture*> temp_renderTextures;
 
