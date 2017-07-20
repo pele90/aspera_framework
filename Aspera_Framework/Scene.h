@@ -6,12 +6,12 @@
 #include <vector>
 #include <algorithm>
 
-#include "D3D\D3DClass.h"
+#include "D3D\D3D.h"
 
 #include "Base\GameObject.h"
 #include "Base\Prefab.h"
 
-#include "Manager\ShaderManagerClass.h"
+#include "Manager\ShaderManager.h"
 #include "Manager\TextureManagerClass.h"
 
 #include "Gameobject\Camera.h"
@@ -24,23 +24,23 @@
 #include "System\RenderingSystem.h"
 #include "System\CameraMovementSystem.h"
 
-#include "MISC\InputClass.h"
+#include "MISC\Input.h"
 
 #pragma endregion
 
 using namespace std;
 
-class SceneClass
+class Scene
 {
 public:
-	SceneClass();
-	SceneClass(char*);
-	SceneClass(const SceneClass&);
-	~SceneClass();
+	Scene();
+	Scene(char*);
+	Scene(const Scene&);
+	~Scene();
 
 	bool Initialize(HWND hwnd, int screenWidth, int screenHeight);
 	void Shutdown();
-	bool Frame(InputClass*,int, int);
+	bool Frame(Input*,int, int);
 
 	void AddGameObject(GameObject*);
 	void RemoveGameObject(GameObject*);

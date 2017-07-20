@@ -11,11 +11,11 @@ public:
 	UserInterfaceClass(const UserInterfaceClass&);
 	~UserInterfaceClass();
 
-	bool Initialize(D3DClass*, int, int);
+	bool Initialize(D3D*, int, int);
 	void Shutdown();
 
 	bool Frame(ID3D11DeviceContext*, int, XMFLOAT3);
-	bool Render(D3DClass*, ShaderManagerClass*, XMMATRIX, XMMATRIX, XMMATRIX);
+	bool Render(D3D*, ShaderManager*, XMMATRIX, XMMATRIX, XMMATRIX);
 
 private:
 	bool UpdateFpsString(ID3D11DeviceContext*, int);

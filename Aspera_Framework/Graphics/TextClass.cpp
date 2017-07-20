@@ -72,7 +72,7 @@ void TextClass::Shutdown()
 	return;
 }
 
-void TextClass::Render(ID3D11DeviceContext* deviceContext, ShaderManagerClass* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+void TextClass::Render(ID3D11DeviceContext* deviceContext, ShaderManager* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX orthoMatrix, ID3D11ShaderResourceView* fontTexture)
 {
 	// Draw the sentence.
@@ -275,7 +275,7 @@ bool TextClass::UpdateSentence(ID3D11DeviceContext* deviceContext, FontClass* Fo
 	return true;
 }
 
-void TextClass::RenderSentence(ID3D11DeviceContext* deviceContext, ShaderManagerClass* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+void TextClass::RenderSentence(ID3D11DeviceContext* deviceContext, ShaderManager* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX orthoMatrix, ID3D11ShaderResourceView* fontTexture)
 {
 	unsigned int stride, offset;

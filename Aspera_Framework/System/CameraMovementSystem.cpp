@@ -68,7 +68,7 @@ void CameraMovementSystem::GetRotation(float& x, float& y, float& z)
 	return;
 }
 
-void CameraMovementSystem::HandleMovementInput(InputClass* p_input, GameObject* p_gameobject, int p_frameTime)
+void CameraMovementSystem::HandleMovementInput(Input* p_input, GameObject* p_gameobject, int p_frameTime)
 {
 	bool keyDown;
 	float posX, posY, posZ, rotX, rotY, rotZ;

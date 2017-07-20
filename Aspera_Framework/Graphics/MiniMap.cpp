@@ -85,7 +85,7 @@ void MiniMap::Shutdown()
 	return;
 }
 
-bool MiniMap::Render(ID3D11DeviceContext* deviceContext, ShaderManagerClass* ShaderManager, XMMATRIX worldMatrix,
+bool MiniMap::Render(ID3D11DeviceContext* deviceContext, ShaderManager* ShaderManager, XMMATRIX worldMatrix,
 	XMMATRIX viewMatrix, XMMATRIX orthoMatrix)
 {
 	bool result;

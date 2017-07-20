@@ -11,10 +11,10 @@
 #include "../Component/TerrainMesh.h"
 #include "..\Component\Light.h"
 #include "../MISC/Enums.h"
-#include "../D3D/D3DClass.h"
+#include "../D3D/D3D.h"
 #include "../Base/GameObject.h"
 #include "../Base/Mesh.h"
-#include "../Manager/ShaderManagerClass.h"
+#include "../Manager/ShaderManager.h"
 #include "../Manager/TextureManagerClass.h"
 #include "../Graphics/DebugWindow.h"
 #include "../Graphics/RenderTexture.h"
@@ -62,8 +62,8 @@ private:
 	bool RenderWithPointLight(Mesh*, vector<string>, DirectionalLight*[]);
 
 private:
-	D3DClass* m_Direct3D;
-	ShaderManagerClass* m_ShaderManager;
+	D3D* m_direct3D;
+	ShaderManager* m_ShaderManager;
 	TextureManagerClass* m_TextureManager;
 	XMMATRIX m_worldMatrix, m_baseViewMatrix, m_viewMatrix, m_projectionMatrix, m_orthographicMatrix;
 	UserInterfaceClass* m_userInterface;

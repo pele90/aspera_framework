@@ -8,10 +8,10 @@
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
-#include "../MISC/Inputclass.h"
-#include "../MISC/TimerClass.h"
-#include "../MISC/FpsClass.h"
-#include "../SceneClass.h"
+#include "../MISC/Input.h"
+#include "../MISC/Timer.h"
+#include "../MISC/Fps.h"
+#include "../Scene.h"
 
 class Application
 {
@@ -25,10 +25,10 @@ public:
 	bool Frame();
 
 private:
-	InputClass* m_Input;
-	TimerClass* m_Timer;
-	FpsClass* m_Fps;
-	SceneClass* m_Scene;
+	Input* m_input;
+	Timer* m_timer;
+	Fps* m_fps;
+	Scene* m_scene;
 };
 
-#endif "_APPLICATIONCLASS_H_"
+#endif "_APPLICATION_H_"

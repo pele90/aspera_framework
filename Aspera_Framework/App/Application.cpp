@@ -2,10 +2,10 @@
 
 Application::Application()
 {
-	m_Input = 0;
-	m_Timer = 0;
-	m_Fps = 0;
-	m_Scene = 0;
+	m_input = 0;
+	m_timer = 0;
+	m_fps = 0;
+	m_scene = 0;
 }
 
 Application::Application(const Application& other) {}
@@ -19,14 +19,14 @@ bool Application::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, in
 	#pragma region INPUT
 
 	// Create the input object.
-	m_Input = new InputClass;
-	if (!m_Input)
+	m_input = new Input;
+	if (!m_input)
 	{
 		return false;
 	}
 
 	// Initialize the input object.
-	result = m_Input->Initialize(hinstance, hwnd, screenWidth, screenHeight);
+	result = m_input->Initialize(hinstance, hwnd, screenWidth, screenHeight);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the input object.", L"Error", MB_OK);
@@ -37,13 +37,13 @@ bool Application::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, in
 
 	#pragma region SCENE
 
-	m_Scene = new SceneClass("Level_1");
-	if (!m_Scene)
+	m_scene = new Scene("Level_1");
+	if (!m_scene)
 	{
 		return false;
 	}
 
-	result = m_Scene->Initialize(hwnd, screenWidth, screenHeight);
+	result = m_scene->Initialize(hwnd, screenWidth, screenHeight);
 	if (!result)
 	{
 		return false;
@@ -54,14 +54,14 @@ bool Application::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, in
 	#pragma region TIMER
 
 	// Create the timer object.
-	m_Timer = new TimerClass;
-	if (!m_Timer)
+	m_timer = new Timer;
+	if (!m_timer)
 	{
 		return false;
 	}
 
 	// Initialize the timer object.
-	result = m_Timer->Initialize();
+	result = m_timer->Initialize();
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the timer object.", L"Error", MB_OK);
@@ -73,14 +73,14 @@ bool Application::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, in
 	#pragma region FPS
 
 	// Create the fps object.
-	m_Fps = new FpsClass;
-	if (!m_Fps)
+	m_fps = new Fps;
+	if (!m_fps)
 	{
 		return false;
 	}
 
 	// Initialize the fps object.
-	m_Fps->Initialize();
+	m_fps->Initialize();
 
 	#pragma endregion
 
@@ -89,33 +89,34 @@ bool Application::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, in
 
 void Application::Shutdown()
 {
-	if (m_Scene)
+	// Release the scene object.
+	if (m_scene)
 	{
-		m_Scene->Shutdown();
-		delete m_Scene;
-		m_Scene = 0;
+		m_scene->Shutdown();
+		delete m_scene;
+		m_scene = 0;
 	}
 
 	// Release the fps object.
-	if (m_Fps)
+	if (m_fps)
 	{
-		delete m_Fps;
-		m_Fps = 0;
+		delete m_fps;
+		m_fps = 0;
 	}
 
 	// Release the timer object.
-	if (m_Timer)
+	if (m_timer)
 	{
-		delete m_Timer;
-		m_Timer = 0;
+		delete m_timer;
+		m_timer = 0;
 	}
 
 	// Release the input object.
-	if (m_Input)
+	if (m_input)
 	{
-		m_Input->Shutdown();
-		delete m_Input;
-		m_Input = 0;
+		m_input->Shutdown();
+		delete m_input;
+		m_input = 0;
 	}
 
 	return;
@@ -126,24 +127,24 @@ bool Application::Frame()
 	bool result;
 
 	// Update the system stats.
-	m_Fps->Frame();
-	m_Timer->Frame();
+	m_fps->Frame();
+	m_timer->Frame();
 
 	// Do the input frame processing.
-	result = m_Input->Frame();
+	result = m_input->Frame();
 	if (!result)
 	{
 		return false;
 	}
 
 	// Check if the user pressed escape and wants to exit the application.
-	if (m_Input->IsEscapePressed() == true)
+	if (m_input->IsEscapePressed() == true)
 	{
 		return false;
 	}
 
 	// Do the scene processing.
-	result = m_Scene->Frame(m_Input, m_Timer->GetTime(), m_Fps->GetFps());
+	result = m_scene->Frame(m_input, m_timer->GetTime(), m_fps->GetFps());
 	if (!result)
 	{
 		return false;

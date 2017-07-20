@@ -5,7 +5,7 @@
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "BitmapClass.h"
-#include "../Manager/ShaderManagerClass.h"
+#include "../Manager/ShaderManager.h"
 
 class MiniMap
 {
@@ -16,7 +16,7 @@ public:
 
 	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, int, int, float, float);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext*, ShaderManagerClass*, XMMATRIX, XMMATRIX, XMMATRIX);
+	bool Render(ID3D11DeviceContext*, ShaderManager*, XMMATRIX, XMMATRIX, XMMATRIX);
 
 	void PositionUpdate(float, float);
 

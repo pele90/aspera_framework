@@ -84,18 +84,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MISC\FpsClass.h">
-      <Filter>Header Files\MISC</Filter>
-    </ClInclude>
-    <ClInclude Include="MISC\InputClass.h">
-      <Filter>Header Files\MISC</Filter>
-    </ClInclude>
-    <ClInclude Include="MISC\TimerClass.h">
-      <Filter>Header Files\MISC</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Base\GameObject.h">
       <Filter>Header Files\BASE</Filter>
     </ClInclude>
@@ -105,14 +93,8 @@
     <ClInclude Include="Base\Mesh.h">
       <Filter>Header Files\BASE</Filter>
     </ClInclude>
-    <ClInclude Include="Manager\ShaderManagerClass.h">
-      <Filter>Header Files\MANAGER</Filter>
-    </ClInclude>
     <ClInclude Include="Manager\TextureManagerClass.h">
       <Filter>Header Files\MANAGER</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D\D3DClass.h">
-      <Filter>Header Files\D3D</Filter>
     </ClInclude>
     <ClInclude Include="Gameobject\Camera.h">
       <Filter>Header Files\GAMEOBJECT</Filter>
@@ -225,22 +207,31 @@
     <ClInclude Include="App\Application.h">
       <Filter>Header Files\APP</Filter>
     </ClInclude>
+    <ClInclude Include="MISC\Input.h">
+      <Filter>Header Files\MISC</Filter>
+    </ClInclude>
+    <ClInclude Include="MISC\Timer.h">
+      <Filter>Header Files\MISC</Filter>
+    </ClInclude>
+    <ClInclude Include="MISC\Fps.h">
+      <Filter>Header Files\MISC</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D\D3D.h">
+      <Filter>Header Files\D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\ShaderManager.h">
+      <Filter>Header Files\MANAGER</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MISC\FpsClass.cpp">
       <Filter>Source Files\MISC</Filter>
     </ClCompile>
-    <ClCompile Include="MISC\InputClass.cpp">
-      <Filter>Source Files\MISC</Filter>
-    </ClCompile>
-    <ClCompile Include="MISC\TimerClass.cpp">
-      <Filter>Source Files\MISC</Filter>
-    </ClCompile>
     <ClCompile Include="Base\GameObject.cpp">
       <Filter>Source Files\BASE</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D\D3DClass.cpp">
-      <Filter>Source Files\D3D</Filter>
     </ClCompile>
     <ClCompile Include="Base\Component.cpp">
       <Filter>Source Files\BASE</Filter>
@@ -338,9 +329,6 @@
     <ClCompile Include="Manager\TextureManagerClass.cpp">
       <Filter>Source Files\MANAGER</Filter>
     </ClCompile>
-    <ClCompile Include="SceneClass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\DebugWindow.cpp">
       <Filter>Source Files\GRAPHICS</Filter>
     </ClCompile>
@@ -367,6 +355,18 @@
     </ClCompile>
     <ClCompile Include="App\Application.cpp">
       <Filter>Source Files\APP</Filter>
+    </ClCompile>
+    <ClCompile Include="MISC\Input.cpp">
+      <Filter>Source Files\MISC</Filter>
+    </ClCompile>
+    <ClCompile Include="MISC\Timer.cpp">
+      <Filter>Source Files\MISC</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D\D3D.cpp">
+      <Filter>Source Files\D3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

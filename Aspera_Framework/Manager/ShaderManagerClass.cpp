@@ -1,166 +1,162 @@
-#include "ShaderManagerClass.h"
+#include "ShaderManager.h"
 
-ShaderManagerClass::ShaderManagerClass()
+ShaderManager::ShaderManager()
 {
-	m_ColorShader = 0;
-	m_TextureShader = 0;
-	m_LightShader = 0;
-	m_FontShader = 0;
-	m_TerrainShader = 0;
-	m_SkyDomeShader = 0;
-	m_TextureShaderInstanced = 0;
-	m_DepthShader = 0;
-	m_ShadowShader = 0;
-	m_MultipleShadowShader = 0;
+	m_colorShader = 0;
+	m_textureShader = 0;
+	m_lightShader = 0;
+	m_fontShader = 0;
+	m_terrainShader = 0;
+	m_skydomeShader = 0;
+	m_textureShaderInstanced = 0;
+	m_depthShader = 0;
+	m_shadowShader = 0;
+	m_multipleShadowShader = 0;
 }
 
-ShaderManagerClass::ShaderManagerClass(const ShaderManagerClass& other)
-{
-}
+ShaderManager::ShaderManager(const ShaderManager& other){}
 
-ShaderManagerClass::~ShaderManagerClass()
-{
-}
+ShaderManager::~ShaderManager(){}
 
-bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool ShaderManager::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
 	// Create the terrain shader object.
-	m_TerrainShader = new TerrainShaderClass;
-	if (!m_TerrainShader)
+	m_terrainShader = new TerrainShaderClass;
+	if (!m_terrainShader)
 	{
 		return false;
 	}
 
 	// Initialize the terrain shader object.
-	result = m_TerrainShader->Initialize(device, hwnd);
+	result = m_terrainShader->Initialize(device, hwnd);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Create the color shader object.
-	m_ColorShader = new ColorShaderClass;
-	if (!m_ColorShader)
+	m_colorShader = new ColorShaderClass;
+	if (!m_colorShader)
 	{
 		return false;
 	}
 
 	// Initialize the color shader object.
-	result = m_ColorShader->Initialize(device, hwnd);
+	result = m_colorShader->Initialize(device, hwnd);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Create the texture shader object.
-	m_TextureShader = new TextureShaderClass;
-	if (!m_TextureShader)
+	m_textureShader = new TextureShaderClass;
+	if (!m_textureShader)
 	{
 		return false;
 	}
 
 	// Create the texture shader object for instanced objects.
-	m_TextureShaderInstanced = new TextureShaderInstanced;
-	if (!m_TextureShaderInstanced)
+	m_textureShaderInstanced = new TextureShaderInstanced;
+	if (!m_textureShaderInstanced)
 	{
 		return false;
 	}
 
 	// Create the light shader object.
-	m_LightShader = new LightShaderClass;
-	if (!m_LightShader)
+	m_lightShader = new LightShaderClass;
+	if (!m_lightShader)
 	{
 		return false;
 	}
 
 	// Initialize the light shader object.
-	result = m_LightShader->Initialize(device, hwnd);
+	result = m_lightShader->Initialize(device, hwnd);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Initialize the texture shader object.
-	result = m_TextureShader->Initialize(device, hwnd);
+	result = m_textureShader->Initialize(device, hwnd);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Initialize the texture shader instanced object.
-	result = m_TextureShaderInstanced->Initialize(device, hwnd);
+	result = m_textureShaderInstanced->Initialize(device, hwnd);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Create the font shader object.
-	m_FontShader = new FontShaderClass;
-	if (!m_FontShader)
+	m_fontShader = new FontShaderClass;
+	if (!m_fontShader)
 	{
 		return false;
 	}
 
 	// Initialize the font shader object.
-	result = m_FontShader->Initialize(device, hwnd);
+	result = m_fontShader->Initialize(device, hwnd);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Create the sky dome shader object.
-	m_SkyDomeShader = new SkyDomeShaderClass;
-	if (!m_SkyDomeShader)
+	m_skydomeShader = new SkyDomeShaderClass;
+	if (!m_skydomeShader)
 	{
 		return false;
 	}
 
 	// Initialize the sky dome shader object.
-	result = m_SkyDomeShader->Initialize(device, hwnd);
+	result = m_skydomeShader->Initialize(device, hwnd);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Create the depth shader object.
-	m_DepthShader = new DepthShaderClass;
-	if (!m_DepthShader)
+	m_depthShader = new DepthShaderClass;
+	if (!m_depthShader)
 	{
 		return false;
 	}
 
 	// Initialize the depth shader object.
-	result = m_DepthShader->Initialize(device, hwnd);
+	result = m_depthShader->Initialize(device, hwnd);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Create the shadow shader object.
-	m_ShadowShader = new ShadowShaderClass;
-	if (!m_ShadowShader)
+	m_shadowShader = new ShadowShaderClass;
+	if (!m_shadowShader)
 	{
 		return false;
 	}
 
 	// Initialize the shadow shader object.
-	result = m_ShadowShader->Initialize(device, hwnd);
+	result = m_shadowShader->Initialize(device, hwnd);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Create the multiple shadow shader object.
-	m_MultipleShadowShader = new MultipleShadowShader;
-	if (!m_ShadowShader)
+	m_multipleShadowShader = new MultipleShadowShader;
+	if (!m_shadowShader)
 	{
 		return false;
 	}
 
 	// Initialize the multiple shadow shader object.
-	result = m_MultipleShadowShader->Initialize(device, hwnd);
+	result = m_multipleShadowShader->Initialize(device, hwnd);
 	if (!result)
 	{
 		return false;
@@ -169,154 +165,154 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	return true;
 }
 
-void ShaderManagerClass::Shutdown()
+void ShaderManager::Shutdown()
 {
 	// Release the terrain shader object.
-	if (m_TerrainShader)
+	if (m_terrainShader)
 	{
-		m_TerrainShader->Shutdown();
-		delete m_TerrainShader;
-		m_TerrainShader = 0;
+		m_terrainShader->Shutdown();
+		delete m_terrainShader;
+		m_terrainShader = 0;
 	}
 
 	// Release the sky dome shader object.
-	if (m_SkyDomeShader)
+	if (m_skydomeShader)
 	{
-		m_SkyDomeShader->Shutdown();
-		delete m_SkyDomeShader;
-		m_SkyDomeShader = 0;
+		m_skydomeShader->Shutdown();
+		delete m_skydomeShader;
+		m_skydomeShader = 0;
 	}
 
 	// Release the font shader object.
-	if (m_FontShader)
+	if (m_fontShader)
 	{
-		m_FontShader->Shutdown();
-		delete m_FontShader;
-		m_FontShader = 0;
+		m_fontShader->Shutdown();
+		delete m_fontShader;
+		m_fontShader = 0;
 	}
 
 	// Release the light shader object.
-	if (m_LightShader)
+	if (m_lightShader)
 	{
-		m_LightShader->Shutdown();
-		delete m_LightShader;
-		m_LightShader = 0;
+		m_lightShader->Shutdown();
+		delete m_lightShader;
+		m_lightShader = 0;
 	}
 
 	// Release the texture shader object.
-	if (m_TextureShader)
+	if (m_textureShader)
 	{
-		m_TextureShader->Shutdown();
-		delete m_TextureShader;
-		m_TextureShader = 0;
+		m_textureShader->Shutdown();
+		delete m_textureShader;
+		m_textureShader = 0;
 	}
 
 	// Release the texture shader instanced object.
-	if (m_TextureShaderInstanced)
+	if (m_textureShaderInstanced)
 	{
-		m_TextureShaderInstanced->Shutdown();
-		delete m_TextureShaderInstanced;
-		m_TextureShaderInstanced = 0;
+		m_textureShaderInstanced->Shutdown();
+		delete m_textureShaderInstanced;
+		m_textureShaderInstanced = 0;
 	}
 
 	// Release the color shader object.
-	if (m_ColorShader)
+	if (m_colorShader)
 	{
-		m_ColorShader->Shutdown();
-		delete m_ColorShader;
-		m_ColorShader = 0;
+		m_colorShader->Shutdown();
+		delete m_colorShader;
+		m_colorShader = 0;
 	}
 
 	// Release the depth shader object.
-	if (m_DepthShader)
+	if (m_depthShader)
 	{
-		m_DepthShader->Shutdown();
-		delete m_DepthShader;
-		m_DepthShader = 0;
+		m_depthShader->Shutdown();
+		delete m_depthShader;
+		m_depthShader = 0;
 	}
 
 	// Release the shadow shader object.
-	if (m_ShadowShader)
+	if (m_shadowShader)
 	{
-		m_ShadowShader->Shutdown();
-		delete m_ShadowShader;
-		m_ShadowShader = 0;
+		m_shadowShader->Shutdown();
+		delete m_shadowShader;
+		m_shadowShader = 0;
 	}
 
 	// Release the multiple shadow shader object.
-	if (m_MultipleShadowShader)
+	if (m_multipleShadowShader)
 	{
-		m_MultipleShadowShader->Shutdown();
-		delete m_MultipleShadowShader;
-		m_MultipleShadowShader = 0;
+		m_multipleShadowShader->Shutdown();
+		delete m_multipleShadowShader;
+		m_multipleShadowShader = 0;
 	}
 
 	return;
 }
 
-bool ShaderManagerClass::RenderColorShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+bool ShaderManager::RenderColorShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix)
 {
-	return m_ColorShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix);
+	return m_colorShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix);
 }
 
-bool ShaderManagerClass::RenderTextureShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+bool ShaderManager::RenderTextureShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
 {
-	return m_TextureShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture);
+	return m_textureShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture);
 }
 
-bool ShaderManagerClass::RenderLightShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+bool ShaderManager::RenderLightShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection,
 	XMFLOAT4 diffuseColor)
 {
-	return m_LightShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, lightDirection, diffuseColor);
+	return m_lightShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, lightDirection, diffuseColor);
 }
 
-bool ShaderManagerClass::RenderLightShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+bool ShaderManager::RenderLightShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMVECTOR diffuseColor[], XMVECTOR lightPosition[])
 {
-	return m_LightShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, diffuseColor, lightPosition);
+	return m_lightShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, diffuseColor, lightPosition);
 }
 
-bool ShaderManagerClass::RenderFontShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+bool ShaderManager::RenderFontShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT4 color)
 {
-	return m_FontShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, color);
+	return m_fontShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, color);
 }
 
-bool ShaderManagerClass::RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+bool ShaderManager::RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* normalMap,
 	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor)
 {
-	return m_TerrainShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, normalMap, lightDirection, diffuseColor);
+	return m_terrainShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, normalMap, lightDirection, diffuseColor);
 }
 
-bool ShaderManagerClass::RenderSkyDomeShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+bool ShaderManager::RenderSkyDomeShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor)
 {
-	return m_SkyDomeShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, apexColor, centerColor);
+	return m_skydomeShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, apexColor, centerColor);
 }
 
-bool ShaderManagerClass::RenderTextureShaderInstanced(ID3D11DeviceContext *deviceContext, int vertexCount, int instanceCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView *texture)
+bool ShaderManager::RenderTextureShaderInstanced(ID3D11DeviceContext *deviceContext, int vertexCount, int instanceCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView *texture)
 {
-	return m_TextureShaderInstanced->Render(deviceContext, vertexCount, instanceCount, worldMatrix, viewMatrix, projectionMatrix, texture);
+	return m_textureShaderInstanced->Render(deviceContext, vertexCount, instanceCount, worldMatrix, viewMatrix, projectionMatrix, texture);
 }
 
-bool ShaderManagerClass::RenderDepthShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+bool ShaderManager::RenderDepthShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix)
 {
-	return m_DepthShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix);
+	return m_depthShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix);
 }
 
-bool ShaderManagerClass::RenderShadowShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, 
+bool ShaderManager::RenderShadowShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, 
 	XMMATRIX lightViewMatrix, XMMATRIX lightProjectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightPosition, 
 	XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
 {
-	return m_ShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture, depthMapTexture, lightPosition, ambientColor, diffuseColor);
+	return m_shadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture, depthMapTexture, lightPosition, ambientColor, diffuseColor);
 }
 
-bool ShaderManagerClass::RenderMultipleShadowShader(ID3D11DeviceContext * deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, vector<XMMATRIX> lightViewMatrix, vector<XMMATRIX> lightProjectionMatrix, ID3D11ShaderResourceView * texture, vector<ID3D11ShaderResourceView*> depthMapTexture, vector<DirectionalLight*> lights)
+bool ShaderManager::RenderMultipleShadowShader(ID3D11DeviceContext * deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, vector<XMMATRIX> lightViewMatrix, vector<XMMATRIX> lightProjectionMatrix, ID3D11ShaderResourceView * texture, vector<ID3D11ShaderResourceView*> depthMapTexture, vector<DirectionalLight*> lights)
 {
-	return m_MultipleShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture, depthMapTexture, lights);
+	return m_multipleShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture, depthMapTexture, lights);
 }

@@ -1,10 +1,10 @@
-#ifndef _SHADERMANAGERCLASS_H_
-#define _SHADERMANAGERCLASS_H_
+#ifndef _SHADERMANAGER_H_
+#define _SHADERMANAGER_H_
 
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
-#include "../D3D/D3DClass.h"
+#include "../D3D/D3D.h"
 #include "../Shaders/ColorShaderClass.h"
 #include "../Shaders/TextureShaderClass.h"
 #include "../Shaders/FontShaderClass.h"
@@ -17,12 +17,12 @@
 #include "../Shaders/MultipleShadowShader.h"
 #include "../Gameobject/DirectionalLight.h"
 
-class ShaderManagerClass
+class ShaderManager
 {
 public:
-	ShaderManagerClass();
-	ShaderManagerClass(const ShaderManagerClass&);
-	~ShaderManagerClass();
+	ShaderManager();
+	ShaderManager(const ShaderManager&);
+	~ShaderManager();
 
 	bool Initialize(ID3D11Device*, HWND);
 	void Shutdown();
@@ -42,16 +42,16 @@ public:
 	bool RenderMultipleShadowShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, vector<XMMATRIX>, vector<XMMATRIX>, ID3D11ShaderResourceView* , vector<ID3D11ShaderResourceView*>, vector<DirectionalLight*>);
 
 private:
-	ColorShaderClass* m_ColorShader;
-	TextureShaderClass* m_TextureShader;
-	LightShaderClass* m_LightShader;
-	FontShaderClass* m_FontShader;
-	TerrainShaderClass* m_TerrainShader;
-	SkyDomeShaderClass* m_SkyDomeShader;
-	TextureShaderInstanced* m_TextureShaderInstanced;
-	DepthShaderClass* m_DepthShader;
-	ShadowShaderClass* m_ShadowShader;
-	MultipleShadowShader* m_MultipleShadowShader;
+	ColorShaderClass* m_colorShader;
+	TextureShaderClass* m_textureShader;
+	LightShaderClass* m_lightShader;
+	FontShaderClass* m_fontShader;
+	TerrainShaderClass* m_terrainShader;
+	SkyDomeShaderClass* m_skydomeShader;
+	TextureShaderInstanced* m_textureShaderInstanced;
+	DepthShaderClass* m_depthShader;
+	ShadowShaderClass* m_shadowShader;
+	MultipleShadowShader* m_multipleShadowShader;
 };
 
-#endif "_SHADERMANAGERCLASS_H_"
+#endif "_SHADERMANAGER_H_"

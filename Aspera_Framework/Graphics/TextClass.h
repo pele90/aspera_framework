@@ -6,7 +6,7 @@
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "FontClass.h"
-#include "../Manager/ShaderManagerClass.h"
+#include "../Manager/ShaderManager.h"
 
 class TextClass
 {
@@ -24,13 +24,13 @@ public:
 
 	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, int, int, int, bool, FontClass*, char*, int, int, float, float, float);
 	void Shutdown();
-	void Render(ID3D11DeviceContext*, ShaderManagerClass*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
+	void Render(ID3D11DeviceContext*, ShaderManager*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
 
 	bool UpdateSentence(ID3D11DeviceContext*, FontClass*, char*, int, int, float, float, float);
 
 private:
 	bool InitializeSentence(ID3D11Device*, ID3D11DeviceContext*, FontClass*, char*, int, int, float, float, float);
-	void RenderSentence(ID3D11DeviceContext*, ShaderManagerClass*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
+	void RenderSentence(ID3D11DeviceContext*, ShaderManager*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
 
 private:
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer, *m_vertexBuffer2, *m_indexBuffer2;

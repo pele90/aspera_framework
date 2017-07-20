@@ -3,7 +3,7 @@
 
 #include <DirectXMath.h>
 #include "../Base/GameObject.h"
-#include "../MISC/InputClass.h"
+#include "../MISC/Input.h"
 #include "../Component/Transform.h"
 
 using namespace DirectX;
@@ -17,7 +17,7 @@ public:
 	bool Initialize();
 	void Shutdown();
 
-	void HandleMovementInput(InputClass*, GameObject*, int);
+	void HandleMovementInput(Input*, GameObject*, int);
 
 private:
 	void SetPosition(float, float, float);

@@ -1,6 +1,6 @@
-#include "SceneClass.h"
+#include "Scene.h"
 
-SceneClass::SceneClass()
+Scene::Scene()
 {
 	m_name = "DEFAULT_SCENE";
 	m_RenderingSystem = 0;
@@ -8,7 +8,7 @@ SceneClass::SceneClass()
 	m_MainCamera = 0;
 }
 
-SceneClass::SceneClass(char* name)
+Scene::Scene(char* name)
 {
 	m_name = name;
 	m_RenderingSystem = 0;
@@ -16,11 +16,11 @@ SceneClass::SceneClass(char* name)
 	m_MainCamera = 0;
 }
 
-SceneClass::SceneClass(const SceneClass&) {}
+Scene::Scene(const Scene&) {}
 
-SceneClass::~SceneClass() {}
+Scene::~Scene() {}
 
-bool SceneClass::Initialize(HWND hwnd, int screenWidth, int screenHeight)
+bool Scene::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 {
 	bool result;
 
@@ -122,7 +122,7 @@ bool SceneClass::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 	return true;
 }
 
-void SceneClass::Shutdown()
+void Scene::Shutdown()
 {
 	m_MainCamera->Shutdown();
 	delete m_MainCamera;
@@ -143,7 +143,7 @@ void SceneClass::Shutdown()
 
 }
 
-bool SceneClass::Frame(InputClass* p_input, int p_frameTime, int p_fps)
+bool Scene::Frame(Input* p_input, int p_frameTime, int p_fps)
 {
 	// Process systems
 
@@ -159,12 +159,12 @@ bool SceneClass::Frame(InputClass* p_input, int p_frameTime, int p_fps)
 	return result;
 }
 
-void SceneClass::AddGameObject(GameObject* gameobject)
+void Scene::AddGameObject(GameObject* gameobject)
 {
 	m_GameObjects.push_back(gameobject);
 }
 
-void SceneClass::RemoveGameObject(GameObject* gameObject)
+void Scene::RemoveGameObject(GameObject* gameObject)
 {
 	vector<GameObject*>::iterator iter = find_if(m_GameObjects.begin(), m_GameObjects.end(), [gameObject](GameObject* p)->bool { return gameObject->GetName() == p->GetName(); });
 
@@ -175,7 +175,7 @@ void SceneClass::RemoveGameObject(GameObject* gameObject)
 	}
 }
 
-void SceneClass::CreateDummyObjects(int count)
+void Scene::CreateDummyObjects(int count)
 {
 	for (int i = 0; i < count; ++i) {
 		Cube* monkey = new Cube;
@@ -185,7 +185,7 @@ void SceneClass::CreateDummyObjects(int count)
 	}
 }
 
-void SceneClass::CreateGameObjects(int count)
+void Scene::CreateGameObjects(int count)
 {
 	ModelMesh* mesh = new ModelMesh;
 	mesh->Initialize("../Aspera_Framework/data/models/plane01.txt");
@@ -204,7 +204,7 @@ void SceneClass::CreateGameObjects(int count)
 	}
 }
 
-bool SceneClass::CreateSkydome()
+bool Scene::CreateSkydome()
 {
 	bool result;
 
@@ -222,7 +222,7 @@ bool SceneClass::CreateSkydome()
 	return true;
 }
 
-bool SceneClass::CreateTerrain()
+bool Scene::CreateTerrain()
 {
 	Terrain* terrain = new Terrain;
 	terrain->Initialize("../Aspera_Framework/data/terrain/setup.txt");
@@ -231,7 +231,7 @@ bool SceneClass::CreateTerrain()
 	return true;
 }
 
-bool SceneClass::CreateCube(float x, float y, float z)
+bool Scene::CreateCube(float x, float y, float z)
 {
 	bool result;
 
@@ -261,7 +261,7 @@ bool SceneClass::CreateCube(float x, float y, float z)
 
 }
 
-bool SceneClass::CreateLight(float x, float y, float z, XMFLOAT4 color)
+bool Scene::CreateLight(float x, float y, float z, XMFLOAT4 color)
 {
 	bool result;
 

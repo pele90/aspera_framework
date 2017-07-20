@@ -16,7 +16,7 @@ UserInterfaceClass::~UserInterfaceClass()
 {
 }
 
-bool UserInterfaceClass::Initialize(D3DClass* Direct3D, int screenHeight, int screenWidth)
+bool UserInterfaceClass::Initialize(D3D* Direct3D, int screenHeight, int screenWidth)
 {
 	bool result;
 	char videoCard[128];
@@ -166,7 +166,7 @@ bool UserInterfaceClass::Frame(ID3D11DeviceContext* deviceContext, int fps, XMFL
 	return true;
 }
 
-bool UserInterfaceClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, 
+bool UserInterfaceClass::Render(D3D* Direct3D, ShaderManager* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, 
 								XMMATRIX orthoMatrix)
 {
 	int i;
