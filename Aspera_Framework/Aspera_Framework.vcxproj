@@ -110,8 +110,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="App\ApplicationClass.h" />
-    <ClInclude Include="App\SystemClass.h" />
+    <ClInclude Include="App\Application.h" />
+    <ClInclude Include="App\System.h" />
     <ClInclude Include="Base\Component.h" />
     <ClInclude Include="Base\GameObject.h" />
     <ClInclude Include="Base\Mesh.h" />
@@ -159,8 +159,8 @@
     <ClInclude Include="UI\userinterfaceclass.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="App\ApplicationClass.cpp" />
-    <ClCompile Include="App\SystemClass.cpp" />
+    <ClCompile Include="App\Application.cpp" />
+    <ClCompile Include="App\System.cpp" />
     <ClCompile Include="Base\Component.cpp" />
     <ClCompile Include="Base\GameObject.cpp" />
     <ClCompile Include="Base\Mesh.cpp" />

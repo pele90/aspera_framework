@@ -1,15 +1,15 @@
-#include "SystemClass.h"
+#include "System.h"
 
-SystemClass::SystemClass()
+System::System()
 {
-	m_Application = 0;
+	m_application = 0;
 }
 
-SystemClass::SystemClass(const SystemClass& other) {}
+System::System(const System& other) {}
 
-SystemClass::~SystemClass() {}
+System::~System() {}
 
-bool SystemClass::Initialize()
+bool System::Initialize()
 {
 	int screenWidth, screenHeight;
 	bool result;
@@ -23,14 +23,14 @@ bool SystemClass::Initialize()
 	InitializeWindows(screenWidth, screenHeight);
 
 	// Create the application wrapper object.
-	m_Application = new ApplicationClass;
-	if (!m_Application)
+	m_application = new Application;
+	if (!m_application)
 	{
 		return false;
 	}
 
 	// Initialize the application wrapper object.
-	result = m_Application->Initialize(m_hinstance, m_hwnd, screenWidth, screenHeight);
+	result = m_application->Initialize(m_hinstance, m_hwnd, screenWidth, screenHeight);
 	if (!result)
 	{
 		return false;
@@ -39,14 +39,14 @@ bool SystemClass::Initialize()
 	return true;
 }
 
-void SystemClass::Shutdown()
+void System::Shutdown()
 {
 	// Release the application wrapper object.
-	if (m_Application)
+	if (m_application)
 	{
-		m_Application->Shutdown();
-		delete m_Application;
-		m_Application = 0;
+		m_application->Shutdown();
+		delete m_application;
+		m_application = 0;
 	}
 
 	// Shutdown the window.
@@ -55,7 +55,7 @@ void SystemClass::Shutdown()
 	return;
 }
 
-void SystemClass::Run()
+void System::Run()
 {
 	MSG msg;
 	bool done, result;
@@ -95,13 +95,13 @@ void SystemClass::Run()
 	return;
 }
 
-bool SystemClass::Frame()
+bool System::Frame()
 {
 	bool result;
 
 
 	// Do the frame processing for the application object.
-	result = m_Application->Frame();
+	result = m_application->Frame();
 	if (!result)
 	{
 		return false;
@@ -110,12 +110,12 @@ bool SystemClass::Frame()
 	return true;
 }
 
-LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK System::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
 	return DefWindowProc(hwnd, umsg, wparam, lparam);
 }
 
-void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
+void System::InitializeWindows(int& screenWidth, int& screenHeight)
 {
 	WNDCLASSEX wc;
 	DEVMODE dmScreenSettings;
@@ -195,7 +195,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	return;
 }
 
-void SystemClass::ShutdownWindows()
+void System::ShutdownWindows()
 {
 	// Show the mouse cursor.
 	ShowCursor(true);

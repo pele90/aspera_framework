@@ -84,12 +84,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App\SystemClass.h">
-      <Filter>Header Files\APP</Filter>
-    </ClInclude>
-    <ClInclude Include="App\ApplicationClass.h">
-      <Filter>Header Files\APP</Filter>
-    </ClInclude>
     <ClInclude Include="MISC\FpsClass.h">
       <Filter>Header Files\MISC</Filter>
     </ClInclude>
@@ -225,14 +219,14 @@
     <ClInclude Include="Shaders\MultipleShadowShader.h">
       <Filter>Header Files\SHADERS</Filter>
     </ClInclude>
+    <ClInclude Include="App\System.h">
+      <Filter>Header Files\APP</Filter>
+    </ClInclude>
+    <ClInclude Include="App\Application.h">
+      <Filter>Header Files\APP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="App\SystemClass.cpp">
-      <Filter>Source Files\APP</Filter>
-    </ClCompile>
-    <ClCompile Include="App\ApplicationClass.cpp">
-      <Filter>Source Files\APP</Filter>
-    </ClCompile>
     <ClCompile Include="MISC\FpsClass.cpp">
       <Filter>Source Files\MISC</Filter>
     </ClCompile>
@@ -367,6 +361,12 @@
     </ClCompile>
     <ClCompile Include="Shaders\MultipleShadowShader.cpp">
       <Filter>Source Files\SHADERS</Filter>
+    </ClCompile>
+    <ClCompile Include="App\System.cpp">
+      <Filter>Source Files\APP</Filter>
+    </ClCompile>
+    <ClCompile Include="App\Application.cpp">
+      <Filter>Source Files\APP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
