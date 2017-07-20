@@ -14,7 +14,7 @@ enum ShaderType
 
 enum MeshType
 {
-	TERRAIN_MESH,
+	TERRAIN_CELL,
 	MODEL_MESH,
 	D3INSTANCE_MESH
 };

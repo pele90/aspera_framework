@@ -376,7 +376,9 @@ bool MultipleShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 
 	vector <ID3D11ShaderResourceView*>::iterator it = depthMapTexture.begin();
-	deviceContext->PSSetShaderResources(1, lights.size(), &(*it));
+
+	if(it != depthMapTexture.end())
+		deviceContext->PSSetShaderResources(1, lights.size(), &(*it));
 
 	// Lock the light constant buffer so it can be written to.
 	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);

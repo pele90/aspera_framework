@@ -120,7 +120,7 @@
     <ClInclude Include="Component\Light.h" />
     <ClInclude Include="Component\ModelMesh.h" />
     <ClInclude Include="Component\Renderer.h" />
-    <ClInclude Include="Component\TerrainMesh.h" />
+    <ClInclude Include="Component\TerrainCell.h" />
     <ClInclude Include="Component\Transform.h" />
     <ClInclude Include="D3D\D3D.h" />
     <ClInclude Include="Gameobject\Camera.h" />
@@ -169,7 +169,7 @@
     <ClCompile Include="Component\Light.cpp" />
     <ClCompile Include="Component\ModelMesh.cpp" />
     <ClCompile Include="Component\Renderer.cpp" />
-    <ClCompile Include="Component\TerrainMesh.cpp" />
+    <ClCompile Include="Component\TerrainCell.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
     <ClCompile Include="D3D\D3D.cpp" />
     <ClCompile Include="Gameobject\Camera.cpp" />

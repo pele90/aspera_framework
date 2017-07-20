@@ -102,9 +102,6 @@
     <ClInclude Include="Gameobject\Skydome.h">
       <Filter>Header Files\GAMEOBJECT</Filter>
     </ClInclude>
-    <ClInclude Include="Gameobject\Terrain.h">
-      <Filter>Header Files\GAMEOBJECT</Filter>
-    </ClInclude>
     <ClInclude Include="Gameobject\InstancedCube.h">
       <Filter>Header Files\GAMEOBJECT</Filter>
     </ClInclude>
@@ -124,9 +121,6 @@
       <Filter>Header Files\COMPONENT</Filter>
     </ClInclude>
     <ClInclude Include="Component\Renderer.h">
-      <Filter>Header Files\COMPONENT</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\TerrainMesh.h">
       <Filter>Header Files\COMPONENT</Filter>
     </ClInclude>
     <ClInclude Include="Component\Transform.h">
@@ -225,6 +219,12 @@
     <ClInclude Include="Graphics\LightInfo.h">
       <Filter>Header Files\GRAPHICS</Filter>
     </ClInclude>
+    <ClInclude Include="Component\TerrainCell.h">
+      <Filter>Header Files\COMPONENT</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameobject\Terrain.h">
+      <Filter>Header Files\GAMEOBJECT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Base\GameObject.cpp">
@@ -243,9 +243,6 @@
       <Filter>Source Files\GAMEOBJECT</Filter>
     </ClCompile>
     <ClCompile Include="Gameobject\Skydome.cpp">
-      <Filter>Source Files\GAMEOBJECT</Filter>
-    </ClCompile>
-    <ClCompile Include="Gameobject\Terrain.cpp">
       <Filter>Source Files\GAMEOBJECT</Filter>
     </ClCompile>
     <ClCompile Include="Gameobject\InstancedCube.cpp">
@@ -267,9 +264,6 @@
       <Filter>Source Files\COMPONENT</Filter>
     </ClCompile>
     <ClCompile Include="Component\Renderer.cpp">
-      <Filter>Source Files\COMPONENT</Filter>
-    </ClCompile>
-    <ClCompile Include="Component\TerrainMesh.cpp">
       <Filter>Source Files\COMPONENT</Filter>
     </ClCompile>
     <ClCompile Include="Component\Transform.cpp">
@@ -367,6 +361,12 @@
     </ClCompile>
     <ClCompile Include="Graphics\LightInfo.cpp">
       <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\TerrainCell.cpp">
+      <Filter>Source Files\COMPONENT</Filter>
+    </ClCompile>
+    <ClCompile Include="Gameobject\Terrain.cpp">
+      <Filter>Source Files\GAMEOBJECT</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

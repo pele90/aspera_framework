@@ -86,20 +86,20 @@ bool Scene::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 		return false;*/
 
 	// Create green light
-	if (!CreateLight(0.0f, 200.0f, 1024.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f)))
-		return false;
+	/*if (!CreateLight(0.0f, 200.0f, 1024.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f)))
+		return false;*/
 
 	// Create blue light
-	if (!CreateLight(1024.0f, 200.0f, 0.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f)))
-		return false;
+	/*if (!CreateLight(1024.0f, 200.0f, 0.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f)))
+		return false;*/
 
 	// Create red light
-	if (!CreateLight(1024.0f, 200.0f, 1024.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f)))
-		return false;
+	/*if (!CreateLight(1024.0f, 200.0f, 1024.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f)))
+		return false;*/
 
-	//// Create white light
-	//if (!CreateLight(100.0f, 200.0f, 100.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f)))
-	//	return false;
+	// Create white light
+	/*if (!CreateLight(256.0f, 2000.0f, 256.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f)))
+		return false;*/
 
 #pragma endregion
 

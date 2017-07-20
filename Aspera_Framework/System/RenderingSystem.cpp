@@ -10,7 +10,7 @@ RenderingSystem::RenderingSystem()
 	m_DebugWindow = 0;
 }
 
-RenderingSystem::~RenderingSystem(){}
+RenderingSystem::~RenderingSystem() {}
 
 bool RenderingSystem::Initialize(HWND hwnd, int screenWidth, int screenHeight, vector<GameObject*> gameObjects)
 {
@@ -176,9 +176,10 @@ bool RenderingSystem::InitializeGameObjects()
 			result = go->GetComponent<ModelMesh>("MODEL_MESH")->InitializeBuffers(m_direct3D->GetDevice());
 			m_initializedGameObjects.push_back(go);
 		}
-		else if (go->GetComponent<TerrainMesh>("TERRAIN_MESH") != NULL)
+		else if (go->GetComponent<TerrainCell>("TERRAIN_CELL") != NULL)
 		{
-			result = go->GetComponent<TerrainMesh>("TERRAIN_MESH")->InitializeBuffers(m_direct3D->GetDevice());
+			((Terrain*)go)->LoadTerrainCells(m_direct3D->GetDevice());
+			((Terrain*)go)->ShutdownTerrainModel();
 			m_initializedGameObjects.push_back(go);
 		}
 		else if (go->GetName() == "DIRECTIONAL_LIGHT") {
@@ -278,7 +279,7 @@ bool RenderingSystem::Frame(vector<GameObject*> gameobjects, Camera* camera, int
 	if (!result)
 		return false;
 
-	result = RenderSceneToDepthMaps(lights);
+	//result = RenderSceneToDepthMaps(lights);
 
 	result = Render(camera);
 	if (!result)
@@ -426,6 +427,8 @@ bool RenderingSystem::RenderScene(Camera* camera) {
 	vector<DirectionalLight*> lights;
 	int i = 0;
 
+	bool m_cellLines = false;
+
 	for (vector<GameObject*>::iterator iter = m_initializedGameObjects.begin(); iter != m_initializedGameObjects.end(); ++iter)
 	{
 		if ((*iter)->GetName() == "DIRECTIONAL_LIGHT") {
@@ -433,7 +436,6 @@ bool RenderingSystem::RenderScene(Camera* camera) {
 			lights.push_back(dynamic_cast<DirectionalLight*>((*iter)));
 			i++;
 		}
-
 	}
 
 	// render gameobjects
@@ -442,11 +444,14 @@ bool RenderingSystem::RenderScene(Camera* camera) {
 		XMFLOAT3 position = (*iter)->GetComponent<Transform>("TRANSFORM")->GetPosition();
 		Renderer* renderer = (*iter)->GetComponent<Renderer>("RENDERER");
 		Mesh* mesh = (*iter)->GetComponent<Mesh>();
+		Terrain* terrain = nullptr;
 
 		if (mesh != NULL) {
 			switch (mesh->GetMeshType())
 			{
-			case MeshType::TERRAIN_MESH:
+			case MeshType::TERRAIN_CELL:
+
+				terrain = (Terrain*)(*iter);
 
 				// Translate the model to be custom position.
 				m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
@@ -455,23 +460,41 @@ bool RenderingSystem::RenderScene(Camera* camera) {
 				m_direct3D->TurnZBufferOn();
 				m_direct3D->TurnOnCulling();
 
-				BindBuffer(mesh);
+				//Render the terrain cells (and cell lines if needed).
+				for (int i = 0; i < terrain->GetCellCount(); i++)
+				{
+					// Put the terrain cell buffers on the pipeline.
+					if(!terrain->RenderCell(m_direct3D->GetDeviceContext(), i))
+						return false;
+
+					m_ShaderManager->RenderTerrainShader(m_direct3D->GetDeviceContext(), terrain->GetCellIndexCount(i), m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_TextureManager->GetTexture(renderer->GetTextureIds().at(0)), m_TextureManager->GetTexture(renderer->GetTextureIds().at(1)), XMFLOAT3(-1.0f, -1.0f, 0.0), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+
+					// If needed then render the bounding box around this terrain cell using the color shader. 
+					if (m_cellLines)
+					{
+						terrain->RenderCellLines(m_direct3D->GetDeviceContext(), i);
+						if (!m_ShaderManager->RenderColorShader(m_direct3D->GetDeviceContext(), terrain->GetCellLinesIndexCount(i), m_worldMatrix, m_viewMatrix, m_projectionMatrix))
+							return false;
+					}
+				}
+
 
 				/*if (!RenderWithShader(mesh, ShaderType::TERRAIN, renderer->GetTextureIds()))
 					return false;*/
 
-				//// render with normal map texture
-				//if (!RenderWithShader(mesh, ShaderType::LIGHT, renderer->GetTextureIds()))
-				//	return false;
+					//if (lights.size() != 0)
+					//{
+					//	if (!RenderWithMultipleLightsAndShadows(mesh, renderer->GetTextureIds(), lights))
+					//		return false;
+					//} 
+					//else
+					//{
+					//	// render with normal map texture
+					//	if (!RenderWithShader(mesh, ShaderType::LIGHT, renderer->GetTextureIds()))
+					//		return false;
+					//}
 
-				/*if (!RenderWithShadows(mesh, renderer->GetTextureIds(), light))
-					return false;*/
 
-				/*if (!RenderWithPointLight(mesh, renderer->GetTextureIds(), lights))
-					return false;*/
-
-				if (!RenderWithMultipleLightsAndShadows(mesh, renderer->GetTextureIds(), lights))
-					return false;
 
 				m_direct3D->GetWorldMatrix(m_worldMatrix);
 
@@ -505,26 +528,25 @@ bool RenderingSystem::RenderScene(Camera* camera) {
 					m_direct3D->TurnZBufferOn();
 					m_direct3D->TurnOnCulling();
 				}
-				else {
+				else
+				{
 					// Translate the model to be custom position.
 					m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
 
 					BindBuffer(mesh);
 
-					/*if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
-						return false;*/
+					if (lights.size() != 0)
+					{
+						if (!RenderWithMultipleLightsAndShadows(mesh, renderer->GetTextureIds(), lights))
+							return false;
+					}
+					else
+					{
+						if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
+							return false;
+					}
 
-					/*if (!RenderWithShadows(mesh, renderer->GetTextureIds(), lights[0]))
-						return false;*/
-
-					/*if (!RenderWithPointLight(mesh, renderer->GetTextureIds(), lights))
-						return false;*/
-
-					if (!RenderWithMultipleLightsAndShadows(mesh, renderer->GetTextureIds(), lights))
-						return false;
-
-
-						// Reset world matrix
+					// Reset world matrix
 					m_direct3D->GetWorldMatrix(m_worldMatrix);
 				}
 
@@ -540,32 +562,35 @@ bool RenderingSystem::RenderDebugWindow(Camera* camera)
 {
 	bool result;
 
-	// Turn off the Z buffer to begin all 2D rendering.
-	m_direct3D->TurnZBufferOff();
-
-	// Get the world, view, and ortho matrices from the camera and d3d objects.
-	m_direct3D->GetWorldMatrix(m_worldMatrix);
-	camera->GetViewMatrix(m_viewMatrix);
-	m_direct3D->GetOrthoMatrix(m_orthographicMatrix);
-
-	// Put the debug window vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	result = m_DebugWindow->Render(m_direct3D->GetDeviceContext(), 690, 10);
-	if (!result)
+	if (m_renderToTextures.size() != 0)
 	{
-		return false;
+
+		// Turn off the Z buffer to begin all 2D rendering.
+		m_direct3D->TurnZBufferOff();
+
+		// Get the world, view, and ortho matrices from the camera and d3d objects.
+		m_direct3D->GetWorldMatrix(m_worldMatrix);
+		camera->GetViewMatrix(m_viewMatrix);
+		m_direct3D->GetOrthoMatrix(m_orthographicMatrix);
+
+		// Put the debug window vertex and index buffers on the graphics pipeline to prepare them for drawing.
+		result = m_DebugWindow->Render(m_direct3D->GetDeviceContext(), 690, 10);
+		if (!result)
+		{
+			return false;
+		}
+
+		// Render the debug window using the texture shader.
+		result = m_ShaderManager->RenderTextureShader(m_direct3D->GetDeviceContext(), m_DebugWindow->GetIndexCount(), m_worldMatrix, m_baseViewMatrix,
+			m_orthographicMatrix, m_renderToTextures.at(0)->GetShaderResourceView());
+		if (!result)
+		{
+			return false;
+		}
+
+		// Turn the Z buffer back on now that all 2D rendering has completed.
+		m_direct3D->TurnZBufferOn();
 	}
-
-	// Render the debug window using the texture shader.
-	result = m_ShaderManager->RenderTextureShader(m_direct3D->GetDeviceContext(), m_DebugWindow->GetIndexCount(), m_worldMatrix, m_baseViewMatrix,
-		m_orthographicMatrix, m_renderToTextures.at(0)->GetShaderResourceView());
-	if (!result)
-	{
-		return false;
-	}
-
-
-	// Turn the Z buffer back on now that all 2D rendering has completed.
-	m_direct3D->TurnZBufferOn();
 
 	return true;
 }
@@ -584,11 +609,14 @@ bool RenderingSystem::RenderSceneToDepthMap(DirectionalLight* light)
 		XMFLOAT3 position = (*iter)->GetComponent<Transform>("TRANSFORM")->GetPosition();
 		Renderer* renderer = (*iter)->GetComponent<Renderer>("RENDERER");
 		Mesh* mesh = (*iter)->GetComponent<Mesh>();
+		Terrain* terrain = nullptr;
 
 		if (mesh != NULL) {
 			switch (mesh->GetMeshType())
 			{
-			case MeshType::TERRAIN_MESH:
+			case MeshType::TERRAIN_CELL:
+
+				terrain = (Terrain*)(*iter);
 
 				// Translate the model to be custom position.
 				m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
@@ -597,21 +625,24 @@ bool RenderingSystem::RenderSceneToDepthMap(DirectionalLight* light)
 				m_direct3D->TurnZBufferOn();
 				m_direct3D->TurnOnCulling();
 
-				BindBuffer(mesh);
+				for (int i = 0; i < terrain->GetCellCount(); i++)
+				{
+					// Put the terrain cell buffers on the pipeline.
+					if (!terrain->RenderCell(m_direct3D->GetDeviceContext(), i))
+						return false;
 
-				/*if (!RenderWithShader(mesh, ShaderType::TERRAIN, renderer->GetTextureIds()))
-				return false;*/
+					if (!m_ShaderManager->RenderDepthShader(m_direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH)))
+						return false;
 
-				if (!m_ShaderManager->RenderDepthShader(m_direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH)))
-					return false;
+				}
 
 				m_direct3D->GetWorldMatrix(m_worldMatrix);
 
 				// Turn the Z buffer back and back face culling off.
 				m_direct3D->TurnZBufferOn();
 				m_direct3D->TurnOnCulling();
-				break;
 
+				break;
 			case MeshType::D3INSTANCE_MESH:
 
 				break;
@@ -721,11 +752,14 @@ bool RenderingSystem::RenderGameObjectsForShadowMap(DirectionalLight * light)
 		XMFLOAT3 position = (*iter)->GetComponent<Transform>("TRANSFORM")->GetPosition();
 		Renderer* renderer = (*iter)->GetComponent<Renderer>("RENDERER");
 		Mesh* mesh = (*iter)->GetComponent<Mesh>();
+		Terrain* terrain = nullptr;
 
 		if (mesh != NULL) {
 			switch (mesh->GetMeshType())
 			{
-			case MeshType::TERRAIN_MESH:
+			case MeshType::TERRAIN_CELL:
+
+				terrain = (Terrain*)(*iter);
 
 				// Translate the model to be custom position.
 				m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
@@ -734,13 +768,15 @@ bool RenderingSystem::RenderGameObjectsForShadowMap(DirectionalLight * light)
 				m_direct3D->TurnZBufferOn();
 				m_direct3D->TurnOnCulling();
 
-				BindBuffer(mesh);
+				//for (int i = 0; i < 10; i++)
+				//{
+				//	// Put the terrain cell buffers on the pipeline.
+				//	if (!terrain->RenderCell(m_direct3D->GetDeviceContext(), i))
+				//		return false;
 
-				/*if (!RenderWithShader(mesh, ShaderType::TERRAIN, renderer->GetTextureIds()))
-				return false;*/
-
-				if (!m_ShaderManager->RenderDepthShader(m_direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH)))
-					return false;
+				//	if (!m_ShaderManager->RenderDepthShader(m_direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH)))
+				//		return false;
+				//}
 
 				m_direct3D->GetWorldMatrix(m_worldMatrix);
 
@@ -796,4 +832,9 @@ bool RenderingSystem::RenderWithMultipleLightsAndShadows(Mesh* mesh, vector<stri
 		return false;
 
 	return true;
+}
+
+D3D* RenderingSystem::GetDirect3D()
+{
+	return m_direct3D;
 }

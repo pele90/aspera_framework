@@ -8,7 +8,8 @@
 #include "../Component/ModelMesh.h"
 #include "../Component/InstancingMesh.h"
 #include "../Component/Renderer.h"
-#include "../Component/TerrainMesh.h"
+#include "../Component/TerrainCell.h"
+#include "../Gameobject/Terrain.h"
 #include "..\Component\Light.h"
 #include "../MISC/Enums.h"
 #include "../D3D/D3D.h"
@@ -43,6 +44,7 @@ public:
 	void Shutdown();
 	bool InitializeGameObjects();
 	bool Frame(vector<GameObject*>, Camera*, int);
+	D3D* GetDirect3D();
 	
 private:
 	bool Render(Camera*);
