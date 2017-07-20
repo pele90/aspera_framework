@@ -12,7 +12,7 @@
 #include "Base\Prefab.h"
 
 #include "Manager\ShaderManager.h"
-#include "Manager\TextureManagerClass.h"
+#include "Manager\TextureManager.h"
 
 #include "Gameobject\Camera.h"
 #include "Gameobject\Cube.h"

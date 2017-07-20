@@ -15,7 +15,7 @@
 #include "../Base/GameObject.h"
 #include "../Base/Mesh.h"
 #include "../Manager/ShaderManager.h"
-#include "../Manager/TextureManagerClass.h"
+#include "../Manager/TextureManager.h"
 #include "../Graphics/DebugWindow.h"
 #include "../Graphics/RenderTexture.h"
 #include <d3d11.h>
@@ -64,7 +64,7 @@ private:
 private:
 	D3D* m_direct3D;
 	ShaderManager* m_ShaderManager;
-	TextureManagerClass* m_TextureManager;
+	TextureManager* m_TextureManager;
 	XMMATRIX m_worldMatrix, m_baseViewMatrix, m_viewMatrix, m_projectionMatrix, m_orthographicMatrix;
 	UserInterfaceClass* m_userInterface;
 

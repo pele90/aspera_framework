@@ -12,7 +12,7 @@ using namespace std;
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
-#include "TextureClass.h"
+#include "Texture.h"
 
 class FontClass
 {
@@ -50,7 +50,7 @@ private:
 
 private:
 	FontType* m_Font;
-	TextureClass* m_Texture;
+	Texture* m_Texture;
 	float m_fontHeight;
 	int m_spaceSize;
 };

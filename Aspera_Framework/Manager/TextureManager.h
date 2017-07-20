@@ -1,5 +1,5 @@
-#ifndef _TEXTUREMANAGERCLASS_H_
-#define _TEXTUREMANAGERCLASS_H_
+#ifndef _TEXTURE_MANAGER_H_
+#define _TEXTURE_MANAGER_H_
 
 #include <map>
 #include <string>
@@ -8,14 +8,14 @@ using namespace std;
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
-#include "../Graphics/TextureClass.h"
+#include "../Graphics/Texture.h"
 
-class TextureManagerClass
+class TextureManager
 {
 public:
-	TextureManagerClass();
-	TextureManagerClass(const TextureManagerClass&);
-	~TextureManagerClass();
+	TextureManager();
+	TextureManager(const TextureManager&);
+	~TextureManager();
 
 	bool Initialize();
 	void Shutdown();
@@ -25,8 +25,8 @@ public:
 	ID3D11ShaderResourceView* GetTexture(string);
 
 private:
-	map<string, TextureClass> m_TextureArray;
+	map<string, Texture> m_TextureArray;
 	int m_textureCount;
 };
 
-#endif "_TEXTUREMANAGERCLASS_H_"
+#endif "_TEXTURE_MANAGER_H_"

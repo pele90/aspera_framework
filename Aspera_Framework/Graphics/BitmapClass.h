@@ -10,7 +10,7 @@ using namespace DirectX;
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
-#include "TextureClass.h"
+#include "Texture.h"
 
 class BitmapClass
 {
@@ -47,7 +47,7 @@ private:
 	int m_screenWidth, m_screenHeight;
 	int m_bitmapWidth, m_bitmapHeight;
 	int m_previousPosX, m_previousPosY;
-	TextureClass* m_Texture;
+	Texture* m_Texture;
 };
 
 #endif

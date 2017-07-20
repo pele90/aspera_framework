@@ -93,9 +93,6 @@
     <ClInclude Include="Base\Mesh.h">
       <Filter>Header Files\BASE</Filter>
     </ClInclude>
-    <ClInclude Include="Manager\TextureManagerClass.h">
-      <Filter>Header Files\MANAGER</Filter>
-    </ClInclude>
     <ClInclude Include="Gameobject\Camera.h">
       <Filter>Header Files\GAMEOBJECT</Filter>
     </ClInclude>
@@ -168,9 +165,6 @@
     <ClInclude Include="Graphics\MiniMap.h">
       <Filter>Header Files\GRAPHICS</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\TextureClass.h">
-      <Filter>Header Files\GRAPHICS</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\BitmapClass.h">
       <Filter>Header Files\GRAPHICS</Filter>
     </ClInclude>
@@ -224,6 +218,12 @@
     </ClInclude>
     <ClInclude Include="Manager\ShaderManager.h">
       <Filter>Header Files\MANAGER</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\TextureManager.h">
+      <Filter>Header Files\MANAGER</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Texture.h">
+      <Filter>Header Files\GRAPHICS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -323,12 +323,6 @@
     <ClCompile Include="Graphics\TextClass.cpp">
       <Filter>Source Files\GRAPHICS</Filter>
     </ClCompile>
-    <ClCompile Include="Manager\ShaderManagerClass.cpp">
-      <Filter>Source Files\MANAGER</Filter>
-    </ClCompile>
-    <ClCompile Include="Manager\TextureManagerClass.cpp">
-      <Filter>Source Files\MANAGER</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\DebugWindow.cpp">
       <Filter>Source Files\GRAPHICS</Filter>
     </ClCompile>
@@ -367,6 +361,12 @@
     </ClCompile>
     <ClCompile Include="D3D\D3D.cpp">
       <Filter>Source Files\D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\ShaderManager.cpp">
+      <Filter>Source Files\MANAGER</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\TextureManager.cpp">
+      <Filter>Source Files\MANAGER</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

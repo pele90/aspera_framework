@@ -57,7 +57,7 @@ bool RenderingSystem::Initialize(HWND hwnd, int screenWidth, int screenHeight, v
 #pragma region TEXTURE MANAGER
 
 	// Create the texture manager object.
-	m_TextureManager = new TextureManagerClass;
+	m_TextureManager = new TextureManager;
 	if (!m_TextureManager)
 	{
 		return false;

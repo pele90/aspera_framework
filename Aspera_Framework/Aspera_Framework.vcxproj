@@ -136,9 +136,9 @@
     <ClInclude Include="Graphics\MiniMap.h" />
     <ClInclude Include="Graphics\RenderTexture.h" />
     <ClInclude Include="Graphics\TextClass.h" />
-    <ClInclude Include="Graphics\TextureClass.h" />
+    <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Manager\ShaderManager.h" />
-    <ClInclude Include="Manager\TextureManagerClass.h" />
+    <ClInclude Include="Manager\TextureManager.h" />
     <ClInclude Include="MISC\Enums.h" />
     <ClInclude Include="MISC\Fps.h" />
     <ClInclude Include="MISC\Input.h" />
@@ -184,8 +184,8 @@
     <ClCompile Include="Graphics\RenderTexture.cpp" />
     <ClCompile Include="Graphics\TextureClass.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Manager\ShaderManagerClass.cpp" />
-    <ClCompile Include="Manager\TextureManagerClass.cpp" />
+    <ClCompile Include="Manager\ShaderManager.cpp" />
+    <ClCompile Include="Manager\TextureManager.cpp" />
     <ClCompile Include="MISC\FpsClass.cpp" />
     <ClCompile Include="MISC\Input.cpp" />
     <ClCompile Include="MISC\Timer.cpp" />
