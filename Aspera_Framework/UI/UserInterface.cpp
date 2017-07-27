@@ -6,6 +6,8 @@ UserInterface::UserInterface()
 	m_fpsString = 0;
 	m_miniMap = 0;
 	m_videoStrings = 0;
+	m_renderCountStrings = 0;
+	m_renderTimeString = 0;
 }
 
 UserInterface::UserInterface(const UserInterface& other){}
@@ -101,11 +103,70 @@ bool UserInterface::Initialize(D3D* Direct3D, int screenHeight, int screenWidth)
 		return false;
 	}
 
+	// Create the text objects for the render count strings.
+	m_renderCountStrings = new Text[3];
+	if (!m_renderCountStrings)
+	{
+		return false;
+	}
+
+	// Initialize the render count strings.
+	result = m_renderCountStrings[0].Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 32, false, m_font1,
+		"Polys Drawn: 0", 10, 260, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = m_renderCountStrings[1].Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 32, false, m_font1,
+		"Cells Drawn: 0", 10, 280, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = m_renderCountStrings[2].Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 32, false, m_font1,
+		"Cells Culled: 0", 10, 300, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	m_renderTimeString = new Text;
+	if (!m_renderTimeString)
+		return false;
+
+	result = m_renderTimeString->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 32, false, m_font1,
+		"Render time: 0", 10, 320, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
 void UserInterface::Shutdown()
 {
+	// Release the render time string.
+	if (m_renderTimeString)
+	{
+		m_renderTimeString->Shutdown();
+		delete m_renderTimeString;
+		m_renderTimeString = 0;
+	}
+
+	// Release the render count strings.
+	if (m_renderCountStrings)
+	{
+		m_renderCountStrings[0].Shutdown();
+		m_renderCountStrings[1].Shutdown();
+		m_renderCountStrings[2].Shutdown();
+
+		delete[] m_renderCountStrings;
+		m_renderCountStrings = 0;
+	}
+
 	// Release the video card string.
 	if(m_videoStrings)
 	{
@@ -175,6 +236,15 @@ bool UserInterface::Render(D3D* Direct3D, ShaderManager* ShaderManager, XMMATRIX
 	// Render the video card strings.
 	m_videoStrings[0].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_font1->GetTexture());
 	m_videoStrings[1].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_font1->GetTexture());
+
+	// Render the render count strings.
+	for (int i = 0; i<3; i++)
+	{
+		m_renderCountStrings[i].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_font1->GetTexture());
+	}
+
+	// Render elapsed time of rendering
+	m_renderTimeString->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_font1->GetTexture());
 
 	// Turn off alpha blending now that the text has been rendered.
 	Direct3D->DisableAlphaBlending();
@@ -249,6 +319,82 @@ bool UserInterface::UpdateFpsString(ID3D11DeviceContext* deviceContext, int fps)
 	// Update the sentence vertex buffer with the new string information.
 	result = m_fpsString->UpdateSentence(deviceContext, m_font1, finalString, 10, 50, red, green, blue);
 	if(!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool UserInterface::UpdateRenderCounts(ID3D11DeviceContext* deviceContext, int renderCount, int nodesDrawn, int nodesCulled)
+{
+	char tempString[32];
+	char finalString[32];
+	bool result;
+
+
+	// Convert the render count integer to string format.
+	_itoa_s(renderCount, tempString, 10);
+
+	// Setup the render count string.
+	strcpy_s(finalString, "Polys Drawn: ");
+	strcat_s(finalString, tempString);
+
+	// Update the sentence vertex buffer with the new string information.
+	result = m_renderCountStrings[0].UpdateSentence(deviceContext, m_font1, finalString, 10, 260, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Convert the cells drawn integer to string format.
+	_itoa_s(nodesDrawn, tempString, 10);
+
+	// Setup the cells drawn string.
+	strcpy_s(finalString, "Cells Drawn: ");
+	strcat_s(finalString, tempString);
+
+	// Update the sentence vertex buffer with the new string information.
+	result = m_renderCountStrings[1].UpdateSentence(deviceContext, m_font1, finalString, 10, 280, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Convert the cells culled integer to string format.
+	_itoa_s(nodesCulled, tempString, 10);
+
+	// Setup the cells culled string.
+	strcpy_s(finalString, "Cells Culled: ");
+	strcat_s(finalString, tempString);
+
+	// Update the sentence vertex buffer with the new string information.
+	result = m_renderCountStrings[2].UpdateSentence(deviceContext, m_font1, finalString, 10, 300, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool UserInterface::UpdateRenderTime(ID3D11DeviceContext* deviceContext, float elapsedTime)
+{
+	char tempString[32];
+	char finalString[32];
+	bool result;
+
+	// Convert the render count integer to string format.
+	_itoa_s(elapsedTime, tempString, 10);
+
+	// Setup the render count string.
+	strcpy_s(finalString, "Render time: ");
+	strcat_s(finalString, tempString);
+	strcat_s(finalString, " ms");
+
+	// Update the sentence vertex buffer with the new string information.
+	result = m_renderTimeString->UpdateSentence(deviceContext, m_font1, finalString, 10, 320, 1.0f, 1.0f, 1.0f);
+	if (!result)
 	{
 		return false;
 	}

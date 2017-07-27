@@ -13,7 +13,7 @@ Terrain::Terrain() : GameObject("TERRAIN")
 
 Terrain::~Terrain() {}
 
-bool Terrain::Initialize() 
+bool Terrain::Initialize()
 {
 	return true;
 }
@@ -88,9 +88,6 @@ bool Terrain::Initialize(char* setupFilename)
 	CalculateTerrainVectors();
 
 	InitializeTerrainCells();
-
-	// Release the terrain model now that the terrain cells have been loaded.
-	//ShutdownTerrainModel();
 
 	return true;
 }
@@ -274,9 +271,9 @@ bool Terrain::LoadColorMap()
 	k = 0;
 
 	// Read the image data into the color map portion of the height map structure.
-	for (j = 0; j<m_terrainHeight; j++)
+	for (j = 0; j < m_terrainHeight; j++)
 	{
-		for (i = 0; i<m_terrainWidth; i++)
+		for (i = 0; i < m_terrainWidth; i++)
 		{
 			// Bitmaps are upside down so load bottom to top into the array.
 			index = (m_terrainWidth * (m_terrainHeight - 1 - j)) + i;
@@ -380,9 +377,9 @@ bool Terrain::LoadBitmapHeightMap()
 	k = 0;
 
 	// Read the image data into the height map array.
-	for (j = 0; j<m_terrainHeight; j++)
+	for (j = 0; j < m_terrainHeight; j++)
 	{
-		for (i = 0; i<m_terrainWidth; i++)
+		for (i = 0; i < m_terrainWidth; i++)
 		{
 			// Bitmaps are upside down so load bottom to top into the height map array.
 			index = (m_terrainWidth * (m_terrainHeight - 1 - j)) + i;
@@ -459,9 +456,9 @@ bool Terrain::LoadRawHeightMap()
 	}
 
 	// Copy the image data into the height map array.
-	for (j = 0; j<m_terrainHeight; j++)
+	for (j = 0; j < m_terrainHeight; j++)
 	{
-		for (i = 0; i<m_terrainWidth; i++)
+		for (i = 0; i < m_terrainWidth; i++)
 		{
 			index = (m_terrainWidth * j) + i;
 
@@ -499,9 +496,9 @@ void Terrain::SetTerrainCoordinates()
 
 
 	// Loop through all the elements in the height map array and adjust their coordinates correctly.
-	for (j = 0; j<m_terrainHeight; j++)
+	for (j = 0; j < m_terrainHeight; j++)
 	{
-		for (i = 0; i<m_terrainWidth; i++)
+		for (i = 0; i < m_terrainWidth; i++)
 		{
 			index = (m_terrainWidth * j) + i;
 
@@ -535,9 +532,9 @@ bool Terrain::CalculateNormals()
 	}
 
 	// Go through all the faces in the mesh and calculate their normals.
-	for (j = 0; j<(m_terrainHeight - 1); j++)
+	for (j = 0; j < (m_terrainHeight - 1); j++)
 	{
-		for (i = 0; i<(m_terrainWidth - 1); i++)
+		for (i = 0; i < (m_terrainWidth - 1); i++)
 		{
 			index1 = ((j + 1) * m_terrainWidth) + i;      // Bottom left vertex.
 			index2 = ((j + 1) * m_terrainWidth) + (i + 1);  // Bottom right vertex.
@@ -583,9 +580,9 @@ bool Terrain::CalculateNormals()
 	}
 
 	// Now go through all the vertices and take a sum of the face normals that touch this vertex.
-	for (j = 0; j<m_terrainHeight; j++)
+	for (j = 0; j < m_terrainHeight; j++)
 	{
-		for (i = 0; i<m_terrainWidth; i++)
+		for (i = 0; i < m_terrainWidth; i++)
 		{
 			// Initialize the sum.
 			sum[0] = 0.0f;
@@ -603,7 +600,7 @@ bool Terrain::CalculateNormals()
 			}
 
 			// Bottom right face.
-			if ((i<(m_terrainWidth - 1)) && ((j - 1) >= 0))
+			if ((i < (m_terrainWidth - 1)) && ((j - 1) >= 0))
 			{
 				index = ((j - 1) * (m_terrainWidth - 1)) + i;
 
@@ -613,7 +610,7 @@ bool Terrain::CalculateNormals()
 			}
 
 			// Upper left face.
-			if (((i - 1) >= 0) && (j<(m_terrainHeight - 1)))
+			if (((i - 1) >= 0) && (j < (m_terrainHeight - 1)))
 			{
 				index = (j * (m_terrainWidth - 1)) + (i - 1);
 
@@ -672,9 +669,9 @@ bool Terrain::BuildTerrainModel()
 
 	// Load the 3D terrain model with the height map terrain data.
 	// We will be creating 2 triangles for each of the four points in a quad.
-	for (j = 0; j<(m_terrainHeight - 1); j++)
+	for (j = 0; j < (m_terrainHeight - 1); j++)
 	{
-		for (i = 0; i<(m_terrainWidth - 1); i++)
+		for (i = 0; i < (m_terrainWidth - 1); i++)
 		{
 			// Get the indexes to the four points of the quad.
 			index1 = (m_terrainWidth * j) + i;          // Upper left.
@@ -798,7 +795,7 @@ void Terrain::CalculateTerrainVectors()
 	index = 0;
 
 	// Go through all the faces and calculate the the tangent, binormal, and normal vectors.
-	for (i = 0; i<faceCount; i++)
+	for (i = 0; i < faceCount; i++)
 	{
 		// Get the three vertices for this face from the terrain model.
 		vertex1.x = m_terrainModel[index].x;
@@ -942,9 +939,9 @@ bool Terrain::LoadTerrainCells(ID3D11Device* device)
 	bool result;
 
 	// Loop through and initialize all the terrain cells.
-	for (int j = 0; j<cellRowCount; j++)
+	for (int j = 0; j < cellRowCount; j++)
 	{
-		for (int i = 0; i<cellRowCount; i++)
+		for (int i = 0; i < cellRowCount; i++)
 		{
 			index = (cellRowCount * j) + i;
 
@@ -964,7 +961,7 @@ void Terrain::ShutdownTerrainCells()
 	// Release the terrain cell array.
 	if (m_terrainCells)
 	{
-		for (int i = 0; i<m_cellCount; i++)
+		for (int i = 0; i < m_cellCount; i++)
 		{
 			m_terrainCells[i].Shutdown();
 		}
@@ -976,9 +973,42 @@ void Terrain::ShutdownTerrainCells()
 	return;
 }
 
-bool Terrain::RenderCell(ID3D11DeviceContext* deviceContext, int cellId)
+bool Terrain::Frame()
 {
+	m_renderCount = 0;
+	m_cellsDrawn = 0;
+	m_cellsCulled = 0;
+
+	return true;
+}
+
+bool Terrain::RenderCell(ID3D11DeviceContext* deviceContext, int cellId, Frustum* frustum)
+{
+	float maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth;
+	bool result;
+
+
+	// Get the dimensions of the terrain cell.
+	m_terrainCells[cellId].GetCellDimensions(maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth);
+
+	// Check if the cell is visible.  If it is not visible then just return and don't render it.
+	result = frustum->CheckRectangle2(maxWidth, maxHeight, maxDepth, minWidth, minHeight, minDepth);
+	if (!result)
+	{
+		// Increment the number of cells that were culled.
+		m_cellsCulled++;
+
+		return false;
+	}
+
+	// If it is visible then render it.
 	m_terrainCells[cellId].Render(deviceContext);
+
+	// Add the polygons in the cell to the render count.
+	m_renderCount += (m_terrainCells[cellId].GetVertexCount() / 3);
+
+	// Increment the number of cells that were actually drawn.
+	m_cellsDrawn++;
 	return true;
 }
 
@@ -1025,9 +1055,9 @@ bool Terrain::LoadTerrainCellsEx(ID3D11Device* device)
 	}
 
 	// Loop through and initialize all the terrain cells.
-	for (j = 0; j<cellRowCount; j++)
+	for (j = 0; j < cellRowCount; j++)
 	{
-		for (i = 0; i<cellRowCount; i++)
+		for (i = 0; i < cellRowCount; i++)
 		{
 			index = (cellRowCount * j) + i;
 
@@ -1040,4 +1070,19 @@ bool Terrain::LoadTerrainCellsEx(ID3D11Device* device)
 	}
 
 	return true;
+}
+
+int Terrain::GetRenderCount()
+{
+	return m_renderCount;
+}
+
+int Terrain::GetCellsDrawn()
+{
+	return m_cellsDrawn;
+}
+
+int Terrain::GetCellsCulled()
+{
+	return m_cellsCulled;
 }

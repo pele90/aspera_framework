@@ -17,13 +17,18 @@ public:
 	bool Frame(ID3D11DeviceContext*, int, XMFLOAT3);
 	bool Render(D3D*, ShaderManager*, XMMATRIX, XMMATRIX, XMMATRIX);
 
+	bool UpdateRenderCounts(ID3D11DeviceContext*, int, int, int);
+	bool UpdateRenderTime(ID3D11DeviceContext*, float);
+
 private:
 	bool UpdateFpsString(ID3D11DeviceContext*, int);
 
 private:
 	Font* m_font1;
-	Text *m_fpsString;
-	Text *m_videoStrings;
+	Text* m_fpsString;
+	Text* m_videoStrings;
+	Text* m_renderCountStrings;
+	Text* m_renderTimeString;
 	int m_previousFps;
 	MiniMap* m_miniMap;
 	//int m_previousPosition[6];

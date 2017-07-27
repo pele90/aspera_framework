@@ -24,6 +24,13 @@ bool Scene::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 {
 	bool result;
 
+#pragma region MESSAGE ALERT
+
+	m_messageAlert = MessageAlert();
+	m_messageAlert.Initialize(hwnd);
+
+#pragma endregion
+
 #pragma region CAMERA MOVEMENT SYSTEM
 
 	m_cameraMovementSystem = new CameraMovementSystem;
@@ -51,11 +58,11 @@ bool Scene::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 		return false;
 
 	// Set camera position for UI.
-	m_MainCamera->GetComponent<Transform>("TRANSFORM")->SetPosition(0.0f, 0.0f, -10.0f);
+	m_MainCamera->GetComponent<Transform>()->SetPosition(0.0f, 0.0f, -10.0f);
 	m_MainCamera->RenderBaseViewMatrix();
 
 	// Set camera position in the world coordinates.
-	m_MainCamera->GetComponent<Transform>("TRANSFORM")->SetPosition(0.0f, 10.0f, -10.0f);
+	m_MainCamera->GetComponent<Transform>()->SetPosition(0.0f, 10.0f, -10.0f);
 
 
 
@@ -69,12 +76,12 @@ bool Scene::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 	if (!result)
 		return false;
 
-	result = CreateTerrain();
+	/*result = CreateTerrain();
 	if (!result)
-		return false;
+		return false;*/
 
 
-	/*CreateGameObjects(1);
+	CreateGameObjects(1);
 
 	if (!CreateCube(3.0f, 0.5f, -1.5f))
 		return false;
@@ -83,23 +90,20 @@ bool Scene::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 		return false;
 
 	if (!CreateCube(-1.5f, 0.5f, -3.0f))
-		return false;*/
+		return false;
 
 	// Create green light
-	/*if (!CreateLight(0.0f, 200.0f, 1024.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f)))
-		return false;*/
+	if (!CreateLight(-6.0f, 10.0f, 6.0f, XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f)))
+		return false;
 
 	// Create blue light
-	/*if (!CreateLight(1024.0f, 200.0f, 0.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f)))
-		return false;*/
+	if (!CreateLight(-6.0f, 20.0f, -6.0f, XMFLOAT4(0.0f, 0.0f, 1.0f, 0.0f)))
+		return false;
 
-	// Create red light
-	/*if (!CreateLight(1024.0f, 200.0f, 1024.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f)))
-		return false;*/
+	 //Create red light
+	if (!CreateLight(6.0f, 5.0f, 6.0f, XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f)))
+		return false;
 
-	// Create white light
-	/*if (!CreateLight(256.0f, 2000.0f, 256.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f)))
-		return false;*/
 
 #pragma endregion
 
@@ -124,17 +128,26 @@ bool Scene::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 
 void Scene::Shutdown()
 {
-	m_MainCamera->Shutdown();
-	delete m_MainCamera;
-	m_MainCamera = 0;
+	if (m_MainCamera)
+	{
+		m_MainCamera->Shutdown();
+		delete m_MainCamera;
+		m_MainCamera = 0;
+	}
 
-	m_RenderingSystem->Shutdown();
-	delete m_RenderingSystem;
-	m_RenderingSystem = 0;
-
-	m_cameraMovementSystem->Shutdown();
-	delete m_cameraMovementSystem;
-	m_cameraMovementSystem = 0;
+	if (m_RenderingSystem)
+	{
+		m_RenderingSystem->Shutdown();
+		delete m_RenderingSystem;
+		m_RenderingSystem = 0;
+	}
+	
+	if (m_cameraMovementSystem)
+	{
+		m_cameraMovementSystem->Shutdown();
+		delete m_cameraMovementSystem;
+		m_cameraMovementSystem = 0;
+	}
 
 	for (vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); ++it)
 		(*it)->Shutdown();
@@ -145,9 +158,9 @@ void Scene::Shutdown()
 
 bool Scene::Frame(Input* p_input, float p_frameTime, int p_fps)
 {
-	// Process systems
-
 	bool result;
+
+	// Process systems
 
 	// System for handling user input such as adding gameobjects or removing them
 	// example: m_UserInputSystem->HandleUserInput(p_input, m_MainCamera); 
@@ -174,16 +187,6 @@ void Scene::RemoveGameObject(GameObject* gameObject)
 	{
 		(*iter)->Shutdown();
 		m_GameObjects.erase(iter);
-	}
-}
-
-void Scene::CreateDummyObjects(int count)
-{
-	for (int i = 0; i < count; ++i) {
-		Cube* monkey = new Cube;
-		monkey->Initialize("../Aspera_Framework/data/models/cube.txt");
-		monkey->GetComponent<Transform>("TRANSFORM")->SetPosition(i * 3.0f, 8.0f, 0.0f);
-		AddGameObject(monkey);
 	}
 }
 
@@ -217,8 +220,8 @@ bool Scene::CreateSkydome()
 	if (!result)
 		return false;
 	XMFLOAT3 cameraPosition;
-	cameraPosition = m_MainCamera->GetComponent<Transform>("TRANSFORM")->GetPosition();
-	skydome->GetComponent<Transform>("TRANSFORM")->SetPosition(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+	cameraPosition = m_MainCamera->GetComponent<Transform>()->GetPosition();
+	skydome->GetComponent<Transform>()->SetPosition(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 	AddGameObject(skydome);
 
 	return true;
@@ -241,8 +244,12 @@ bool Scene::CreateCube(float x, float y, float z)
 
 	ModelMesh* mesh = new ModelMesh;
 	result = mesh->Initialize("../Aspera_Framework/data/models/cube.txt");
-	if (!result)
+	if (!result) 
+	{
+		m_messageAlert.ShowMessage(L"ModelMesh could not be initialized in Scene::CreateCube", L"Error");
 		return false;
+	}
+	
 	prefab->AddComponent(mesh);
 
 	Renderer* renderer = new Renderer;
@@ -274,9 +281,9 @@ bool Scene::CreateLight(float x, float y, float z, XMFLOAT4 color)
 	if (!result)
 		return false;
 
-	light->GetComponent<Transform>("TRANSFORM")->SetPosition(x, y, z);
-	light->GetComponent<Light>("LIGHT")->SetDiffuseColor(color);
-	light->GetComponent<Light>("LIGHT")->SetAmbientColor(XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f));
+	light->GetComponent<Transform>()->SetPosition(x, y, z);
+	light->GetComponent<Light>()->SetDiffuseColor(color);
+	light->GetComponent<Light>()->SetAmbientColor(XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f));
 	AddGameObject(light);
 
 	return true;

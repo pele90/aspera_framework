@@ -1,5 +1,5 @@
 Terrain Filename: ../Aspera_Framework/data/terrain/heightmap.r16
-Terrain Height: 1024
-Terrain Width: 1024
+Terrain Height: 2048
+Terrain Width: 2048
 Terrain Scaling: 300.0
-Color Map Filename: ../Aspera_Framework/data/terrain/colormap.bmp
+Color Map Filename: ../Aspera_Framework/data/terrain/colormap2048.bmp

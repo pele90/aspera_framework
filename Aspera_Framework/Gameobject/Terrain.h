@@ -5,6 +5,7 @@
 #include "../Component/Transform.h"
 #include "../Component/Renderer.h"
 #include "../Component/TerrainCell.h"
+#include "../Graphics/Frustum.h"
 #include <d3d11.h>
 #include <directxmath.h>
 #include <fstream>
@@ -57,7 +58,8 @@ public:
 	bool Initialize(char* setupFilename);
 	virtual void Shutdown();
 
-	bool RenderCell(ID3D11DeviceContext*, int);
+	bool Frame();
+	bool RenderCell(ID3D11DeviceContext*, int, Frustum*);
 	void RenderCellLines(ID3D11DeviceContext*, int);
 	bool InitializeTerrainCells();
 	bool LoadTerrainCells(ID3D11Device*);
@@ -67,6 +69,10 @@ public:
 	int GetCellIndexCount(int);
 	int GetCellLinesIndexCount(int);
 	int GetCellCount();
+
+	int GetRenderCount();
+	int GetCellsDrawn();
+	int GetCellsCulled();
 
 private:
 	bool LoadSetupFile(char*);
@@ -90,7 +96,7 @@ private:
 	TerrainCell* m_terrainCells;
 	Transform* m_transform;
 	Renderer* m_renderer;
-	int m_cellCount;
+	int m_cellCount, m_renderCount, m_cellsDrawn, m_cellsCulled;
 };
 
 #endif // !_TERRAIN_H_

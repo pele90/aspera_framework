@@ -75,7 +75,7 @@ void CameraMovementSystem::HandleMovementInput(Input* p_input, GameObject* p_gam
 	float pitch, yaw;
 	XMFLOAT3 position, rotation;
 
-	position = p_gameobject->GetComponent<Transform>("TRANSFORM")->GetPosition();
+	position = p_gameobject->GetComponent<Transform>()->GetPosition();
 
 	SetPosition(position.x, position.y, position.z);
 
@@ -131,8 +131,8 @@ void CameraMovementSystem::HandleMovementInput(Input* p_input, GameObject* p_gam
 	GetRotation(rotX, rotY, rotZ);
 
 	// Set the position of the camera.
-	p_gameobject->GetComponent<Transform>("TRANSFORM")->SetPosition(posX, posY, posZ);
-	p_gameobject->GetComponent<Transform>("TRANSFORM")->SetRotation(rotX, rotY, rotZ);
+	p_gameobject->GetComponent<Transform>()->SetPosition(posX, posY, posZ);
+	p_gameobject->GetComponent<Transform>()->SetRotation(rotX, rotY, rotZ);
 
 	// Determine if the user interface should be displayed or not.
 	if (p_input->IsF1Toggled())

@@ -19,15 +19,17 @@
 #include "../Manager/TextureManager.h"
 #include "../Graphics/DebugWindow.h"
 #include "../Graphics/RenderTexture.h"
+#include "../Graphics/Frustum.h"
 #include <d3d11.h>
 #include <vector>
+#include <chrono>
 
 /////////////
 // GLOBALS //
 /////////////
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
-const float SCREEN_DEPTH = 10000.0f;
+const float SCREEN_DEPTH = 1500.0f;
 const float SCREEN_NEAR = 0.1f;
 const int SHADOWMAP_WIDTH = 2048;
 const int SHADOWMAP_HEIGHT = 2048;
@@ -44,7 +46,6 @@ public:
 	void Shutdown();
 	bool InitializeGameObjects();
 	bool Frame(vector<GameObject*>, Camera*, int);
-	D3D* GetDirect3D();
 	
 private:
 	bool Render(Camera*);
@@ -73,6 +74,7 @@ private:
 	vector<RenderTexture*> m_renderToTextures;
 	RenderTexture* m_RenderTexture;
 	DebugWindow* m_DebugWindow;
+	Frustum* m_frustum;
 
 	// Initialized meaning their vertex and index buffers are initialized
 	vector<GameObject*> m_initializedGameObjects;

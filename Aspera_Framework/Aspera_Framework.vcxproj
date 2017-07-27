@@ -132,6 +132,7 @@
     <ClInclude Include="Graphics\Bitmap.h" />
     <ClInclude Include="Graphics\DebugWindow.h" />
     <ClInclude Include="Graphics\Font.h" />
+    <ClInclude Include="Graphics\Frustum.h" />
     <ClInclude Include="Graphics\LightInfo.h" />
     <ClInclude Include="Graphics\MiniMap.h" />
     <ClInclude Include="Graphics\RenderTexture.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="MISC\Enums.h" />
     <ClInclude Include="MISC\Fps.h" />
     <ClInclude Include="MISC\Input.h" />
+    <ClInclude Include="MISC\MessageAlert.h" />
     <ClInclude Include="MISC\Timer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shaders\ColorShader.h" />
@@ -179,6 +181,7 @@
     <ClCompile Include="Gameobject\Skydome.cpp" />
     <ClCompile Include="Gameobject\Terrain.cpp" />
     <ClCompile Include="Graphics\DebugWindow.cpp" />
+    <ClCompile Include="Graphics\Frustum.cpp" />
     <ClCompile Include="Graphics\LightInfo.cpp" />
     <ClCompile Include="Graphics\MiniMap.cpp" />
     <ClCompile Include="Graphics\RenderTexture.cpp" />
@@ -188,6 +191,7 @@
     <ClCompile Include="Manager\TextureManager.cpp" />
     <ClCompile Include="MISC\Fps.cpp" />
     <ClCompile Include="MISC\Input.cpp" />
+    <ClCompile Include="MISC\MessageAlert.cpp" />
     <ClCompile Include="MISC\Timer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shaders\ColorShader.cpp" />

@@ -10,21 +10,18 @@
 
 #include "Base\GameObject.h"
 #include "Base\Prefab.h"
-
 #include "Manager\ShaderManager.h"
 #include "Manager\TextureManager.h"
-
 #include "Gameobject\Camera.h"
 #include "Gameobject\Cube.h"
 #include "Gameobject\InstancedCube.h"
 #include "Gameobject\Terrain.h"
 #include "Gameobject\Skydome.h"
 #include "Gameobject\DirectionalLight.h"
-
 #include "System\RenderingSystem.h"
 #include "System\CameraMovementSystem.h"
-
 #include "MISC\Input.h"
+#include "MISC\MessageAlert.h"
 
 #pragma endregion
 
@@ -44,7 +41,6 @@ public:
 
 	void AddGameObject(GameObject*);
 	void RemoveGameObject(GameObject*);
-	void CreateDummyObjects(int);
 	bool CreateSkydome();
 	bool CreateTerrain();
 	bool CreateCube(float, float, float);
@@ -59,7 +55,7 @@ private:
 	RenderingSystem* m_RenderingSystem;
 	CameraMovementSystem* m_cameraMovementSystem;
 	Camera* m_MainCamera;
-	
+	MessageAlert m_messageAlert;
 };
 
 #endif // !_SCENECLASS_H_

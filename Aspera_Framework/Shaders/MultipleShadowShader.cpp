@@ -393,8 +393,8 @@ bool MultipleShadowShader::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	// Copy the lighting variables into the constant buffer.
 	for (int i = 0; i < lights.size(); i++)
 	{
-		Transform* transform = lights[i]->GetComponent<Transform>("TRANSFORM");
-		Light* light = lights[i]->GetComponent<Light>("LIGHT");
+		Transform* transform = lights[i]->GetComponent<Transform>();
+		Light* light = lights[i]->GetComponent<Light>();
 
 		dataPtr2->lights[i].ambientColor = light->GetAmbientColor();
 		dataPtr2->lights[i].diffuseColor = light->GetDiffuseColor();

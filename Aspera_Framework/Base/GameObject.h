@@ -20,7 +20,7 @@ public:
 	void AddComponent(Component*);
 	void RemoveComponent(Component*);
 
-	template<typename T>
+	/*template<typename T>
 	T* GetComponent(char* type)
 	{
 		for (vector<Component*>::iterator iter = m_Components.begin(); iter != m_Components.end(); ++iter)
@@ -32,7 +32,8 @@ public:
 		}
 
 		return NULL;
-	}
+	}*/
+
 	template<typename T>
 	T* GetComponent()
 	{

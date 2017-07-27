@@ -225,6 +225,12 @@
     <ClInclude Include="Gameobject\Terrain.h">
       <Filter>Header Files\GAMEOBJECT</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Frustum.h">
+      <Filter>Header Files\GRAPHICS</Filter>
+    </ClInclude>
+    <ClInclude Include="MISC\MessageAlert.h">
+      <Filter>Header Files\MISC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Base\GameObject.cpp">
@@ -367,6 +373,12 @@
     </ClCompile>
     <ClCompile Include="Gameobject\Terrain.cpp">
       <Filter>Source Files\GAMEOBJECT</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Frustum.cpp">
+      <Filter>Source Files\GRAPHICS</Filter>
+    </ClCompile>
+    <ClCompile Include="MISC\MessageAlert.cpp">
+      <Filter>Source Files\MISC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

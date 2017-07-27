@@ -4,10 +4,7 @@
 // PRE-PROCESSING DIRECTIVES //
 #define WIN32_LEAN_AND_MEAN
 
-// INCLUDES //
 #include <Windows.h>
-
-// MY CLASS INCLUDES //
 #include "Application.h"
 
 class System 

@@ -1,13 +1,6 @@
 #ifndef _APPLICATION_H_
 #define _APPLICATION_H_
 
-/////////////
-// GLOBALS //
-/////////////
-
-///////////////////////
-// MY CLASS INCLUDES //
-///////////////////////
 #include "../MISC/Input.h"
 #include "../MISC/Timer.h"
 #include "../MISC/Fps.h"
@@ -31,4 +24,4 @@ private:
 	Scene* m_scene;
 };
 
-#endif "_APPLICATION_H_"
+#endif "!_APPLICATION_H_"
