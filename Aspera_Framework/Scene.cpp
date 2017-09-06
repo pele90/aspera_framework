@@ -70,7 +70,7 @@ bool Scene::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 
 #pragma region GAMEOBJECTS
 
-	m_GameObjects = vector<GameObject*>();
+	m_gameObjects = vector<GameObject*>();
 
 	result = CreateSkydome();
 	if (!result)
@@ -78,31 +78,48 @@ bool Scene::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 
 	/*result = CreateTerrain();
 	if (!result)
-		return false;*/
-
+		return false;
+*/
 
 	CreateGameObjects(1);
 
-	if (!CreateCube(3.0f, 0.5f, -1.5f))
+	if (!CreateTree(10.0f, 0.0f, -10.0f))
 		return false;
 
-	if (!CreateCube(1.0f, 0.5f, 0.0f))
+	if (!CreateTree(10.0f, 0.0f, 10.0f))
 		return false;
 
-	if (!CreateCube(-1.5f, 0.5f, -3.0f))
+	if (!CreateTree(-10.0f, 0.0f, -10.0f))
 		return false;
 
-	// Create green light
-	if (!CreateLight(-6.0f, 10.0f, 6.0f, XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f)))
+	if (!CreateCube(-10.0f, 0.5f, 10.0f))
 		return false;
 
-	// Create blue light
-	if (!CreateLight(-6.0f, 20.0f, -6.0f, XMFLOAT4(0.0f, 0.0f, 1.0f, 0.0f)))
+	if (!CreateCube(5.0f, 0.5f, 10.0f))
 		return false;
 
-	 //Create red light
-	if (!CreateLight(6.0f, 5.0f, 6.0f, XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f)))
+	if (!CreateCube(0.0f, 0.5f, -10.0f))
 		return false;
+
+		// Create green light
+		if (!CreateLight(50.0f, 40.0f, 50.0f, XMFLOAT4(0.2f, 0.2f, 0.2f, 0.0f), "GREEN_LIGHT"))
+			return false;
+
+		// Create blue light
+		if (!CreateLight(50.0f, 40.0f, -50.0f, XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f), "BLUE_LIGHT"))
+			return false;
+
+		//Create red light
+		if (!CreateLight(-50.0f, 40.0f, 50.0f, XMFLOAT4(0.3f, 0.3f, 0.3f, 0.0f), "RED_LIGHT"))
+			return false;
+
+	//Create white light
+	/*if (!CreateLight(50.0f, 40.0f, 50.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f), "WHITE_LIGHT"))
+		return false;*/
+
+	//Create white light
+	/*if (!CreateLight(50.0f, 40.0f, -50.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f), "WHITE_LIGHT"))
+		return false;*/
 
 
 #pragma endregion
@@ -115,11 +132,19 @@ bool Scene::Initialize(HWND hwnd, int screenWidth, int screenHeight)
 		return false;
 	}
 
-	result = m_RenderingSystem->Initialize(hwnd, screenWidth, screenHeight, m_GameObjects);
+	result = m_RenderingSystem->Initialize(hwnd, screenWidth, screenHeight, m_gameObjects);
 	if (!result)
 	{
 		return false;
 	}
+
+#pragma endregion
+
+#pragma region USER INPUT SYSTEM
+
+	m_userInputSystem = new UserInputSystem;
+	if (!m_userInputSystem)
+		return false;
 
 #pragma endregion
 
@@ -141,7 +166,7 @@ void Scene::Shutdown()
 		delete m_RenderingSystem;
 		m_RenderingSystem = 0;
 	}
-	
+
 	if (m_cameraMovementSystem)
 	{
 		m_cameraMovementSystem->Shutdown();
@@ -149,10 +174,10 @@ void Scene::Shutdown()
 		m_cameraMovementSystem = 0;
 	}
 
-	for (vector<GameObject*>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); ++it)
+	for (vector<GameObject*>::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); ++it)
 		(*it)->Shutdown();
 
-	m_GameObjects.clear();
+	m_gameObjects.clear();
 
 }
 
@@ -163,11 +188,11 @@ bool Scene::Frame(Input* p_input, float p_frameTime, int p_fps)
 	// Process systems
 
 	// System for handling user input such as adding gameobjects or removing them
-	// example: m_UserInputSystem->HandleUserInput(p_input, m_MainCamera); 
+	m_userInputSystem->HandleUserInput(p_input, m_gameObjects);
 
 	m_cameraMovementSystem->HandleMovementInput(p_input, m_MainCamera, p_frameTime);
 
-	result = m_RenderingSystem->Frame(m_GameObjects, m_MainCamera, p_fps);
+	result = m_RenderingSystem->Frame(m_gameObjects, m_MainCamera, p_input, p_fps);
 	if (!result)
 		return false;
 
@@ -176,27 +201,27 @@ bool Scene::Frame(Input* p_input, float p_frameTime, int p_fps)
 
 void Scene::AddGameObject(GameObject* gameobject)
 {
-	m_GameObjects.push_back(gameobject);
+	m_gameObjects.push_back(gameobject);
 }
 
 void Scene::RemoveGameObject(GameObject* gameObject)
 {
-	vector<GameObject*>::iterator iter = find_if(m_GameObjects.begin(), m_GameObjects.end(), [gameObject](GameObject* p)->bool { return gameObject->GetName() == p->GetName(); });
+	vector<GameObject*>::iterator iter = find_if(m_gameObjects.begin(), m_gameObjects.end(), [gameObject](GameObject* p)->bool { return gameObject->GetName() == p->GetName(); });
 
-	if (iter != m_GameObjects.end())
+	if (iter != m_gameObjects.end())
 	{
 		(*iter)->Shutdown();
-		m_GameObjects.erase(iter);
+		m_gameObjects.erase(iter);
 	}
 }
 
 void Scene::CreateGameObjects(int count)
 {
 	ModelMesh* mesh = new ModelMesh;
-	mesh->Initialize("../Aspera_Framework/data/models/plane01.txt");
+	mesh->Initialize("../Aspera_Framework/data/models/floor_medium.txt");
 	Renderer* renderer = new Renderer;
 	vector<string> textureIds = vector<string>{ "stone01d" };
-	renderer->Initialize(ShaderType::TEXTURE, textureIds);
+	renderer->Initialize(ShaderType::SHADOW, textureIds);
 
 	for (int i = 1; i <= count; ++i) {
 		Prefab* monkey = new Prefab;
@@ -244,17 +269,17 @@ bool Scene::CreateCube(float x, float y, float z)
 
 	ModelMesh* mesh = new ModelMesh;
 	result = mesh->Initialize("../Aspera_Framework/data/models/cube.txt");
-	if (!result) 
+	if (!result)
 	{
 		m_messageAlert.ShowMessage(L"ModelMesh could not be initialized in Scene::CreateCube", L"Error");
 		return false;
 	}
-	
+
 	prefab->AddComponent(mesh);
 
 	Renderer* renderer = new Renderer;
 	vector<string> textureIds = vector<string>{ "wall" };
-	result = renderer->Initialize(ShaderType::TEXTURE, textureIds);
+	result = renderer->Initialize(ShaderType::SHADOW, textureIds);
 	if (!result)
 		return false;
 	prefab->AddComponent(renderer);
@@ -270,13 +295,13 @@ bool Scene::CreateCube(float x, float y, float z)
 
 }
 
-bool Scene::CreateLight(float x, float y, float z, XMFLOAT4 color)
+bool Scene::CreateLight(float x, float y, float z, XMFLOAT4 color, char* name)
 {
 	bool result;
 
 	DirectionalLight* light;
 
-	light = new DirectionalLight;
+	light = new DirectionalLight(name);
 	result = light->Initialize();
 	if (!result)
 		return false;
@@ -285,6 +310,49 @@ bool Scene::CreateLight(float x, float y, float z, XMFLOAT4 color)
 	light->GetComponent<Light>()->SetDiffuseColor(color);
 	light->GetComponent<Light>()->SetAmbientColor(XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f));
 	AddGameObject(light);
+
+	return true;
+
+}
+
+bool Scene::CreateTree(float x, float y, float z)
+{
+	bool result;
+
+	Prefab* prefab = new Prefab("TREE");
+
+	ModelMesh* treeHead = new ModelMesh;
+	result = treeHead->Initialize("../Aspera_Framework/data/models/tree_head.txt");
+	if (!result)
+	{
+		m_messageAlert.ShowMessage(L"ModelMesh could not be initialized in Scene::CreateTree", L"Error");
+		return false;
+	}
+	prefab->AddComponent(treeHead);
+
+	ModelMesh* treeTrunk = new ModelMesh;
+	result = treeTrunk->Initialize("../Aspera_Framework/data/models/tree_trunk.txt");
+	if (!result)
+	{
+		m_messageAlert.ShowMessage(L"ModelMesh could not be initialized in Scene::CreateTree", L"Error");
+		return false;
+	}
+	prefab->AddComponent(treeTrunk);
+
+
+	Renderer* renderer = new Renderer;
+	vector<string> textureIds = vector<string>{ "tree_head_texture", "trunk_texture" };
+	result = renderer->Initialize(ShaderType::SHADOW, textureIds);
+	if (!result)
+		return false;
+	prefab->AddComponent(renderer);
+
+
+	Transform* position = new Transform;
+	position->SetPosition(x, y, z);
+	prefab->AddComponent(position);
+
+	AddGameObject(prefab);
 
 	return true;
 

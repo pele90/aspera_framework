@@ -22,6 +22,7 @@
 #include "System\CameraMovementSystem.h"
 #include "MISC\Input.h"
 #include "MISC\MessageAlert.h"
+#include "System\UserInputSystem.h"
 
 #pragma endregion
 
@@ -44,16 +45,18 @@ public:
 	bool CreateSkydome();
 	bool CreateTerrain();
 	bool CreateCube(float, float, float);
-	bool CreateLight(float, float, float, XMFLOAT4);
+	bool CreateLight(float x, float y, float z, XMFLOAT4 color, char* name);
+	bool CreateTree(float, float, float);
 
 private:
 	void CreateGameObjects(int);
 
 private:
 	char* m_name;
-	vector<GameObject*> m_GameObjects;
+	vector<GameObject*> m_gameObjects;
 	RenderingSystem* m_RenderingSystem;
 	CameraMovementSystem* m_cameraMovementSystem;
+	UserInputSystem* m_userInputSystem;
 	Camera* m_MainCamera;
 	MessageAlert m_messageAlert;
 };

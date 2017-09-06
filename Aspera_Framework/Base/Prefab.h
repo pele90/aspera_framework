@@ -9,6 +9,7 @@ class Prefab : public GameObject
 {
 public:
 	Prefab();
+	Prefab(char* name);
 	~Prefab();
 
 	virtual bool Initialize();

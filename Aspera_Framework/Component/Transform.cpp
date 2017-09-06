@@ -30,6 +30,17 @@ void Transform::SetTransform(const Transform other)
 	m_rotationZ = other.m_rotationZ;
 }
 
+void Transform::SetTransform(float xPos, float yPos, float zPos, float xRot, float yRot, float zRot)
+{
+	m_positionX = xPos;
+	m_positionY = yPos;
+	m_positionZ = zPos;
+
+	m_rotationX = xRot;
+	m_rotationY = yRot;
+	m_rotationZ = zRot;
+}
+
 void Transform::SetPosition(float posX, float posY, float posZ)
 {
 	m_positionX = posX;

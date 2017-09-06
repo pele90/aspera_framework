@@ -16,9 +16,15 @@ public:
 	virtual bool Initialize() = 0;
 	virtual void Shutdown() = 0;
 
-	char* GetName();
 	void AddComponent(Component*);
 	void RemoveComponent(Component*);
+
+	char* GetName();
+	void SetName(char* name);
+	bool IsActive();
+	void SetActive(bool value);
+	bool IsSelected();
+	void SetSelected(bool value);
 
 	/*template<typename T>
 	T* GetComponent(char* type)
@@ -38,7 +44,7 @@ public:
 	T* GetComponent()
 	{
 		T* retValue = NULL;
-		for (vector<Component*>::iterator iter = m_Components.begin(); iter != m_Components.end(); ++iter)
+		for (vector<Component*>::iterator iter = m_components.begin(); iter != m_components.end(); ++iter)
 		{
 			retValue = dynamic_cast<T*>((*iter));
 			if (retValue != NULL)
@@ -58,7 +64,9 @@ private:
 
 private:
 	char* m_name;
-	vector<Component*> m_Components;
+	vector<Component*> m_components;
+	bool m_active;
+	bool m_selected;
 };
 
 #endif // !_GAMEOBJECT_H_

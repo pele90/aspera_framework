@@ -49,6 +49,13 @@ public:
 
 	bool IsF1Toggled();
 	bool IsF2Toggled();
+	bool IsF3Toggled();
+	bool IsF4Toggled();
+	bool IsF5Toggled();
+	bool IsF6Toggled();
+	bool IsF7Toggled();
+	bool IsF8Toggled();
+	bool IsF9Toggled();
 
 private:
 	bool ReadKeyboard();
@@ -69,6 +76,13 @@ private:
 
 	bool m_F1_released;
 	bool m_F2_released;
+	bool m_F3_released;
+	bool m_F4_released;
+	bool m_F5_released;
+	bool m_F6_released;
+	bool m_F7_released;
+	bool m_F8_released;
+	bool m_F9_released;
 };
 
 #endif "!_INPUT_H_"

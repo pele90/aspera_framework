@@ -9,7 +9,8 @@ enum ShaderType
 	LIGHT,
 	TERRAIN,
 	SKYDOME,
-	FONT
+	FONT,
+	SHADOW
 };
 
 enum MeshType

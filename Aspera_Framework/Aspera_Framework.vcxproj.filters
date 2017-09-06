@@ -231,6 +231,9 @@
     <ClInclude Include="MISC\MessageAlert.h">
       <Filter>Header Files\MISC</Filter>
     </ClInclude>
+    <ClInclude Include="System\UserInputSystem.h">
+      <Filter>Header Files\SYSTEM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Base\GameObject.cpp">
@@ -379,6 +382,9 @@
     </ClCompile>
     <ClCompile Include="MISC\MessageAlert.cpp">
       <Filter>Source Files\MISC</Filter>
+    </ClCompile>
+    <ClCompile Include="System\UserInputSystem.cpp">
+      <Filter>Source Files\SYSTEM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

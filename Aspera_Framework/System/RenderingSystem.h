@@ -1,6 +1,7 @@
 #ifndef _RENDERINGSYSTEM_H_
 #define _RENDERINGSYSTEM_H_
 
+#include "..\MISC\Input.h"
 #include "../UI/UserInterface.h"
 #include "../Component/Transform.h"
 #include "../Gameobject/Camera.h"
@@ -45,24 +46,23 @@ public:
 	bool Initialize(HWND, int, int, vector<GameObject*>);
 	void Shutdown();
 	bool InitializeGameObjects();
-	bool Frame(vector<GameObject*>, Camera*, int);
+	bool Frame(vector<GameObject*> gameobjects, Camera* camera, Input* input, int fps);
 	
 private:
 	bool Render(Camera*);
 	bool RenderScene(Camera*);
-	bool RenderGameObjectsForShadowMap(DirectionalLight*);
-	bool RenderToTexture(Camera*);
+	bool RenderSceneToTexture(Camera*);
 	bool RenderSceneToDepthMap(DirectionalLight*);
-	bool RenderSceneToDepthMaps(vector<DirectionalLight*>);
+	bool RenderSceneToDepthMaps();
 	bool RenderDebugWindow(Camera*);
-	bool LoadBuffersAndBind(Mesh*);
 
-	bool LoadBuffer(Mesh*);
 	bool BindBuffer(Mesh*);
 	bool RenderWithShader(Mesh*, ShaderType, vector<string>);
-	bool RenderWithShadows(Mesh*, vector<string>, DirectionalLight*);
-	bool RenderWithMultipleLightsAndShadows(Mesh*, vector<string>, vector<DirectionalLight*>);
-	bool RenderWithPointLight(Mesh*, vector<string>, DirectionalLight*[]);
+	bool RenderGameObjectsForShadowMap(DirectionalLight*);
+	bool RenderWithMultipleLightsAndShadows(Mesh*, vector<string>);
+
+	void HandleInputs(Input* input);
+	void HandleGameObjects(vector<GameObject*> gameobjects, Camera* camera);
 
 private:
 	D3D* m_direct3D;
@@ -70,12 +70,16 @@ private:
 	TextureManager* m_TextureManager;
 	XMMATRIX m_worldMatrix, m_baseViewMatrix, m_viewMatrix, m_projectionMatrix, m_orthographicMatrix;
 	UserInterface* m_userInterface;
-
-	vector<RenderTexture*> m_renderToTextures;
 	RenderTexture* m_RenderTexture;
 	DebugWindow* m_DebugWindow;
 	Frustum* m_frustum;
+	vector<DirectionalLight*> m_lights;
 
+	bool m_displayUI = true;
+	bool m_wireFrame = false;
+	bool m_cellLines = false;
+
+	vector<RenderTexture*> m_renderToTextures;
 	// Initialized meaning their vertex and index buffers are initialized
 	vector<GameObject*> m_initializedGameObjects;
 	vector<GameObject*> m_uninitializedGameObjects;

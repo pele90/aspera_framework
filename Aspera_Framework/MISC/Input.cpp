@@ -356,6 +356,139 @@ bool Input::IsF2Toggled()
 	return false;
 }
 
+bool Input::IsF3Toggled()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_F3] & 0x80)
+	{
+		if (m_F3_released)
+		{
+			m_F3_released = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_F3_released = true;
+	}
+
+	return false;
+}
+
+bool Input::IsF4Toggled()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_F4] & 0x80)
+	{
+		if (m_F4_released)
+		{
+			m_F4_released = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_F4_released = true;
+	}
+
+	return false;
+}
+
+bool Input::IsF5Toggled()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_F5] & 0x80)
+	{
+		if (m_F5_released)
+		{
+			m_F5_released = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_F5_released = true;
+	}
+
+	return false;
+}
+
+bool Input::IsF6Toggled()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_F6] & 0x80)
+	{
+		if (m_F6_released)
+		{
+			m_F6_released = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_F6_released = true;
+	}
+
+	return false;
+}
+
+bool Input::IsF7Toggled()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_F7] & 0x80)
+	{
+		if (m_F7_released)
+		{
+			m_F7_released = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_F7_released = true;
+	}
+
+	return false;
+}
+
+bool Input::IsF8Toggled()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_F8] & 0x80)
+	{
+		if (m_F8_released)
+		{
+			m_F8_released = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_F8_released = true;
+	}
+
+	return false;
+}
+
+bool Input::IsF9Toggled()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_F9] & 0x80)
+	{
+		if (m_F9_released)
+		{
+			m_F9_released = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_F9_released = true;
+	}
+
+	return false;
+}
+
 bool Input::IsQPressed()
 {
 	if (m_keyboardState[DIK_Q] & 0x80)

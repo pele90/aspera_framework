@@ -15,6 +15,7 @@ public:
 	virtual void Shutdown();
 
 	void SetTransform(const Transform other);
+	void SetTransform(float xPos, float yPos, float zPos, float xRot, float yRot, float zRot);
 	void SetPosition(float, float, float);
 	void SetRotation(float, float, float);
 

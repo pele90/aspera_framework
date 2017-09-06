@@ -73,6 +73,18 @@ bool RenderingSystem::Initialize(HWND hwnd, int screenWidth, int screenHeight, v
 	}*/
 
 	// Load textures into the texture manager.
+	result = m_TextureManager->LoadTexture(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), "../Aspera_Framework/data/textures/tga/nature_trunk.icb", "trunk_texture");
+	if (!result)
+	{
+		return false;
+	}
+
+	result = m_TextureManager->LoadTexture(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), "../Aspera_Framework/data/textures/tga/tree_head_texture.tga", "tree_head_texture");
+	if (!result)
+	{
+		return false;
+	}
+
 	result = m_TextureManager->LoadTexture(m_direct3D->GetDevice(), m_direct3D->GetDeviceContext(), "../Aspera_Framework/data/textures/tga/stone01.tga", "stone01d");
 	if (!result)
 	{
@@ -184,6 +196,13 @@ bool RenderingSystem::InitializeGameObjects()
 		if (go->GetComponent<ModelMesh>() != NULL)
 		{
 			result = go->GetComponent<ModelMesh>()->InitializeBuffers(m_direct3D->GetDevice());
+
+			if (go->GetComponent<Light>() != NULL) {
+
+				if (go->GetName() == "GREEN_LIGHT")
+					go->SetSelected(true);
+			}
+
 			m_initializedGameObjects.push_back(go);
 		}
 		else if (go->GetComponent<TerrainCell>() != NULL)
@@ -191,15 +210,6 @@ bool RenderingSystem::InitializeGameObjects()
 			((Terrain*)go)->LoadTerrainCells(m_direct3D->GetDevice());
 			((Terrain*)go)->ShutdownTerrainModel();
 			m_initializedGameObjects.push_back(go);
-		}
-		else if (go->GetName() == "DIRECTIONAL_LIGHT") {
-			m_initializedGameObjects.push_back(go);
-
-			RenderTexture* rt = new RenderTexture;
-			result = rt->Initialize(m_direct3D->GetDevice(), SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, SCREEN_DEPTH, SCREEN_NEAR);
-			if (!result)
-				return false;
-			m_renderToTextures.push_back(rt);
 		}
 	}
 
@@ -278,12 +288,18 @@ void RenderingSystem::Shutdown()
 	}
 }
 
-bool RenderingSystem::Frame(vector<GameObject*> gameobjects, Camera* camera, int p_fps)
+bool RenderingSystem::Frame(vector<GameObject*> gameobjects, Camera* camera, Input* input, int p_fps)
 {
 	bool result;
-	vector<DirectionalLight*> lights;
 
 	/*auto start = std::chrono::high_resolution_clock::now();*/
+
+
+	HandleInputs(input);
+
+	//TODO: check if gameobjects from scene are different from initialized vector of gameobjects; if so add to initialized vector
+
+	HandleGameObjects(gameobjects, camera);
 
 	camera->RenderViewMatrix();
 
@@ -293,31 +309,12 @@ bool RenderingSystem::Frame(vector<GameObject*> gameobjects, Camera* camera, int
 	camera->GetBaseViewMatrix(m_baseViewMatrix);
 	m_direct3D->GetOrthoMatrix(m_orthographicMatrix);
 
-	Transform* cameraTransform = camera->GetComponent<Transform>();
-
-	// Set skydome position to camera position and extract all lights in the scene
-	for (auto go : gameobjects) {
-		if (go->GetName() == "SkydomeGO")
-			go->GetComponent<Transform>()->SetTransform(*cameraTransform);
-		else if (go->GetName() == "DIRECTIONAL_LIGHT")
-		{
-			lights.push_back(dynamic_cast<DirectionalLight*>(go));
-		}
-		else if (go->GetName() == "TERRAIN")
-		{
-			// Do the terrain frame processing.
-			((Terrain*)go)->Frame();
-		}
-	}
-
 	// process user interface frame
-	result = m_userInterface->Frame(m_direct3D->GetDeviceContext(), p_fps, cameraTransform->GetPosition());
+	result = m_userInterface->Frame(m_direct3D->GetDeviceContext(), p_fps, camera->GetComponent<Transform>()->GetPosition());
 	if (!result)
 		return false;
 
-	result = RenderSceneToDepthMaps(lights);
-
-	//auto start = std::chrono::high_resolution_clock::now();
+	result = RenderSceneToDepthMaps();
 
 	result = Render(camera);
 	if (!result)
@@ -346,10 +343,13 @@ bool RenderingSystem::Render(Camera* camera)
 
 	result = RenderDebugWindow(camera);
 
-	// render user interface
-	result = m_userInterface->Render(m_direct3D, m_ShaderManager, m_worldMatrix, m_baseViewMatrix, m_orthographicMatrix);
-	if (!result)
-		return false;
+	if (m_displayUI)
+	{
+		// render user interface
+		result = m_userInterface->Render(m_direct3D, m_ShaderManager, m_worldMatrix, m_baseViewMatrix, m_orthographicMatrix);
+		if (!result)
+			return false;
+	}
 
 	// Present the rendered scene to the screen.
 	m_direct3D->EndScene();
@@ -361,24 +361,21 @@ bool RenderingSystem::Render(Camera* camera)
 	return result;
 }
 
-bool RenderingSystem::LoadBuffersAndBind(Mesh* mesh)
-{
-	bool result;
-
-	result = mesh->InitializeBuffers(m_direct3D->GetDevice());
-	if (!result)
-		return false;
-
-	mesh->Render(m_direct3D->GetDeviceContext());
-
-	return true;
-}
-
 bool RenderingSystem::RenderWithShader(Mesh* mesh, ShaderType shaderType, vector<string> textureIds)
 {
 	bool result;
 	XMFLOAT3 lightDirection = XMFLOAT3(-1.0f, 0.0f, 0.0f);
 	XMFLOAT4 diffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	vector<XMMATRIX> viewMatrices, projectionMatrices;
+	vector<ID3D11ShaderResourceView*> renderTextures;
+
+	for (int i = 0; i < m_lights.size(); i++)
+	{
+		viewMatrices.push_back(m_lights[i]->GenerateViewMatrix());
+		projectionMatrices.push_back(m_lights[i]->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH));
+		renderTextures.push_back(m_renderToTextures.at(i)->GetShaderResourceView());
+	}
 
 	switch (shaderType)
 	{
@@ -423,6 +420,12 @@ bool RenderingSystem::RenderWithShader(Mesh* mesh, ShaderType shaderType, vector
 		if (!result)
 			return false;*/
 		break;
+
+	case SHADOW:
+		result = m_ShaderManager->RenderMultipleShadowShader(m_direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, viewMatrices, projectionMatrices, m_TextureManager->GetTexture(textureIds.at(0)), renderTextures, m_lights);
+		if (!result)
+			return false;
+		break;
 	}
 
 	return true;
@@ -435,18 +438,7 @@ bool RenderingSystem::BindBuffer(Mesh *mesh)
 	return true;
 }
 
-bool RenderingSystem::LoadBuffer(Mesh *mesh)
-{
-	bool result;
-
-	result = mesh->InitializeBuffers(m_direct3D->GetDevice());
-	if (!result)
-		return false;
-
-	return true;
-}
-
-bool RenderingSystem::RenderToTexture(Camera* camera)
+bool RenderingSystem::RenderSceneToTexture(Camera* camera)
 {
 	bool result;
 
@@ -475,27 +467,27 @@ bool RenderingSystem::RenderToTexture(Camera* camera)
 bool RenderingSystem::RenderScene(Camera* camera) {
 
 	DirectionalLight* light = NULL;
-	vector<DirectionalLight*> lights;
-	int i = 0;
 	bool result;
-	bool m_cellLines = false;
 	std::chrono::time_point<std::chrono::steady_clock> start, finish;
+	vector<ModelMesh*> treeMeshes;
 
 
 	start = std::chrono::high_resolution_clock::now();
 
-	for (vector<GameObject*>::iterator iter = m_initializedGameObjects.begin(); iter != m_initializedGameObjects.end(); ++iter)
-	{
-		if ((*iter)->GetName() == "DIRECTIONAL_LIGHT") {
-			light = dynamic_cast<DirectionalLight*>((*iter));
-			lights.push_back(dynamic_cast<DirectionalLight*>((*iter)));
-			i++;
-		}
-	}
-
 	// render gameobjects
 	for (vector<GameObject*>::iterator iter = m_initializedGameObjects.begin(); iter != m_initializedGameObjects.end(); ++iter)
 	{
+		if ((*iter)->GetName() == "TREE")
+		{
+			for (auto item : (*iter)->GetComponents())
+			{
+				if (item->GetType() == "MODEL_MESH")
+					treeMeshes.push_back((ModelMesh*)item);
+			}
+		}
+
+		// TODO: nacrtati oba mesha!!
+
 		XMFLOAT3 position = (*iter)->GetComponent<Transform>()->GetPosition();
 		Renderer* renderer = (*iter)->GetComponent<Renderer>();
 		Mesh* mesh = (*iter)->GetComponent<Mesh>();
@@ -562,7 +554,6 @@ bool RenderingSystem::RenderScene(Camera* camera) {
 
 				break;
 			default:
-
 				if (renderer->GetShaderType() == ShaderType::SKYDOME)
 				{
 					// Turn off back face culling and turn off the Z buffer if skybox.
@@ -586,24 +577,27 @@ bool RenderingSystem::RenderScene(Camera* camera) {
 				}
 				else
 				{
+					if (m_wireFrame)
+					{
+						m_direct3D->EnableWireframe();
+					}
+
 					// Translate the model to be custom position.
 					m_worldMatrix = XMMatrixTranslation(position.x, position.y, position.z);
 
 					BindBuffer(mesh);
 
-					if (lights.size() != 0)
-					{
-						if (!RenderWithMultipleLightsAndShadows(mesh, renderer->GetTextureIds(), lights))
-							return false;
-					}
-					else
-					{
-						if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
-							return false;
-					}
+					//TODO: probati bez svijetla
+					if (!RenderWithShader(mesh, renderer->GetShaderType(), renderer->GetTextureIds()))
+						return false;
 
 					// Reset world matrix
 					m_direct3D->GetWorldMatrix(m_worldMatrix);
+
+					if (m_wireFrame)
+					{
+						m_direct3D->DisableWireframe();
+					}
 				}
 
 				break;
@@ -737,15 +731,18 @@ bool RenderingSystem::RenderSceneToDepthMap(DirectionalLight* light)
 	return true;
 }
 
-bool RenderingSystem::RenderSceneToDepthMaps(vector<DirectionalLight*> lights)
+bool RenderingSystem::RenderSceneToDepthMaps()
 {
-	int i = 0;
-	vector<RenderTexture*> temp_renderTextures;
+	for (auto item : m_renderToTextures)
+		item->Shutdown();
 
-	for (vector<DirectionalLight*>::iterator iter = lights.begin(); iter != lights.end(); ++iter)
+	m_renderToTextures.clear();
+
+	for (vector<DirectionalLight*>::iterator iter = m_lights.begin(); iter != m_lights.end(); ++iter)
 	{
-		RenderTexture* rt = m_renderToTextures.back();
-		m_renderToTextures.pop_back();
+		RenderTexture* rt = new RenderTexture;
+		if (!rt->Initialize(m_direct3D->GetDevice(), SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, SCREEN_DEPTH, SCREEN_NEAR))
+			return false;
 
 		rt->SetRenderTarget(m_direct3D->GetDeviceContext());
 		rt->ClearRenderTarget(m_direct3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
@@ -758,51 +755,10 @@ bool RenderingSystem::RenderSceneToDepthMaps(vector<DirectionalLight*> lights)
 		// Reset the viewport back to the original.
 		m_direct3D->ResetViewport();
 
-		temp_renderTextures.push_back(rt);
-
-		i++;
+		m_renderToTextures.push_back(rt);
 	}
-
-	m_renderToTextures = temp_renderTextures;
 
 	return true;
-}
-
-bool RenderingSystem::RenderWithShadows(Mesh* mesh, vector<string> textureIds, DirectionalLight* light)
-{
-	bool result;
-
-	Transform* transform = light->GetComponent<Transform>();
-	Light* lightInfo = light->GetComponent<Light>();
-
-	result = m_ShaderManager->RenderShadowShader(m_direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, light->GenerateViewMatrix(), light->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH), m_TextureManager->GetTexture(textureIds.at(0)), m_renderToTextures.at(0)->GetShaderResourceView(), transform->GetPosition(), lightInfo->GetAmbientColor(), lightInfo->GetDiffuseColor());
-
-	if (!result)
-		return false;
-
-	return true;
-}
-
-bool RenderingSystem::RenderWithPointLight(Mesh* mesh, vector<string> textureIds, DirectionalLight* lights[])
-{
-	bool result;
-	XMVECTOR diffuseColor[4];
-	XMVECTOR lightPosition[4];
-
-	for (int i = 0; i < 4; i++) {
-		diffuseColor[i] = XMLoadFloat4(&(lights[i]->GetComponent<Light>()->GetDiffuseColor()));
-		lightPosition[i] = XMLoadFloat3(&(lights[i]->GetComponent<Transform>()->GetPosition()));
-	}
-
-	// Render the model using the light shader and the light arrays.
-	result = m_ShaderManager->RenderLightShader(m_direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix,
-		m_TextureManager->GetTexture(textureIds.at(0)), diffuseColor, lightPosition);
-	if (!result)
-	{
-		return false;
-	}
-
-	return false;
 }
 
 bool RenderingSystem::RenderGameObjectsForShadowMap(DirectionalLight * light)
@@ -872,23 +828,75 @@ bool RenderingSystem::RenderGameObjectsForShadowMap(DirectionalLight * light)
 	return true;
 }
 
-bool RenderingSystem::RenderWithMultipleLightsAndShadows(Mesh* mesh, vector<string> textureIds, vector<DirectionalLight*> lights)
+bool RenderingSystem::RenderWithMultipleLightsAndShadows(Mesh* mesh, vector<string> textureIds)
 {
 	bool result;
 
 	vector<XMMATRIX> viewMatrices, projectionMatrices;
 	vector<ID3D11ShaderResourceView*> renderTextures;
 
-	for (int i = 0; i < lights.size(); i++)
+	for (int i = 0; i < m_lights.size(); i++)
 	{
-		viewMatrices.push_back(lights[i]->GenerateViewMatrix());
-		projectionMatrices.push_back(lights[i]->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH));
+		viewMatrices.push_back(m_lights[i]->GenerateViewMatrix());
+		projectionMatrices.push_back(m_lights[i]->GenerateProjectionMatrix(SCREEN_NEAR, SCREEN_DEPTH));
 		renderTextures.push_back(m_renderToTextures.at(i)->GetShaderResourceView());
 	}
 
-	result = m_ShaderManager->RenderMultipleShadowShader(m_direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, viewMatrices, projectionMatrices, m_TextureManager->GetTexture(textureIds.at(0)), renderTextures, lights);
+	result = m_ShaderManager->RenderMultipleShadowShader(m_direct3D->GetDeviceContext(), mesh->GetIndexCount(), m_worldMatrix, m_viewMatrix, m_projectionMatrix, viewMatrices, projectionMatrices, m_TextureManager->GetTexture(textureIds.at(0)), renderTextures, m_lights);
 	if (!result)
 		return false;
 
 	return true;
+}
+
+void RenderingSystem::HandleInputs(Input* input)
+{
+	if (input->IsF1Toggled())
+		m_displayUI = !m_displayUI;
+
+	if (input->IsF2Toggled())
+		m_wireFrame = !m_wireFrame;
+
+	if (input->IsF3Toggled())
+		m_cellLines = !m_cellLines;
+
+	/*if (input->IsF4Toggled())
+		m_displayUI = !m_displayUI;
+
+	if (input->IsF5Toggled())
+		m_displayUI = !m_displayUI;
+
+	if (input->IsF6Toggled())
+		m_displayUI = !m_displayUI;
+
+	if (input->IsF7Toggled())
+		m_displayUI = !m_displayUI;
+
+	if (input->IsF8Toggled())
+		m_displayUI = !m_displayUI;
+
+	if (input->IsF9Toggled())
+		m_displayUI = !m_displayUI;*/
+
+}
+
+void RenderingSystem::HandleGameObjects(vector<GameObject*> gameobjects, Camera* camera)
+{
+	m_lights.clear();
+
+	// Set skydome position to camera position and extract all lights in the scene
+	for (auto go : gameobjects) {
+		if (go->GetName() == "SkydomeGO")
+			go->GetComponent<Transform>()->SetTransform(*camera->GetComponent<Transform>());
+		else if (go->GetComponent<Light>() != NULL)
+		{
+			if (go->IsActive())
+				m_lights.push_back((DirectionalLight*)(go));
+		}
+		else if (go->GetName() == "TERRAIN")
+		{
+			// Do the terrain frame processing.
+			((Terrain*)go)->Frame();
+		}
+	}
 }

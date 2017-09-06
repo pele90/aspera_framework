@@ -134,17 +134,6 @@ void CameraMovementSystem::HandleMovementInput(Input* p_input, GameObject* p_gam
 	p_gameobject->GetComponent<Transform>()->SetPosition(posX, posY, posZ);
 	p_gameobject->GetComponent<Transform>()->SetRotation(rotX, rotY, rotZ);
 
-	// Determine if the user interface should be displayed or not.
-	if (p_input->IsF1Toggled())
-	{
-		//m_displayUI = !m_displayUI;
-	}
-
-	// Determine if the terrain should be rendered in wireframe or not.
-	if (p_input->IsF2Toggled())
-	{
-		//m_wireFrame = !m_wireFrame;
-	}
 }
 
 void CameraMovementSystem::MoveForward(bool keydown)
